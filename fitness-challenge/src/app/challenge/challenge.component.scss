@@ -2,12 +2,16 @@
     margin: 10%;
     margin-top: 5%;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    // grid-template-columns: repeat(2, 1fr);
     column-gap: 5%;
     row-gap: 4em;
     margin: 10%;
     margin-top: 5%;
 }
+
+@media (min-width: 1000px) {
+    .content { grid-template-columns: repeat(2, 1fr); }
+  }
 
 table {
     width: 100%;
