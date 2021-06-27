@@ -1,0 +1,27 @@
+.centerTxt{
+    text-align: center;
+}
+
+.cryptopunk {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 60px;
+    height: 60px;
+    background-color: #638596;
+    
+  }
+
+  .rulesWrapper{
+      margin: 40px;
+  }
+  
+  .rules{
+      margin-left: 20px;
+      font-size: small;
+  }
+
+  .rulesGrid{
+    display: grid;
+    grid-template-columns: 0.5fr 9fr;
+  }

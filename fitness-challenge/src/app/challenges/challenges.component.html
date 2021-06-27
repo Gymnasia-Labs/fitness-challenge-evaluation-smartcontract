@@ -1,0 +1,7 @@
+<div class="wrapper">
+  <div *ngFor="let challenge of challenges$ | async">
+    <div class="creationDetails">Created by {{challenge.creator}} </div>
+    <div class="creationDetails">{{challenge.creationTime | date: 'short'}}</div>
+    <app-challenge-detail [routerLink]="['/challenge/', challenge?.id]" [challenge]="challenge"></app-challenge-detail>
+  </div>
+</div>

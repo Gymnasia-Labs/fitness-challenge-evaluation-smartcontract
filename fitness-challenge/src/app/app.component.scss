@@ -1,0 +1,17 @@
+.header{
+    // margin-left: 70%;
+    font-size: 14px;
+}
+
+// .connectButton{
+//     margin-left: 1%;
+// }
+
+.wrapper{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 3fr 140px 140px 2fr;
+    column-gap: 10px;
+
+
+}

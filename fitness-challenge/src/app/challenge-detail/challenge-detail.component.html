@@ -1,0 +1,17 @@
+<mat-card style="cursor: pointer;" >
+    <!-- <mat-card-title>{{challenge.title}}</mat-card-title> -->
+    <mat-card-title class="centerTxt">{{challenge?.title}}</mat-card-title>
+    <mat-card-subtitle class="centerTxt">{{challenge?.description}}</mat-card-subtitle>
+    <mat-card-content>
+        <img class="cryptopunk" src="{{challenge?.image}}">
+        <div class="rulesWrapper">
+            Rules:
+            <div class="rules">
+            <div *ngFor="let rule of challenge?.rules; index as i" class="rulesGrid">
+                <div>{{i + 1}}.</div>
+                <div>{{rule}}</div>
+            </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
