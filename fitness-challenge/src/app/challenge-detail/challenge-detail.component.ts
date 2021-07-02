@@ -11,8 +11,16 @@ export class ChallengeDetailComponent implements OnInit {
   constructor() { }
 
   @Input() challenge: Challenge| null = null ;
+  @Input() joinActive: boolean = false ;
+
 
   ngOnInit(): void {
+  }
+
+  isLive(){
+    let now = new Date();
+    if(this.challenge) return now >= this.challenge?.start && now <= this.challenge?.end;
+    return false;
   }
 
 }

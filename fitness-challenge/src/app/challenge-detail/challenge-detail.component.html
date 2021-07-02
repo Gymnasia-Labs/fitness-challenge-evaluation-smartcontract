@@ -14,4 +14,21 @@
             </div>
         </div>
     </mat-card-content>
+
 </mat-card>
+<div style="margin-top: 20px; ">
+<mat-chip-list aria-label="Fish selection" >
+    <mat-chip *ngIf="isLive()" style="font-size: xx-small;" >challenge is live</mat-chip>
+    <mat-chip *ngIf="!isLive()" style="font-size: xx-small;">begins on {{challenge?.start | date : 'short'}}</mat-chip>
+    <mat-chip style="font-size: xx-small;" >ends on {{challenge?.end | date : 'short'}}</mat-chip>
+    <mat-chip style="font-size: xx-small;" >{{challenge?.participants}} of active participants</mat-chip>
+    <mat-chip *ngIf="isLive() && joinActive" style="font-size: xx-small;" >Join challenge now</mat-chip>
+    <mat-chip *ngIf="!isLive() && joinActive" style="font-size: xx-small;" >Register for challenge</mat-chip>
+
+    <!-- <mat-chip color="primary" selected>Primary fish</mat-chip>
+    <mat-chip color="accent" selected>Accent fish</mat-chip> -->
+  </mat-chip-list>
+</div>
+<!-- <button *ngIf="isLive()"   mat-flat-button>challenge is live</button>
+<button *ngIf="!isLive()"  mat-flat-button>challenge begins on {{challenge?.start | date : 'short'}}</button> -->
+

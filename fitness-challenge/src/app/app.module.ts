@@ -14,6 +14,8 @@ import { ChallengeDetailComponent } from './challenge-detail/challenge-detail.co
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { ChallengeComponent } from './challenge/challenge.component';
 import {MatTableModule} from '@angular/material/table';
+import {MatChipsModule} from '@angular/material/chips';
+
 
 
 
@@ -33,7 +35,8 @@ import {MatTableModule} from '@angular/material/table';
     MatToolbarModule,
     MatButtonModule,
     MatCardModule,
-    MatTableModule
+    MatTableModule,
+    MatChipsModule
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},

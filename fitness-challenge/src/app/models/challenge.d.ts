@@ -5,5 +5,9 @@ export interface Challenge {
     image: string,
     rules: string[],
     creator: string,
-    creationTime: Date
+    creationTime: Date,
+    start: Date,
+    end: Date,
+    participants: number,
+
 }

@@ -19,7 +19,10 @@ export const initialState: AppState =
         'ETH is required to participate'
       ],
       creator: '0xEF571ac215b9eC5Ef22a12954fF0d87d90e1F10B',
-      creationTime: new Date()
+      creationTime: new Date(),
+      start: new Date(),
+      end: new Date( new Date().valueOf() + 100 * 60 * 60 * 24),
+      participants: 0
     },
     {
       id: 1,
@@ -32,7 +35,10 @@ export const initialState: AppState =
         'ETH is required to participate'
       ],
       creator: '0xEF571ac215b9eC5Ef22a12954fF0d87d90e1F10B',
-      creationTime: new Date()
+      creationTime: new Date(),
+      start: new Date(new Date().valueOf() + 100 * 60 * 60 * 24),
+      end: new Date( new Date().valueOf() + 2*  100 * 60 * 60 * 24),
+      participants: 10
     },
     {
       id: 2,
@@ -45,7 +51,10 @@ export const initialState: AppState =
         'ETH is required to participate'
       ],
       creator: '0xEF571ac215b9eC5Ef22a12954fF0d87d90e1F10B',
-      creationTime: new Date()
+      creationTime: new Date(),
+      start: new Date(new Date().valueOf() + 2 * 100 * 60 * 60 * 24),
+      end: new Date( new Date().valueOf() + 4 *  100 * 60 * 60 * 24),
+      participants: 20
     },
     {
       id: 3,
@@ -58,7 +67,10 @@ export const initialState: AppState =
         'ETH is required to participate'
       ],
       creator: '0xEF571ac215b9eC5Ef22a12954fF0d87d90e1F10B',
-      creationTime: new Date()
+      creationTime: new Date(),
+      start: new Date(new Date().valueOf() + 4 * 100 * 60 * 60 * 24),
+      end: new Date( new Date().valueOf() + 8 *  100 * 60 * 60 * 24),
+      participants: 5000
     }
   ]
 }
