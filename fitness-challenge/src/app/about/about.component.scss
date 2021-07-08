@@ -2,19 +2,27 @@
     margin: 10%;
     margin-top: 5%;
     display: grid;
-    grid-template-columns: 2fr 3fr;
+    // grid-template-columns: 2fr 3fr;
     column-gap: 40px;
-    // row-gap: 4em;
+    row-gap: 5em;
     margin: 10%;
     margin-top: 5%;
 }
 
+@media (min-width: 1000px) {
+    .wrapper { grid-template-columns: 2fr 3fr; }
+  }
+
 .us{
 display: grid;
-grid-template-columns: 1fr 1fr 1fr;
+// grid-template-columns: 1fr 1fr 1fr;
 column-gap: 1%;
-
+row-gap: 1em;
 }
+
+@media (min-width: 1000px) {
+    .us { grid-template-columns: repeat(3, 1fr) }
+  }
 
 .description{
     padding: 20px;
