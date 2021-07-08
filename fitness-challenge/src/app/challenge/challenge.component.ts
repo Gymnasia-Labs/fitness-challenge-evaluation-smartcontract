@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
+import { AuthService } from '../auth.service';
+import { Concept2Service } from '../concept2.service';
 import { selectChallengeById } from '../ngrx/app.reducer';
 
 export interface PeriodicElement {
@@ -30,7 +32,12 @@ export class ChallengeComponent implements OnInit {
     select(selectChallengeById(-1))
   );
 
-  constructor(private actRoute: ActivatedRoute, private store: Store) {
+  constructor(
+    private actRoute: ActivatedRoute, 
+    private store: Store,
+    private authService: AuthService,
+    private concept2: Concept2Service
+    ) {
     let id = +this.actRoute.snapshot.params.id;
     this.challenge$ = this.store.pipe(
       select(selectChallengeById(id))
@@ -38,6 +45,16 @@ export class ChallengeComponent implements OnInit {
    }
 
   ngOnInit(): void {
+  }
+
+  loginConcept2(){
+    this.authService.login().subscribe(
+      r => console.log('res',r)
+    );
+  }
+
+  getUserDataOf(user:string){
+    this.concept2.getUserData(user).subscribe(console.log)
   }
 
 }

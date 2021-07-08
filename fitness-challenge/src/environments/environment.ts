@@ -3,7 +3,12 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  CONCEPT2_API : 'https://log-dev.concept2.com',
+  // CONCEPT2_API : 'https://log.concept2.com',
+
+  client_id: 'CDT'
+
 };
 
 /*
