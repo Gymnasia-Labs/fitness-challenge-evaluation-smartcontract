@@ -7,13 +7,13 @@
     margin-top: 5%;
   }
 
-  @media (min-width: 700px) {
+  @media (min-width: 1000px) {
     .wrapper { grid-template-columns: repeat(2, 1fr); }
   }
 
-  @media (min-width: 1000px) {
-    .wrapper { grid-template-columns: repeat(3, 1fr); }
-  }
+  // @media (min-width: 1000px) {
+  //   .wrapper { grid-template-columns: repeat(3, 1fr); }
+  // }
 
   .creationDetails{
     font-size: smaller;

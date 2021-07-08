@@ -10,15 +10,16 @@ export const initialState: AppState =
   challenges: [
     {
       id: 0,
-      title: '1500m Rowing Challenge',
-      description: 'The fastest 1500m row will win a cyberpunk',
-      image: 'https://www.larvalabs.com/public/images/cryptopunks/punk3100.png',
+      title: '2000m Rowing Challenge',
+      description: 'The rower who can row the fastest distance within 1 minute will win 1 Bitcoin',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1024px-Bitcoin.svg.png',
       rules: [
-        'Results will be submitted by the concept2 rower via their api',
-        'Begins (4.12.21) Ends (4.20.21). All logs must be submitted by 12pm EST on (4.20.21)',
-        'ETH is required to participate'
+        /* bitcoin-2136339_960_720 1 */
+        'Must use a concept2 pm5 rower',
+        `All logs must be submitted by ${new Date( new Date().valueOf() + 100 * 60 * 60 * 24).getHours()}pm EST on (${new Date( new Date().valueOf() + 100 * 60 * 60 * 24).toDateString()})`,
+        '.0005btc is required to submit your results'
       ],
-      creator: '0xEF571ac215b9eC5Ef22a12954fF0d87d90e1F10B',
+      creator: 'Account #135',
       creationTime: new Date(),
       start: new Date(),
       end: new Date( new Date().valueOf() + 100 * 60 * 60 * 24),
@@ -26,52 +27,52 @@ export const initialState: AppState =
     },
     {
       id: 1,
-      title: '2000m Rowing Challenge',
-      description: 'The fastest 2000m row will win a cyberpunk',
-      image: 'https://www.larvalabs.com/public/images/cryptopunks/punk3100.png',
+      title: '4000m Rowing Challenge',
+      description: 'The rower who can row the fastest distance within 2 minutes will win 1 Bitcoin',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1024px-Bitcoin.svg.png',
       rules: [
-        'Results will be submitted by the concept2 rower via their api',
-        'Begins (4.12.21) Ends (4.20.21). All logs must be submitted by 12pm EST on (4.20.21)',
-        'ETH is required to participate'
+        'Must use a concept2 pm5 rower',
+        `All logs must be submitted by ${new Date( new Date().valueOf() + 300 * 60 * 60 * 24).getHours()}pm EST on (${new Date( new Date().valueOf() + 300 * 60 * 60 * 24).toDateString()})`,
+        '.0005btc is required to submit your results'
       ],
-      creator: '0xEF571ac215b9eC5Ef22a12954fF0d87d90e1F10B',
+      creator: 'Account #135',
       creationTime: new Date(),
       start: new Date(new Date().valueOf() + 100 * 60 * 60 * 24),
-      end: new Date( new Date().valueOf() + 2*  100 * 60 * 60 * 24),
+      end: new Date( new Date().valueOf() + 300 * 60 * 60 * 24),
       participants: 10
     },
-    {
-      id: 2,
-      title: '2500m Rowing Challenge',
-      description: 'The fastest 2500m row will win a cyberpunk',
-      image: 'https://www.larvalabs.com/public/images/cryptopunks/punk3100.png',
-      rules: [
-        'Results will be submitted by the concept2 rower via their api',
-        'Begins (4.12.21) Ends (4.20.21). All logs must be submitted by 12pm EST on (4.20.21)',
-        'ETH is required to participate'
-      ],
-      creator: '0xEF571ac215b9eC5Ef22a12954fF0d87d90e1F10B',
-      creationTime: new Date(),
-      start: new Date(new Date().valueOf() + 2 * 100 * 60 * 60 * 24),
-      end: new Date( new Date().valueOf() + 4 *  100 * 60 * 60 * 24),
-      participants: 20
-    },
-    {
-      id: 3,
-      title: '5000m Rowing Challenge',
-      description: 'The fastest 5000m row will win a cyberpunk',
-      image: 'https://www.larvalabs.com/public/images/cryptopunks/punk3100.png',
-      rules: [
-        'Results will be submitted by the concept2 rower via their api',
-        'Begins (4.12.21) Ends (4.20.21). All logs must be submitted by 12pm EST on (4.20.21)',
-        'ETH is required to participate'
-      ],
-      creator: '0xEF571ac215b9eC5Ef22a12954fF0d87d90e1F10B',
-      creationTime: new Date(),
-      start: new Date(new Date().valueOf() + 4 * 100 * 60 * 60 * 24),
-      end: new Date( new Date().valueOf() + 8 *  100 * 60 * 60 * 24),
-      participants: 5000
-    }
+    // {
+    //   id: 2,
+    //   title: '2500m Rowing Challenge',
+    //   description: 'The fastest 2500m row will win a cyberpunk',
+    //   image: 'https://www.larvalabs.com/public/images/cryptopunks/punk3100.png',
+    //   rules: [
+    //     'Results will be submitted by the concept2 rower via their api',
+    //     'Begins (4.12.21) Ends (4.20.21). All logs must be submitted by 12pm EST on (4.20.21)',
+    //     'ETH is required to participate'
+    //   ],
+    //   creator: '0xEF571ac215b9eC5Ef22a12954fF0d87d90e1F10B',
+    //   creationTime: new Date(),
+    //   start: new Date(new Date().valueOf() + 2 * 100 * 60 * 60 * 24),
+    //   end: new Date( new Date().valueOf() + 4 *  100 * 60 * 60 * 24),
+    //   participants: 20
+    // },
+    // {
+    //   id: 3,
+    //   title: '5000m Rowing Challenge',
+    //   description: 'The fastest 5000m row will win a cyberpunk',
+    //   image: 'https://www.larvalabs.com/public/images/cryptopunks/punk3100.png',
+    //   rules: [
+    //     'Results will be submitted by the concept2 rower via their api',
+    //     'Begins (4.12.21) Ends (4.20.21). All logs must be submitted by 12pm EST on (4.20.21)',
+    //     'ETH is required to participate'
+    //   ],
+    //   creator: '0xEF571ac215b9eC5Ef22a12954fF0d87d90e1F10B',
+    //   creationTime: new Date(),
+    //   start: new Date(new Date().valueOf() + 4 * 100 * 60 * 60 * 24),
+    //   end: new Date( new Date().valueOf() + 8 *  100 * 60 * 60 * 24),
+    //   participants: 5000
+    // }
   ]
 }
   ;

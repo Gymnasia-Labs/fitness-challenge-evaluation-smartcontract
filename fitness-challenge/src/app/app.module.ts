@@ -15,6 +15,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { ChallengeComponent } from './challenge/challenge.component';
 import {MatTableModule} from '@angular/material/table';
 import {MatChipsModule} from '@angular/material/chips';
+import { AboutComponent } from './about/about.component';
 
 
 
@@ -24,7 +25,8 @@ import {MatChipsModule} from '@angular/material/chips';
     AppComponent,
     ChallengesComponent,
     ChallengeDetailComponent,
-    ChallengeComponent
+    ChallengeComponent,
+    AboutComponent
   ],
   imports: [
     StoreModule.forRoot({ data: appReducer }),

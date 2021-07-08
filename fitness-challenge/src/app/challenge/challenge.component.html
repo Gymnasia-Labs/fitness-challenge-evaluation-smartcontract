@@ -1,8 +1,13 @@
 <div class="content">
 
     <div>
+      <h1 >
+        Participate in rowing challenges for a chance to win Bitcoin
+      </h1>
+      <div class="creationDetails">Created by {{(challenge$|async)?.creator}} </div>
+      <div class="creationDetails">{{(challenge$|async)?.creationTime | date: 'short'}}</div>
         <app-challenge-detail [challenge]="challenge$|async" [joinActive]="false"></app-challenge-detail>
-        <button class="sumbitButton" mat-flat-button>connect wallet to submit your results</button>
+        <button class="sumbitButton" mat-flat-button>sign into your logbook</button>
     </div>
     <div>
         <h1>Leaderboard</h1>

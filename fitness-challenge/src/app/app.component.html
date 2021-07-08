@@ -2,8 +2,9 @@
   <mat-toolbar>
     <div class="wrapper">
      <div></div> 
-      <span class="header">discover challenges</span>
+      <span [routerLink]="['/']" class="header">discover challenges</span>
       <button class="connectButton" mat-flat-button>connect wallet</button>
+      <div [routerLink]="['/about']" class="about">about</div>
     </div>
   </mat-toolbar>
 </p>

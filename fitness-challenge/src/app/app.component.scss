@@ -1,6 +1,7 @@
 .header{
     // margin-left: 70%;
     font-size: 14px;
+    cursor: pointer;
 }
 
 // .connectButton{
@@ -10,8 +11,11 @@
 .wrapper{
     width: 100%;
     display: grid;
-    grid-template-columns: 3fr 140px 140px 2fr;
-    column-gap: 10px;
+    grid-template-columns: 3fr 140px 140px 140px 2fr;
+    column-gap: 20px;
+}
 
-
+.about{
+    font-weight: 100;
+    cursor: pointer;
 }
