@@ -10,8 +10,8 @@ const HTTP_OPTIONS = {
   headers: new HttpHeaders({
     // host : 'log.concept2.com',
     // 'Content-Type': 'application/json',
-    // Authorization: 'Bearer HA3n1vrNjuQJWw0TdCDHnjSmrjIPULhTlejMIWqq',
-    response_type: 'html'
+    // Authorization: 'Bearer '+environment.client_id,
+    response_type: 'code'
   })
 };
 
