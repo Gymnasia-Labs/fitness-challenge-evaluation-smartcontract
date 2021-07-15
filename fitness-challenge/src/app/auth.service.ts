@@ -11,6 +11,7 @@ const HTTP_OPTIONS = {
     // host : 'log.concept2.com',
     // 'Content-Type': 'application/json',
     // Authorization: 'Bearer HA3n1vrNjuQJWw0TdCDHnjSmrjIPULhTlejMIWqq',
+    response_type: 'html'
   })
 };
 
@@ -61,6 +62,8 @@ export class AuthService {
        response_type + 
        '&redirect_uri=' +
        window.location.href
+       ,
+       HTTP_OPTIONS
        )
       // .pipe(
       //   // tap(res => {
