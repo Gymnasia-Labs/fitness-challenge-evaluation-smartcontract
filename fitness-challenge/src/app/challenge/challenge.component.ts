@@ -48,13 +48,25 @@ export class ChallengeComponent implements OnInit {
   }
 
   loginConcept2(){
-    this.authService.login().subscribe(
-      r => console.log('res',r)
-    );
+    // this.authService.login().subscribe(
+    //   r => console.log('res',r)
+    // );
   }
 
-  getUserDataOf(user:string){
+  getUserDataOf(user?:string){
+    if(!user) user = 'me';
     this.concept2.getUserData(user).subscribe(console.log)
+  }
+
+  getChallengeDataOf(user?:string){
+    if(!user) user = 'me';
+    this.concept2.getResultsData(user).subscribe(console.log)
+  }
+
+  getStrokeData(user?:string, resultId?:string){
+    if(!user) user = 'me';
+    resultId = '55327159'
+    this.concept2.getStrokesData(user,resultId).subscribe(console.log)
   }
 
 }

@@ -9,13 +9,16 @@ import { catchError, tap } from 'rxjs/operators';
 const HTTP_OPTIONS = {
   headers: new HttpHeaders({
     // host : 'log.concept2.com',
-    // 'Content-Type': 'application/json',
-    // Authorization: 'Bearer '+environment.client_id,
-    response_type: 'code'
-  })
+    'Content-Type': 'application/x-www-form-urlencoded',
+    // Authorization: 'Bearer TA3n1vrNjuQJWw0TdCDHnjSmrjIPULhTlejMIWqq',
+    // response_type: 'code'
+    // responseType : 'text'
+    Accept: 'application/vnd.c2logbook.v1+json'
+  }),
+  // responseType: 'text' as 'json'
 };
 
-const scope = 'results:read';
+const scope = 'results:read,user:read';
 const response_type = 'code';
 
 @Injectable({
@@ -41,46 +44,49 @@ export class AuthService {
 
   constructor(private http: HttpClient, private tokenService: TokenService) { }
 
-  login(): Observable<any> {
+  login(code:string): Observable<any> {
+    console.log(code);
+    
     this.tokenService.removeToken();
     this.tokenService.removeRefreshToken();
     const body = new HttpParams()
-      // .set('client_id', environment.client_id)
-      // .set('scope', scope)
-      // .set('response_type', response_type)
-      // .set('redirect_uri',       window.location.href
-      // );
+      .set('client_id', environment.client_id)
+      .set('client_secret',       environment.client_secret)
+      .set('grant_type', 'authorization_code')
+      .set('redirect_uri',       'http://localhost:4200')
+      .set('code',       code)
+      .set('scope', scope);
 
-    return this.http.get<any>(
-      environment.CONCEPT2_API +
-       '/oauth/authorize' +
-       '?client_id=' +
-       environment.client_id +
-       '&scope=' +
-       scope + 
-       '&response_type=' +
-       response_type + 
-       '&redirect_uri=' +
-       window.location.href
-       ,
-       HTTP_OPTIONS
+        return this.http.post<any>(
+      environment.CONCEPT2_API + '/oauth/access_token'
+      ,    
+      body,
+      HTTP_OPTIONS
        )
-      // .pipe(
-      //   // tap(res => {
-      //   //   this.tokenService.saveToken(res.access_token);
-      //   //   this.tokenService.saveRefreshToken(res.refresh_token);
-      //   // }),
-      //   catchError(AuthService.handleError)
-      // );
+
+
+      .pipe(
+        tap(res => {
+          this.tokenService.saveToken(res.access_token);
+          this.tokenService.saveRefreshToken(res.refresh_token);
+        }),
+        catchError(AuthService.handleError)
+      );
   }
 
   refreshToken(refreshData: any): Observable<any> {
     this.tokenService.removeToken();
     this.tokenService.removeRefreshToken();
-    const body = new HttpParams()
+
+      const body = new HttpParams()
+      .set('client_id', environment.client_id)
+      .set('client_secret',       environment.client_secret)
+      .set('grant_type', 'refresh_token')
+      .set('redirect_uri',       'http://localhost:4200')
       .set('refresh_token', refreshData.refresh_token)
-      .set('grant_type', 'refresh_token');
-    return this.http.post<any>(environment.CONCEPT2_API + 'oauth/token', body, HTTP_OPTIONS).pipe(
+      .set('scope', scope);
+
+    return this.http.post<any>(environment.CONCEPT2_API + '/oauth/access_token', body, HTTP_OPTIONS).pipe(
         tap(res => {
           this.tokenService.saveToken(res.access_token);
           this.tokenService.saveRefreshToken(res.refresh_token);

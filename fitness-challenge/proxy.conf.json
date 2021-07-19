@@ -1,6 +1,6 @@
 {
     "/api": {
-      "target": "https://log-dev.concept2.com",
+      "target": "https://log.concept2.com",
       "secure": true,
       "changeOrigin": true,
       "pathRewrite": {

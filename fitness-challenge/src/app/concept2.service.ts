@@ -17,4 +17,18 @@ export class Concept2Service {
        )
   }
 
+  getResultsData(id:string){
+    return this.http.get<any>(
+      environment.CONCEPT2_API +
+       `/api/users/${id}/results`
+       )
+  }
+
+  getStrokesData(id:string, resultId: string){
+    return this.http.get<any>(
+      environment.CONCEPT2_API +
+       `/api/users/${id}/results/${resultId}/strokes`
+       )
+  }
+
 }
