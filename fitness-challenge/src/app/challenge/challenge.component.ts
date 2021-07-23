@@ -55,17 +55,20 @@ export class ChallengeComponent implements OnInit {
 
   getUserDataOf(user?:string){
     if(!user) user = 'me';
+    console.log(user);
+    
     this.concept2.getUserData(user).subscribe(console.log)
   }
 
   getChallengeDataOf(user?:string){
     if(!user) user = 'me';
+    user= '491';
     this.concept2.getResultsData(user).subscribe(console.log)
   }
 
   getStrokeData(user?:string, resultId?:string){
     if(!user) user = 'me';
-    resultId = '55327159'
+    if(!resultId) resultId = '55327159'
     this.concept2.getStrokesData(user,resultId).subscribe(console.log)
   }
 
