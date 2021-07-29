@@ -3,7 +3,6 @@
     <div class="wrapper">
      <div></div> 
       <span [routerLink]="['/']" class="header">discover challenges</span>
-      <span class="header">discover challenges</span>
       <button *ngIf="!(myAddress$ | async)" class="connectButton" (click)="contractService.connectMetamask()" mat-flat-button>connect wallet</button>
       <span *ngIf="(myAddress$ | async)" class="address">
         <img width="15px" height="15px" src="assets/metamask.svg">
