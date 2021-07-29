@@ -1,7 +1,9 @@
 import { Inject, Injectable, InjectionToken } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { ethers } from 'ethers';
+import { ethers, utils } from 'ethers';
 import { setAddress } from '../ngrx/app.actions';
+import WalletConnectProvider from "@walletconnect/web3-provider";
+
 declare const window: any;
 
 export const WEB3PROVIDER = new InjectionToken('Web3 provider', {
@@ -36,12 +38,17 @@ export class ContractService {
         }
    }
 
-   public connectMetamask(){
+   public async connectMetamask(){
     
-    this.web3provider.enable()
-                     .then((address: string) => 
-                         this.store.dispatch(setAddress({address: address[0]}))
-                         );
+    // this.web3provider.enable()
+    //                  .then((address: string) => 
+    //                      this.store.dispatch(setAddress({address: address[0]}))
+    //                      );
+
+    const provider = new WalletConnectProvider({
+      infuraId: "27e484dcd9e3efcfd25a83a78777cdf1",
+    });
+    await provider.enable();
 
   }
 
