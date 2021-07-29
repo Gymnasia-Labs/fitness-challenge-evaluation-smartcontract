@@ -6,4 +6,7 @@ import { AppState } from './app.reducer';
 //     props<{ restaurants: Restaurant[] }>()
 // );
 
-
+export const setAddress = createAction(
+    '[Address] set address',
+    props<{ address: string }>()
+);

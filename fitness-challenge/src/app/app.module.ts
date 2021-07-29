@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,6 +17,7 @@ import { ChallengeComponent } from './challenge/challenge.component';
 import {MatTableModule} from '@angular/material/table';
 import {MatChipsModule} from '@angular/material/chips';
 import { AboutComponent } from './about/about.component';
+import { AuthInterceptor } from './auth.interceptor';
 
 
 
@@ -30,7 +32,8 @@ import { AboutComponent } from './about/about.component';
   ],
   imports: [
     StoreModule.forRoot({ data: appReducer }),
-
+    HttpClientModule,
+    AppRoutingModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -41,7 +44,15 @@ import { AboutComponent } from './about/about.component';
     MatChipsModule
   ],
   providers: [
-    {provide: LocationStrategy, useClass: HashLocationStrategy},
+    // {provide: LocationStrategy, useClass: HashLocationStrategy},
+
+    
+      {
+        provide: HTTP_INTERCEPTORS,
+        useClass: AuthInterceptor,
+        multi: true
+      }
+
   ],
   bootstrap: [AppComponent]
 })

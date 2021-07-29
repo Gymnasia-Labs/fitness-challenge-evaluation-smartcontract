@@ -1,11 +1,15 @@
-<p>
-  <mat-toolbar>
+
+  <mat-toolbar class="toolbar">
     <div class="wrapper">
      <div></div> 
       <span [routerLink]="['/']" class="header">discover challenges</span>
-      <button class="connectButton" mat-flat-button>connect wallet</button>
+      <span class="header">discover challenges</span>
+      <button *ngIf="!(myAddress$ | async)" class="connectButton" (click)="contractService.connectMetamask()" mat-flat-button>connect wallet</button>
+      <span *ngIf="(myAddress$ | async)" class="address">
+        <img width="15px" height="15px" src="assets/metamask.svg">
+        {{ myAddress$ | async }}</span>
+      </div>
       <div [routerLink]="['/about']" class="about">about</div>
-    </div>
   </mat-toolbar>
-</p>
+
 <router-outlet class="content"></router-outlet>
