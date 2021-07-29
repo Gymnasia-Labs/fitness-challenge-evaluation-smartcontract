@@ -23,6 +23,7 @@ export class ContractService {
     @Inject(WEB3PROVIDER) public web3provider: any,
     private store: Store  
   ) {
+    if (typeof window.ethereum !== 'undefined') {   
     this.provider = new ethers.providers.Web3Provider(window.ethereum);
     console.log(this.provider);
     
@@ -30,6 +31,9 @@ export class ContractService {
       .then((address: string) => 
           this.store.dispatch(setAddress({address: address[0]}))
           );
+        } else {
+          alert('please install metamask provider and then reload this page')
+        }
    }
 
    public connectMetamask(){
