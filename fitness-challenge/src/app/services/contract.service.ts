@@ -48,7 +48,17 @@ export class ContractService {
     const provider = new WalletConnectProvider({
       infuraId: "27e484dcd9e3efcfd25a83a78777cdf1",
     });
-    await provider.enable();
+    provider.on("accountsChanged", (accounts: string[]) => {
+      this.store.dispatch(setAddress({address: accounts[0]}))
+    });
+    provider.enable()
+    // const web3Provider =  new ethers.providers.Web3Provider(provider);
+    // web3Provider.listAccounts
+
+    //   .then((address: string) => 
+    //       this.store.dispatch(setAddress({address: address[0]}))
+    //       );
+    //     } 
 
   }
 
