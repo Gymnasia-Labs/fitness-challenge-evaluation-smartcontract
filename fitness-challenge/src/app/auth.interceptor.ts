@@ -2,9 +2,9 @@ import {Injectable} from '@angular/core';
 import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {throwError} from 'rxjs';
-import {TokenService} from './token.service';
+import {TokenService} from './services/token.service';
 import {catchError, map} from 'rxjs/operators';
-import {AuthService} from './auth.service';
+import {AuthService} from './services/auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -53,13 +53,14 @@ export class AuthInterceptor implements HttpInterceptor {
           catchError((error: HttpErrorResponse) => {
             console.log(error);
             if (error.status === 401) {
+              
               if (error.error.message === 'Invalid OAuth access token') {
                 this.authService.refreshToken({refresh_token: refreshToken})
                   .subscribe(() => {
                     location.reload();
                   });
               } else {
-                this.router.navigate(['login']).then(_ => console.log('redirect to login'));
+                // this.router.navigate(['login']).then(_ => console.log('redirect to login'));
               }
             }
             return throwError(error);

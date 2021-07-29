@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { AuthService } from '../auth.service';
-import { Concept2Service } from '../concept2.service';
+import { AuthService } from '../services/auth.service';
+import { Concept2Service } from '../services/concept2.service';
 import { selectChallengeById } from '../ngrx/app.reducer';
 
 export interface PeriodicElement {

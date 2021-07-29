@@ -7,8 +7,8 @@
         <input type="text" id="resultid" #resultid>  
         <button (click)="getStrokeData('me',resultid.value)" class="sumbitButton" mat-flat-button>load stroke data</button>
 
-        <a target="_blank" 
-        href="https://log-dev.concept2.com/oauth/authorize?client_id=asWj9Gh7mrXWZI0JjoyLHP2aP2ytQV4dYQrX4w0k&scope=user:read,results:write&response_type=code&redirect_uri=http://localhost:4200" 
+        <a 
+        href="https://log-dev.concept2.com/oauth/authorize?client_id=asWj9Gh7mrXWZI0JjoyLHP2aP2ytQV4dYQrX4w0k&scope=user:read,results:read&response_type=code&redirect_uri=http://localhost:4200" 
         class="sumbitButton" mat-flat-button>Connect your Concept2</a>
         <!-- <a target="_blank" 
         href="https://log.concept2.com/oauth/authorize?client_id=asWj9Gh7mrXWZI0JjoyLHP2aP2ytQV4dYQrX4w0k&scope=results:read&response_type=code&redirect_uri=http:/example.com/logbook" 

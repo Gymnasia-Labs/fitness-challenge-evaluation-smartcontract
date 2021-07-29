@@ -1,8 +1,10 @@
 import { createSelector, createFeatureSelector, createReducer, on } from "@ngrx/store";
 import { Challenge } from "../models/challenge";
+import { setAddress } from "./app.actions";
 
 export interface AppState {
-  challenges: Challenge[]
+  challenges: Challenge[],
+  address: string
 };
 
 export const initialState: AppState =
@@ -72,14 +74,15 @@ export const initialState: AppState =
       end: new Date( new Date().valueOf() + 8 *  100 * 60 * 60 * 24),
       participants: 5000
     }
-  ]
+  ],
+  address: ''
 }
   ;
 
 export const appReducer = createReducer(
   initialState,
   // on(setRestaurants, (state, { restaurants }) =>({ ...state, restaurants: [...restaurants], restaurantsLoading: false })) ,
-  
+  on(setAddress, (state, { address }) =>  ({ ...state, address: address })),
 
 );
 
@@ -93,4 +96,9 @@ export const selectChallenges = createSelector<any, any, any>(
 export const selectChallengeById = (id:number) => createSelector<any, any, any>(
   (reducer: any) => reducer.data,
   (state: AppState) => state.challenges.find(challenge => challenge.id === id)
+);
+
+export const selectAddress = createSelector<any, any, any>(
+  (reducer: any) => reducer.data,
+  (state: AppState) => state.address
 );

@@ -18,7 +18,8 @@ const HTTP_OPTIONS = {
   // responseType: 'text' as 'json'
 };
 
-const scope = 'results:read,user:read';
+// const scope = 'user:read';
+const scope = 'user:read,results:read';
 const response_type = 'code';
 
 @Injectable({
@@ -75,8 +76,8 @@ export class AuthService {
   }
 
   refreshToken(refreshData: any): Observable<any> {
-    this.tokenService.removeToken();
-    this.tokenService.removeRefreshToken();
+    // this.tokenService.removeToken();
+    // this.tokenService.removeRefreshToken();
 
       const body = new HttpParams()
       .set('client_id', environment.client_id)
