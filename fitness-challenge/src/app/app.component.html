@@ -1,14 +1,40 @@
-
+<p>
   <mat-toolbar class="toolbar">
-    <div class="wrapper">
-     <div></div> 
-      <span [routerLink]="['/']" class="header">discover challenges</span>
-      <button *ngIf="!(myAddress$ | async)" class="connectButton" (click)="contractService.connectMetamask()" mat-flat-button>connect wallet</button>
+    <button mat-icon-button class="example-icon" (click)="sideNavOpened = !sideNavOpened" aria-label="Example icon-button with menu icon">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <h1>Gymnasia</h1>
+    <div class="accountWrapper">
+      <button *ngIf="!(myAddress$ | async)" class="connectButton" (click)="contractService.connectMetamask()"
+        mat-flat-button>connect wallet</button>
       <span *ngIf="(myAddress$ | async)" class="address">
         <img width="15px" height="15px" src="assets/metamask.svg">
-        {{ myAddress$ | async }}</span>
-      </div>
-      <div [routerLink]="['/about']" class="about">about</div>
+        <!-- {{ myAddress$ | async }} -->
+        connected
+      </span>
+    </div>
+    <!-- <div class="wrapper">
+     <div></div> 
+      <span [routerLink]="['/']" class="header">discover challenges</span>
+      <div [routerLink]="['/about']" class="about">about</div> -->
   </mat-toolbar>
+</p>
 
-<router-outlet class="content"></router-outlet>
+<mat-sidenav-container class="example-container" >
+  <mat-sidenav mode="side" [(opened)]="sideNavOpened">
+    <!-- <div [routerLink]="['/about']" class="about">about</div> -->
+    <div class="links">
+      <a mat-button routerLink="/log">Exercise Log</a>
+      <a mat-button routerLink="/challenges">Challenges</a>
+      <a mat-button routerLink="/training">training</a>
+      <a mat-button routerLink="/settings">settings</a>
+      <a mat-button routerLink="/about">about</a>
+  </div>
+  </mat-sidenav>
+  <mat-sidenav-content >
+    <div style="margin-top: 100px;">
+      <router-outlet  class="content"></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+

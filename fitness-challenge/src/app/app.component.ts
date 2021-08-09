@@ -12,6 +12,7 @@ import { ContractService } from './services/contract.service';
 })
 export class AppComponent {
   myAddress$ = this.store.pipe(select(selectAddress));
+  sideNavOpened = true;
 
 constructor(private readonly route: ActivatedRoute,
             private authService: AuthService,

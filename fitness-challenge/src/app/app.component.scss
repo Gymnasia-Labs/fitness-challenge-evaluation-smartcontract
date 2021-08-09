@@ -4,9 +4,14 @@
     cursor: pointer;
 }
 
-// .connectButton{
-//     margin-left: 1%;
-// }
+.connectButton{
+    float: right;
+}
+
+.accountWrapper{
+    width: 100%;
+    right: 0;
+}
 
 .wrapper{
     width: 100%;
@@ -21,6 +26,7 @@
 }
 .address{
     font-size: x-small;
+    float: right;
 }
 
 .dot {
@@ -37,3 +43,18 @@
     top: 0; /* Sets the sticky toolbar to be on top */
     z-index: 1000; /* Ensure that your app's content doesn't overlap the toolbar */
 }
+
+.example-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #eee;
+  }
+
+  .links{
+      margin-top:65pt;
+    display: flex;
+    flex-direction: column;
+  }

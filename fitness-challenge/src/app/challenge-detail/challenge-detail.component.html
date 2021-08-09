@@ -1,4 +1,4 @@
-<mat-card style="cursor: pointer;" >
+<mat-card style="cursor: pointer;">
     <!-- <mat-card-title>{{challenge.title}}</mat-card-title> -->
     <mat-card-title class="centerTxt">{{challenge?.title}}</mat-card-title>
     <mat-card-subtitle class="centerTxt">{{challenge?.description}}</mat-card-subtitle>
@@ -7,16 +7,22 @@
         <div class="rulesWrapper">
             Rules:
             <div class="rules">
-            <div *ngFor="let rule of challenge?.rules; index as i" class="rulesGrid">
-                <div>{{i + 1}}.</div>
-                <div>{{rule}}</div>
+                <div *ngFor="let rule of challenge?.rules; index as i" class="rulesGrid">
+                    <div>{{i + 1}}.</div>
+                    <div>{{rule}}</div>
+                </div>
             </div>
+            <br>
+            <div>
+                <p *ngIf="isLive()">challenge is live</p>
+                <p *ngIf="!isLive()">challenge begins ({{challenge?.start | date : 'short'}}) ends ({{challenge?.end |
+                    date : 'short'}})</p>
             </div>
         </div>
     </mat-card-content>
 
 </mat-card>
-<div style="margin-top: 20px; ">
+<!-- <div style="margin-top: 20px; ">
 <mat-chip-list aria-label="Fish selection" >
     <mat-chip *ngIf="isLive()" style="font-size: xx-small;" >challenge is live</mat-chip>
     <mat-chip *ngIf="!isLive()" style="font-size: xx-small;">begins on {{challenge?.start | date : 'short'}}</mat-chip>
@@ -24,11 +30,11 @@
     <mat-chip style="font-size: xx-small;" >{{challenge?.participants}} of active participants</mat-chip>
     <mat-chip [routerLink]="['/challenge/', challenge?.id]" *ngIf="isLive() && joinActive" style="font-size: xx-small;" >Join challenge now</mat-chip>
     <mat-chip [routerLink]="['/challenge/', challenge?.id]" *ngIf="!isLive() && joinActive" style="font-size: xx-small;" >Register for challenge</mat-chip>
-
-    <!-- <mat-chip color="primary" selected>Primary fish</mat-chip>
-    <mat-chip color="accent" selected>Accent fish</mat-chip> -->
   </mat-chip-list>
-</div>
+</div> -->
 <!-- <button *ngIf="isLive()"   mat-flat-button>challenge is live</button>
 <button *ngIf="!isLive()"  mat-flat-button>challenge begins on {{challenge?.start | date : 'short'}}</button> -->
-
+<div style="width: 100%;display: flex;">
+        <a style="margin-right: 0;margin-left: auto;" mat-button [routerLink]="['/challenge/', challenge?.id]" *ngIf="joinActive">Join
+            challenge</a>
+</div>

@@ -18,6 +18,12 @@ import {MatTableModule} from '@angular/material/table';
 import {MatChipsModule} from '@angular/material/chips';
 import { AboutComponent } from './about/about.component';
 import { AuthInterceptor } from './auth.interceptor';
+import {MatIconModule} from '@angular/material/icon';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import { LogComponent } from './log/log.component';
+import { TrainingComponent } from './training/training.component';
+import { SettingsComponent } from './settings/settings.component';
+import { MembershipsComponent } from './memberships/memberships.component';
 
 
 
@@ -28,7 +34,11 @@ import { AuthInterceptor } from './auth.interceptor';
     ChallengesComponent,
     ChallengeDetailComponent,
     ChallengeComponent,
-    AboutComponent
+    AboutComponent,
+    LogComponent,
+    TrainingComponent,
+    SettingsComponent,
+    MembershipsComponent
   ],
   imports: [
     StoreModule.forRoot({ data: appReducer }),
@@ -41,12 +51,12 @@ import { AuthInterceptor } from './auth.interceptor';
     MatButtonModule,
     MatCardModule,
     MatTableModule,
-    MatChipsModule
+    MatChipsModule,
+    MatIconModule,
+    MatSidenavModule
   ],
   providers: [
     // {provide: LocationStrategy, useClass: HashLocationStrategy},
-
-    
       {
         provide: HTTP_INTERCEPTORS,
         useClass: AuthInterceptor,
