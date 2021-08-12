@@ -1,8 +1,23 @@
 .wrapper{
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    // grid-template-columns: repeat(2, 1fr);
     column-gap: 5%;
     row-gap: 4em;
     margin: 10%;
     margin-top: 2.5%;
+}
+
+@media (min-width: 1000px) {
+    .wrapper { grid-template-columns: repeat(2, 1fr); }
+  }
+
+.brandwrapper{
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+}
+
+.loginbutton{
+    width: 20pt;
+    align-self: flex-end;
 }

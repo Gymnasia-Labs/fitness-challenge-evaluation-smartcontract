@@ -52,7 +52,7 @@ export class AuthService {
     this.tokenService.removeRefreshToken();
     const body = new HttpParams()
       .set('client_id', environment.client_id)
-      .set('client_secret',       environment.client_secret)
+      // .set('client_secret',       environment.client_secret)
       .set('grant_type', 'authorization_code')
       .set('redirect_uri',       'http://localhost:4200')
       .set('code',       code)
@@ -112,6 +112,13 @@ export class AuthService {
   secured(): Observable<any> {
     return this.http.get<any>(environment.CONCEPT2_API + 'secret')
       .pipe(catchError(AuthService.handleError));
+  }
+
+  getLoginLink(brand: string) {
+    if(brand === 'concept2'){
+    return `${environment.CONCEPT2_API}/oauth/authorize?client_id=${environment.client_id}&scope=${scope}&response_type=code&redirect_uri=${environment.redirect_uri}`;
+  }
+  return '';
   }
 
 }

@@ -1,13 +1,23 @@
 <h1 style="text-align: center;font-size: xx-large;">Settings</h1>
-Settings works
 <div class="wrapper">
-<div>
+    <div>
 
-</div>
+    </div>
 
-<div>
-    <h4>Select Brand</h4>
-
-</div>
+    <div>
+        <h4>Select Brand</h4>
+        <div class="brandwrapper">
+            <button style="width: 100%;" mat-stroked-button disabled>Concept2</button>
+            <a class="loginbutton" [href]="getLoginURL('concept2')" mat-button>log in</a>
+        </div>
+        <div class="brandwrapper">
+            <button style="width: 100%;" mat-stroked-button disabled>Technogy</button>
+            <a class="loginbutton" mat-button disabled>coming soon</a>
+        </div>
+        <div class="brandwrapper">
+            <button style="width: 100%;" mat-stroked-button disabled>LifeFitness</button>
+            <a class="loginbutton" mat-button disabled>coming soon</a>
+        </div>
+    </div>
 
 </div>
