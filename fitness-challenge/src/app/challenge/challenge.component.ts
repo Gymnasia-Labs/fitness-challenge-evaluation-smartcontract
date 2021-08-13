@@ -72,4 +72,8 @@ export class ChallengeComponent implements OnInit {
     this.concept2.getStrokesData(user,resultId).subscribe(console.log)
   }
 
+  getLoginLink(brand: string){
+    return this.authService.getLoginLink(brand);
+  }
+
 }

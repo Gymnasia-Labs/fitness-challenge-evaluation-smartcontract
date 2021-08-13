@@ -79,7 +79,7 @@
               "browserTarget": "fitness-challenge:build:production"
             },
             "development": {
-              "browserTarget": "fitness-challenge:build"
+              "browserTarget": "fitness-challenge:build:development"
             }
           },
           "defaultConfiguration": "development"

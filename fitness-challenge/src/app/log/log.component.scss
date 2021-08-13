@@ -1,0 +1,21 @@
+.logWrapper{
+    display: flex;
+    justify-content: center;
+
+}
+
+.logTable{
+    margin: 5%;
+    width: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+
+.mat-header-cell{
+    font-size: 7px;
+}
+
+.mat-cell{
+    font-size: 7px;
+}
+}
