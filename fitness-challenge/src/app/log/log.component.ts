@@ -59,7 +59,7 @@ export class LogComponent implements OnInit {
 
   displayedColumns: string[] = [
     'date', 
-    'brand', 
+    // 'brand', 
     'type', 
     'distance', 
     'time', 

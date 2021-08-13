@@ -9,8 +9,8 @@ export const environment = {
 
   client_id: 'asWj9Gh7mrXWZI0JjoyLHP2aP2ytQV4dYQrX4w0k',
   client_secret: '',
-  redirect_uri: 'http://localhost:4200/'
-
+  redirect_uri: 'http://localhost:4200'
+  
 
 
 };
