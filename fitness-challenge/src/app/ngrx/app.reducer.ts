@@ -1,12 +1,14 @@
 import { createSelector, createFeatureSelector, createReducer, on } from "@ngrx/store";
 import { Challenge } from "../models/challenge";
 import { Concept2 } from "../models/concept2";
-import { setAddress, setConcept2Name } from "./app.actions";
+import { TrainingData } from "../models/training.data";
+import { setAddress, setConcept2Data, setConcept2Name, setTrainingData } from "./app.actions";
 
 export interface AppState {
   challenges: Challenge[],
   address: string,
-  concept2: Concept2
+  concept2: Concept2,
+  trainingData: TrainingData[] // the commulated training data of all brands
 };
 
 export const initialState: AppState =
@@ -80,8 +82,10 @@ export const initialState: AppState =
   ],
   address: '',
   concept2: {
-    name: ''
-  }
+    name: '',
+    data: []
+  },
+  trainingData: []
 }
   ;
 
@@ -90,6 +94,8 @@ export const appReducer = createReducer(
   // on(setRestaurants, (state, { restaurants }) =>({ ...state, restaurants: [...restaurants], restaurantsLoading: false })) ,
   on(setAddress, (state, { address }) =>  ({ ...state, address: address })),
   on(setConcept2Name, (state, { name }) =>  ({ ...state, concept2: {...state.concept2, name: name,} })),
+  on(setConcept2Data, (state, { data }) =>  ({ ...state, concept2: {...state.concept2, data: data,} })),
+  on(setTrainingData, (state, { data }) =>  ({ ...state, trainingData: data})),
   
 );
 
@@ -113,4 +119,25 @@ export const selectAddress = createSelector<any, any, any>(
 export const selectConcept2Name = createSelector<any, any, any>(
   (reducer: any) => reducer.data,
   (state: AppState) => state.concept2.name
+);
+
+export const selectConcept2Data = createSelector<any, any, any>(
+  (reducer: any) => reducer.data,
+  (state: AppState) => state.concept2.data
+);
+
+export const selectTrainingData = createSelector<any, any, any>(
+  (reducer: any) => reducer.data,
+  (state: AppState) => state.concept2.data.map(result =>(
+            {
+              id: result.id,
+              date: result.date,
+              brand: 'concept2',
+              type: result.type,
+              distance: result.distance + 'm',
+              time: result.time_formatted,
+              pace: 0,
+              hearthRate: 0
+            }
+          ))
 );

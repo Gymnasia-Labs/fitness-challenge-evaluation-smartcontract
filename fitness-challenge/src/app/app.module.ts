@@ -24,6 +24,8 @@ import { LogComponent } from './log/log.component';
 import { TrainingComponent } from './training/training.component';
 import { SettingsComponent } from './settings/settings.component';
 import { MembershipsComponent } from './memberships/memberships.component';
+import { EffectsModule } from '@ngrx/effects';
+import { AppEffects } from './ngrx/app.effects';
 
 
 
@@ -42,6 +44,7 @@ import { MembershipsComponent } from './memberships/memberships.component';
   ],
   imports: [
     StoreModule.forRoot({ data: appReducer }),
+    EffectsModule.forRoot([AppEffects]),
     HttpClientModule,
     AppRoutingModule,
     BrowserModule,
