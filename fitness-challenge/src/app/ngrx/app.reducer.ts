@@ -1,10 +1,12 @@
 import { createSelector, createFeatureSelector, createReducer, on } from "@ngrx/store";
 import { Challenge } from "../models/challenge";
-import { setAddress } from "./app.actions";
+import { Concept2 } from "../models/concept2";
+import { setAddress, setConcept2Name } from "./app.actions";
 
 export interface AppState {
   challenges: Challenge[],
-  address: string
+  address: string,
+  concept2: Concept2
 };
 
 export const initialState: AppState =
@@ -76,7 +78,10 @@ export const initialState: AppState =
     //   participants: 5000
     // }
   ],
-  address: ''
+  address: '',
+  concept2: {
+    name: ''
+  }
 }
   ;
 
@@ -84,7 +89,8 @@ export const appReducer = createReducer(
   initialState,
   // on(setRestaurants, (state, { restaurants }) =>({ ...state, restaurants: [...restaurants], restaurantsLoading: false })) ,
   on(setAddress, (state, { address }) =>  ({ ...state, address: address })),
-
+  on(setConcept2Name, (state, { name }) =>  ({ ...state, concept2: {...state.concept2, name: name,} })),
+  
 );
 
 
@@ -102,4 +108,9 @@ export const selectChallengeById = (id:number) => createSelector<any, any, any>(
 export const selectAddress = createSelector<any, any, any>(
   (reducer: any) => reducer.data,
   (state: AppState) => state.address
+);
+
+export const selectConcept2Name = createSelector<any, any, any>(
+  (reducer: any) => reducer.data,
+  (state: AppState) => state.concept2.name
 );

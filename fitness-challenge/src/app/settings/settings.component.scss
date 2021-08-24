@@ -7,14 +7,22 @@
     margin-top: 2.5%;
 }
 
+ 
+ .mat-stroked-button.mat-green, .mat-stroked-button.mat-green{
+    // background-color: blue;
+    color: green;
+ }
+
 @media (min-width: 1000px) {
     .wrapper { grid-template-columns: repeat(2, 1fr); }
+    .brandwrapper {
+        width: 60%;
+    }
   }
 
 .brandwrapper{
     display: flex;
     flex-direction: column;
-    width: 60%;
 }
 
 .loginbutton{

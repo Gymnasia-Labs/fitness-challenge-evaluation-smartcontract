@@ -52,7 +52,7 @@ export class AuthService {
     this.tokenService.removeRefreshToken();
     const body = new HttpParams()
       .set('client_id', environment.client_id)
-      // .set('client_secret',       environment.client_secret)
+      .set('client_secret',       environment.client_secret)
       .set('grant_type', 'authorization_code')
       .set('redirect_uri',       'http://localhost:4200')
       .set('code',       code)

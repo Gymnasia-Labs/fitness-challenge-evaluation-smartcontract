@@ -10,3 +10,8 @@ export const setAddress = createAction(
     '[Address] set address',
     props<{ address: string }>()
 );
+
+export const setConcept2Name = createAction(
+    '[Concept2] set name',
+    props<{ name: string }>()
+);
