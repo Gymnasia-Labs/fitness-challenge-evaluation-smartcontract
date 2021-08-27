@@ -2,7 +2,10 @@ import { createSelector, createFeatureSelector, createReducer, on } from "@ngrx/
 import { Challenge } from "../models/challenge";
 import { Concept2 } from "../models/concept2";
 import { TrainingData } from "../models/training.data";
-import { setAddress, setConcept2Data, setConcept2Name, setTrainingData } from "./app.actions";
+import {
+  fetchConcept2Data,
+  setAddress, setConcept2Data, setConcept2DataLoading, setConcept2Name, setTrainingData
+} from "./app.actions";
 
 export interface AppState {
   challenges: Challenge[],
@@ -22,13 +25,13 @@ export const initialState: AppState =
       rules: [
         /* bitcoin-2136339_960_720 1 */
         'Must use a concept2 pm5 rower',
-        `All logs must be submitted by ${new Date( new Date().valueOf() + 100 * 60 * 60 * 24).getHours()}pm EST on (${new Date( new Date().valueOf() + 100 * 60 * 60 * 24).toDateString()})`,
+        `All logs must be submitted by ${new Date(new Date().valueOf() + 100 * 60 * 60 * 24).getHours()}pm EST on (${new Date(new Date().valueOf() + 100 * 60 * 60 * 24).toDateString()})`,
         '.0005btc is required to submit your results'
       ],
       creator: 'Account #135',
       creationTime: new Date(),
-      start: new Date(),
-      end: new Date( new Date().valueOf() + 100 * 60 * 60 * 24),
+      start: new Date(new Date().valueOf() - 1000 * 60 * 60 * 24 ),
+      end: new Date(new Date().valueOf() + 100 * 60 * 60 * 24),
       participants: 0
     },
     {
@@ -38,13 +41,13 @@ export const initialState: AppState =
       image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1024px-Bitcoin.svg.png',
       rules: [
         'Must use a concept2 pm5 rower',
-        `All logs must be submitted by ${new Date( new Date().valueOf() + 300 * 60 * 60 * 24).getHours()}pm EST on (${new Date( new Date().valueOf() + 300 * 60 * 60 * 24).toDateString()})`,
+        `All logs must be submitted by ${new Date(new Date().valueOf() + 300 * 60 * 60 * 24).getHours()}pm EST on (${new Date(new Date().valueOf() + 300 * 60 * 60 * 24).toDateString()})`,
         '.0005btc is required to submit your results'
       ],
       creator: 'Account #135',
       creationTime: new Date(),
       start: new Date(new Date().valueOf() + 100 * 60 * 60 * 24),
-      end: new Date( new Date().valueOf() + 300 * 60 * 60 * 24),
+      end: new Date(new Date().valueOf() + 300 * 60 * 60 * 24),
       participants: 10
     },
     // {
@@ -83,20 +86,21 @@ export const initialState: AppState =
   address: '',
   concept2: {
     name: '',
-    data: []
+    data: [],
+    loading: false
   },
-  trainingData: []
+  trainingData: [],
 }
   ;
 
 export const appReducer = createReducer(
   initialState,
   // on(setRestaurants, (state, { restaurants }) =>({ ...state, restaurants: [...restaurants], restaurantsLoading: false })) ,
-  on(setAddress, (state, { address }) =>  ({ ...state, address: address })),
-  on(setConcept2Name, (state, { name }) =>  ({ ...state, concept2: {...state.concept2, name: name,} })),
-  on(setConcept2Data, (state, { data }) =>  ({ ...state, concept2: {...state.concept2, data: data,} })),
-  on(setTrainingData, (state, { data }) =>  ({ ...state, trainingData: data})),
-  
+  on(setAddress, (state, { address }) => ({ ...state, address: address })),
+  on(setConcept2Name, (state, { name }) => ({ ...state, concept2: { ...state.concept2, name: name, } })),
+  on(setConcept2Data, (state, { data }) => ({ ...state, concept2: { ...state.concept2, data: data, loading: false } })),
+  on(setTrainingData, (state, { data }) => ({ ...state, trainingData: data })),
+  on(setConcept2DataLoading, (state, { isLoading }) => ({ ...state, concept2: { ...state.concept2, loading: isLoading, } })),
 );
 
 
@@ -106,7 +110,7 @@ export const selectChallenges = createSelector<any, any, any>(
   (state: AppState) => state.challenges
 );
 
-export const selectChallengeById = (id:number) => createSelector<any, any, any>(
+export const selectChallengeById = (id: number) => createSelector<any, any, any>(
   (reducer: any) => reducer.data,
   (state: AppState) => state.challenges.find(challenge => challenge.id === id)
 );
@@ -126,18 +130,50 @@ export const selectConcept2Data = createSelector<any, any, any>(
   (state: AppState) => state.concept2.data
 );
 
+export const selectConcept2DataLoading = createSelector<any, any, any>(
+  (reducer: any) => reducer.data,
+  (state: AppState) => state.concept2.loading
+);
+
 export const selectTrainingData = createSelector<any, any, any>(
   (reducer: any) => reducer.data,
-  (state: AppState) => state.concept2.data.map(result =>(
-            {
-              id: result.id,
-              date: result.date,
-              brand: 'concept2',
-              type: result.type,
-              distance: result.distance + 'm',
-              time: result.time_formatted,
-              pace: 0,
-              hearthRate: 0
-            }
-          ))
+  (state: AppState) => state.concept2.data.map(result => (
+    {
+      id: result.id,
+      date: result.date,
+      brand: 'concept2',
+      type: result.type,
+      distance: result.distance + 'm',
+      time: result.time_formatted,
+      pace: 0,
+      hearthRate: 0
+    }
+  ))
 );
+
+export const selectTrainingsForChallenge = (challengeId: number) => createSelector<any, any, any>(
+  (reducer: any) => reducer.data,
+  (state: AppState,) => {
+    let challenge = state.challenges.find(challenge => challenge.id === challengeId);
+    console.log(challenge);
+    
+    return state.concept2.data.
+      filter(data => {
+        console.log(challenge,data, new Date(data.date), (challenge as Challenge).start);
+        
+        return new Date(data.date) >= (challenge as Challenge).start
+          && new Date(data.date) <= (challenge as Challenge).end
+      })
+      .map(result => (
+        {
+          id: result.id,
+          date: result.date,
+          brand: 'concept2',
+          type: result.type,
+          distance: result.distance + 'm',
+          time: result.time_formatted,
+          pace: 0,
+          hearthRate: 0
+        }
+      ))
+  });

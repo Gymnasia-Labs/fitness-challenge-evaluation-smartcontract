@@ -1,9 +1,17 @@
 <h1 style="text-align: center;font-size: xx-large;">Exercise Log</h1>
+<div class="icon">
+    <mat-icon (click)="refresh()" aria-hidden="false" style="cursor: pointer;" [inline]="true"
+        aria-label="load new data">sync</mat-icon>
+</div>
+<div *ngIf="concept2Loading$ | async" class="spinner">
+    <mat-spinner></mat-spinner>
+</div>
 <div class="logWrapper">
     <table mat-table [dataSource]="logData$" class="mat-elevation-z8 logTable">
 
         <!--- Note that these columns can be defined in any order.
               The actual rendered columns are set as a property on the row definition" -->
+
 
         <!-- date Column -->
         <ng-container matColumnDef="date">
@@ -48,6 +56,7 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-row (click)="clickedRow = row"
+        [class.demo-row-is-clicked]="clickedRow == row" *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 </div>

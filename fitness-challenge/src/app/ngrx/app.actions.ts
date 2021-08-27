@@ -30,6 +30,11 @@ export const setTrainingData = createAction(
     props<{ data: TrainingData[] }>()
 );
 
+export const setConcept2DataLoading = createAction(
+    '[Concept2] set Data loading',
+    props<{ isLoading: boolean }>()
+);
+
 //fetchActions that trigger effects
 
 export const fetchConcept2Data = '[Concept2] fetch data';

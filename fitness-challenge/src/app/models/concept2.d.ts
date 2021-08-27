@@ -1,6 +1,7 @@
 export interface Concept2 {
     name: string,
-    data: Concept2Data[]
+    data: Concept2Data[],
+    loading: boolean
 }
 
 export interface Concept2Data {

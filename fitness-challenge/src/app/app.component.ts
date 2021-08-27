@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { switchMap, tap } from 'rxjs/operators';
-import { fetchConcept2Data, fetchConcept2User, setConcept2Name } from './ngrx/app.actions';
+import { fetchConcept2Data, fetchConcept2User, setConcept2DataLoading, setConcept2Name } from './ngrx/app.actions';
 import { selectAddress } from './ngrx/app.reducer';
 import { AuthService } from './services/auth.service';
 import { Concept2Service } from './services/concept2.service';
@@ -34,6 +34,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     if (this.tokenService.getToken()) {
+      this.store.dispatch(setConcept2DataLoading({isLoading:true}))
       this.store.dispatch({ type: fetchConcept2Data });
       this.store.dispatch({ type: fetchConcept2User });
 

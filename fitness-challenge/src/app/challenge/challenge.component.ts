@@ -3,7 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { AuthService } from '../services/auth.service';
 import { Concept2Service } from '../services/concept2.service';
-import { selectChallengeById } from '../ngrx/app.reducer';
+import { selectChallengeById, selectConcept2DataLoading, selectTrainingData, selectTrainingsForChallenge } from '../ngrx/app.reducer';
+import { TrainingData } from '../models/training.data';
+import { merge } from 'rxjs';
+import { fetchConcept2Data, setConcept2DataLoading } from '../ngrx/app.actions';
 
 export interface PeriodicElement {
   distance: string,
@@ -28,6 +31,26 @@ export class ChallengeComponent implements OnInit {
   displayedColumns: string[] = ['distance', 'time', 'account'];
   dataSource = ELEMENT_DATA;
 
+  logData$ = this.store.pipe(
+    select(selectTrainingsForChallenge(-1))
+  );
+
+  concept2Loading$ = this.store.pipe(
+    select(selectConcept2DataLoading)
+  );
+
+  clickedRow: TrainingData | undefined;
+
+  displayedColumnsLog: string[] = [
+    'date',
+    // 'brand', 
+    'type',
+    'distance',
+    'time',
+    // 'pace', 
+    // 'hearthRate'
+  ];
+
   challenge$ = this.store.pipe(
     select(selectChallengeById(-1))
   );
@@ -42,6 +65,9 @@ export class ChallengeComponent implements OnInit {
     this.challenge$ = this.store.pipe(
       select(selectChallengeById(id))
       );
+   this.logData$ = this.store.pipe(
+    select(selectTrainingsForChallenge(id))
+  );
    }
 
   ngOnInit(): void {
@@ -75,5 +101,11 @@ export class ChallengeComponent implements OnInit {
   getLoginLink(brand: string){
     return this.authService.getLoginLink(brand);
   }
+
+  refresh() {
+    this.store.dispatch(setConcept2DataLoading({isLoading:true}));
+    this.store.dispatch({ type: fetchConcept2Data });
+
+}
 
 }

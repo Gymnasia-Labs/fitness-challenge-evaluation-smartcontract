@@ -26,8 +26,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { MembershipsComponent } from './memberships/memberships.component';
 import { EffectsModule } from '@ngrx/effects';
 import { AppEffects } from './ngrx/app.effects';
-
-
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 
 @NgModule({
@@ -56,7 +55,8 @@ import { AppEffects } from './ngrx/app.effects';
     MatTableModule,
     MatChipsModule,
     MatIconModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatProgressSpinnerModule
   ],
   providers: [
     // {provide: LocationStrategy, useClass: HashLocationStrategy},

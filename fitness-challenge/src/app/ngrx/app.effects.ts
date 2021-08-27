@@ -5,7 +5,7 @@ import { EMPTY } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { Concept2Service } from '../services/concept2.service';
 
-import { fetchConcept2Data, fetchConcept2User, setConcept2Data, setConcept2Name } from './app.actions';
+import { fetchConcept2Data, fetchConcept2User, setConcept2Data, setConcept2DataLoading, setConcept2Name } from './app.actions';
 
 @Injectable()
 export class AppEffects {

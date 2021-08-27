@@ -22,3 +22,30 @@ table {
       border: solid;
       width: 100%;
   }
+
+  .log.mat-row:hover .log.mat-cell {
+    border-color: currentColor;
+  }
+  
+  .log.demo-row-is-clicked {
+    font-weight: bold;
+  }
+
+  .log.mat-row .log.mat-cell {
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid transparent;
+    cursor: pointer;
+  }
+
+  .icon{
+    font-size: 40px;
+
+    text-align: center;
+    margin-top: 2%;
+    margin-bottom: 1%;
+}
+
+.spinner{
+  display: flex;
+  justify-content: center;
+}
