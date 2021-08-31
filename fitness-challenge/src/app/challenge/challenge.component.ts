@@ -42,6 +42,7 @@ export class ChallengeComponent implements OnInit {
   clickedRow: TrainingData | undefined;
 
   displayedColumnsLog: string[] = [
+    // 'submit',
     'date',
     // 'brand', 
     'type',
