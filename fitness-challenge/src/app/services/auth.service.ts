@@ -54,7 +54,7 @@ export class AuthService {
       .set('client_id', environment.client_id)
       // .set('client_secret',       environment.client_secret)
       .set('grant_type', 'authorization_code')
-      .set('redirect_uri',       'http://localhost:4200')
+      .set('redirect_uri',       environment.redirect_uri)
       .set('code',       code)
       .set('scope', scope);
 
@@ -83,7 +83,7 @@ export class AuthService {
       .set('client_id', environment.client_id)
       .set('client_secret',       environment.client_secret)
       .set('grant_type', 'refresh_token')
-      .set('redirect_uri',       'http://localhost:4200')
+      .set('redirect_uri',       environment.redirect_uri)
       .set('refresh_token', refreshData.refresh_token)
       .set('scope', scope);
 
