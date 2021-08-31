@@ -6,8 +6,6 @@ export const environment = {
   production: false,
   CONCEPT2_API : 'https://log-dev.concept2.com',
   GYMNASIA_API: 'https://api.gymnasia.app:3000',
-  // CONCEPT2_API : 'https://log.concept2.com',
-
   client_id: 'asWj9Gh7mrXWZI0JjoyLHP2aP2ytQV4dYQrX4w0k',
   client_secret: '',
   redirect_uri: 'http://localhost:4200'

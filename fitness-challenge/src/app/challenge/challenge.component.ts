@@ -14,6 +14,8 @@ export interface PeriodicElement {
   account: string
 }
 
+export const CHALLENGE_ID: string = 'challenge_id';
+
 const ELEMENT_DATA: PeriodicElement[] = [
   {distance: '1500m', time: '3:21 secs', account: 'Account #0001', },
   {distance: '1500m', time: '3:34 secs', account: 'Account #0002', },
@@ -30,6 +32,7 @@ export class ChallengeComponent implements OnInit {
 
   displayedColumns: string[] = ['distance', 'time', 'account'];
   dataSource = ELEMENT_DATA;
+  id:number =-1;
 
   logData$ = this.store.pipe(
     select(selectTrainingsForChallenge(-1))
@@ -62,12 +65,12 @@ export class ChallengeComponent implements OnInit {
     private authService: AuthService,
     private concept2: Concept2Service
     ) {
-    let id = +this.actRoute.snapshot.params.id;
+    this.id = +this.actRoute.snapshot.params.id;
     this.challenge$ = this.store.pipe(
-      select(selectChallengeById(id))
+      select(selectChallengeById(this.id))
       );
    this.logData$ = this.store.pipe(
-    select(selectTrainingsForChallenge(id))
+    select(selectTrainingsForChallenge(this.id))
   );
    }
 
@@ -106,7 +109,10 @@ export class ChallengeComponent implements OnInit {
   refresh() {
     this.store.dispatch(setConcept2DataLoading({isLoading:true}));
     this.store.dispatch({ type: fetchConcept2Data });
+}
 
+saveChallengeId(){
+  localStorage.setItem(CHALLENGE_ID, ''+this.id);
 }
 
 }
