@@ -23,4 +23,4 @@ bin-release/
 .etherscan
 
 /node_modules
-/vscode
+/.vscode
