@@ -60,7 +60,14 @@ contract ChallengeManager is LockFactory {
         // return challenge;
     }
 
-    function addLeaderboardEntry
+    function addLeaderboardEntry(
+        bytes32 key,
+        address sender,
+        uint256 data,
+        uint256 time
+    ) public {
+        challenges[key].leaderBoard.push(LeaderboardEntry(sender, data, time));
+    }
 
     function getWinner(bytes32 challengeKey) public view returns (address) {
         return challenges[challengeKey].winner;

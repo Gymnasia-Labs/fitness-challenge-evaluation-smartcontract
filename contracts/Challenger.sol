@@ -10,7 +10,7 @@ contract Challenger {
         manager = ChallengeManager(adrManager);
     }
 
-    function unlockChallenge(bytes32 key) external {
+    function unlockChallenge(bytes32 key) external payable {
         IPublicLock lock = manager.getLock(key);
         require(address(lock) != address(0), "NO_LOCK_WITH_THIS_KEY");
 
@@ -27,9 +27,7 @@ contract Challenger {
         uint32 data,
         uint256 time
     ) external returns (bool) {
-        manager.challenges[key].leaderBoard.push(
-            ChallengeManager.LeaderboardEntry(msg.sender, data, time)
-        );
+        manager.addLeaderboardEntry(key, msg.sender, data, time);
     }
 
     function receivePrice(uint256 challengeId) external {}
