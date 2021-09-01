@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { EMPTY } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { Concept2Service } from '../services/concept2.service';
 
@@ -28,7 +28,9 @@ export class AppEffects {
                 .pipe(
                     tap(console.log),
                     map((data) => setConcept2Data({ data: data.data })),
-                    catchError(() => EMPTY)
+                    catchError(() => 
+                         of(setConcept2DataLoading({isLoading: false}))
+                    )
                 ))
     )
     );
