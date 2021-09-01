@@ -21,3 +21,5 @@ bin-release/
 .infura
 .secret
 .etherscan
+
+/node_modules

@@ -38,7 +38,12 @@ contract ChallengeManager is LockFactory {
         uint256 price,
         Evaluation evaluation
     ) external {
-        createNewLock(bytes32(counter++));
+        createNewLock(
+            bytes32(counter++),
+            end - start,
+            price,
+            participantsCount
+        );
         // Challenge memory challenge = Challenge(
         //     msg.sender,
         //     title,
@@ -54,6 +59,8 @@ contract ChallengeManager is LockFactory {
         // challenges[bytes32(counter++)] = challenge;
         // return challenge;
     }
+
+    function addLeaderboardEntry
 
     function getWinner(bytes32 challengeKey) public view returns (address) {
         return challenges[challengeKey].winner;

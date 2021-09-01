@@ -6,13 +6,13 @@ import "./ChallengeManager.sol";
 contract Challenger {
     ChallengeManager manager;
 
-    constructor(address adrManager) {
+    constructor(address adrManager) public {
         manager = ChallengeManager(adrManager);
     }
 
     function unlockChallenge(bytes32 key) external {
-        IPublicLock lock = ChallengeManager.getLock(key);
-        require(address(locks) != address(0), "NO_LOCK_WITH_THIS_KEY");
+        IPublicLock lock = manager.getLock(key);
+        require(address(lock) != address(0), "NO_LOCK_WITH_THIS_KEY");
 
         lock.purchase.value(msg.value)(
             lock.keyPrice(),
@@ -28,7 +28,7 @@ contract Challenger {
         uint256 time
     ) external returns (bool) {
         manager.challenges[key].leaderBoard.push(
-            new LeaderboardEntry(data, time)
+            ChallengeManager.LeaderboardEntry(msg.sender, data, time)
         );
     }
 
