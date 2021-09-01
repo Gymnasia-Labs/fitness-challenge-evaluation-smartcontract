@@ -40,11 +40,15 @@ module.exports = {
     development: {
       host: "localhost",
       port: 8545,
-      network_id: "*"
+      network_id: "*",
     },
     rinkeby: {
       // provider: () => new HDWalletProvider( mnemonic, `wss://rinkeby.infura.io/ws/v3/${infuraKey}`),
-      provider: () => new HDWalletProvider( mnemonic, `wss://rinkeby.infura.io/ws/v3/${infuraKey}`),
+      provider: () =>
+        new HDWalletProvider(
+          mnemonic,
+          `wss://rinkeby.infura.io/ws/v3/${infuraKey}`
+        ),
 
       // provider: () => new HDWalletProvider(mnemonic, `https://rinkeby.infura.io/v3/${infuraKey}`),
       gas: 5000000,
@@ -53,15 +57,17 @@ module.exports = {
       skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
     },
     xDai: {
-      provider: () => new HDWalletProvider(mnemonic, 'wss://rpc.xdaichain.com/wss'),
+      provider: () =>
+        new HDWalletProvider(mnemonic, "wss://rpc.xdaichain.com/wss"),
       network_id: 100,
       confirmations: 2,
       gas: 50000000,
       gasPrice: 10000000000,
-      skipDryRun: true
+      skipDryRun: true,
     },
     matic: {
-      provider: () => new HDWalletProvider(mnemonic, `wss://rpc-mumbai.maticvigil.com/ws`),
+      provider: () =>
+        new HDWalletProvider(mnemonic, `wss://rpc-mumbai.maticvigil.com/ws`),
       network_id: 80001,
       // confirmations: 2,
       // timeoutBlocks: 200,
@@ -76,10 +82,6 @@ module.exports = {
     // network_id: 2111,   // This network is yours, in the cloud.
     // production: true    // Treats this network as if it was a public net. (default: false)
     // }
-
-
-
-
   },
   plugins: ["truffle-plugin-verify"],
   api_keys: {
@@ -95,7 +97,7 @@ module.exports = {
   compilers: {
     solc: {
       //version: "0.5.17"
-      version: "^0.8.0", // Fetch exact version from solc-bin (default: truffle's version)
+      version: "^0.5.17", // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       // settings: {          // See the solidity docs for advice about optimization and evmVersion
       //  optimizer: {
