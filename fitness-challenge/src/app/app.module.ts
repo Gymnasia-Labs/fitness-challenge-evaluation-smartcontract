@@ -27,6 +27,8 @@ import { MembershipsComponent } from './memberships/memberships.component';
 import { EffectsModule } from '@ngrx/effects';
 import { AppEffects } from './ngrx/app.effects';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { AdminComponent } from './admin/admin.component';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -39,11 +41,13 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     LogComponent,
     TrainingComponent,
     SettingsComponent,
-    MembershipsComponent
+    MembershipsComponent,
+    AdminComponent
   ],
   imports: [
     StoreModule.forRoot({ data: appReducer }),
     EffectsModule.forRoot([AppEffects]),
+    FormsModule,
     HttpClientModule,
     AppRoutingModule,
     BrowserModule,
