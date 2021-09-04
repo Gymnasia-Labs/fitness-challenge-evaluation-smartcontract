@@ -4,7 +4,7 @@ import { Concept2 } from "../models/concept2";
 import { TrainingData } from "../models/training.data";
 import {
   fetchConcept2Data,
-  setAddress, setConcept2Data, setConcept2DataLoading, setConcept2Name, setTrainingData
+  setAddress, setChallenges, setConcept2Data, setConcept2DataLoading, setConcept2Name, setTrainingData
 } from "./app.actions";
 
 export interface AppState {
@@ -96,6 +96,7 @@ export const initialState: AppState =
 export const appReducer = createReducer(
   initialState,
   // on(setRestaurants, (state, { restaurants }) =>({ ...state, restaurants: [...restaurants], restaurantsLoading: false })) ,
+  on(setChallenges, (state, { challenges }) => {console.log('setting challenges...'); return  ({ ...state, challenges: challenges })}),
   on(setAddress, (state, { address }) => ({ ...state, address: address })),
   on(setConcept2Name, (state, { name }) => ({ ...state, concept2: { ...state.concept2, name: name, } })),
   on(setConcept2Data, (state, { data }) => ({ ...state, concept2: { ...state.concept2, data: data, loading: false } })),

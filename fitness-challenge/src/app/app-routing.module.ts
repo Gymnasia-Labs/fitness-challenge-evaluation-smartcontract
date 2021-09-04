@@ -4,12 +4,14 @@ import { AboutComponent } from './about/about.component';
 import { AdminComponent } from './admin/admin.component';
 import { ChallengeComponent } from './challenge/challenge.component';
 import { ChallengesComponent } from './challenges/challenges.component';
+import { HomeComponent } from './home/home.component';
 import { LogComponent } from './log/log.component';
 import { MembershipsComponent } from './memberships/memberships.component';
 import { SettingsComponent } from './settings/settings.component';
 import { TrainingComponent } from './training/training.component';
 
 const routes: Routes = [
+  { path: '', component: HomeComponent },
   { path: 'challenges', component: ChallengesComponent },
   { path: 'challenge/:id', component: ChallengeComponent },
   { path: 'about', component: AboutComponent },

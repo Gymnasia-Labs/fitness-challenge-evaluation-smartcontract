@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { fetchChallenges } from '../ngrx/app.actions';
 import { ContractService } from '../services/contract.service';
 
 @Component({
@@ -16,7 +18,8 @@ export class AdminComponent implements OnInit {
   price: number = 0;
 
   constructor(
-    private contractService: ContractService
+    private contractService: ContractService,
+    private store: Store
   ) { }
 
   ngOnInit(): void {
@@ -27,6 +30,10 @@ export class AdminComponent implements OnInit {
     let unixStart = Math.floor(new Date(this.start).valueOf() / 1000 );
     let unixEnd = Math.floor(new Date(this.end).valueOf() / 1000 );
     this.contractService.createChallenge(this.title, this.desc, unixStart, unixEnd, this.count, this.price);
+  }
+
+  fetchChallenges(){
+    this.store.dispatch({ type: fetchChallenges });
   }
 
 }

@@ -1,10 +1,11 @@
 import { Inject, Injectable, InjectionToken } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ethers, utils } from 'ethers';
-import { setAddress } from '../ngrx/app.actions';
+import { fetchChallenges, setAddress } from '../ngrx/app.actions';
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
+import { Challenge } from '../models/challenge';
 
 declare const window: any;
 
@@ -58,6 +59,8 @@ export class ContractService {
 
     this.contract = new ethers.Contract(environment.contractAdress, environment.contractAbi, provider);
     this.contract = this.contract.connect(provider.getSigner());
+    console.log('fetching challenges...');
+    this.store.dispatch({ type: fetchChallenges });
   }
 
   public createChallenge(
@@ -69,6 +72,10 @@ export class ContractService {
     price: number
   ): Observable<boolean> {
     return this.contract.createChallenge(title, description, start, end, participantsCount, price);
+  }
+
+  public getChallenges(): Promise<Challenge[]> {
+    return this.contract.getChallenges();
   }
 
 }

@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { EMPTY, of } from 'rxjs';
+import { EMPTY, from, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { Concept2Service } from '../services/concept2.service';
+import { ContractService } from '../services/contract.service';
 
-import { fetchConcept2Data, fetchConcept2User, setConcept2Data, setConcept2DataLoading, setConcept2Name } from './app.actions';
+import { fetchChallenges, fetchConcept2Data, fetchConcept2User, setChallenges, setConcept2Data, setConcept2DataLoading, setConcept2Name } from './app.actions';
 
 @Injectable()
 export class AppEffects {
@@ -47,6 +48,18 @@ export class AppEffects {
     )
     );
 
+    fetchChallenges$ = createEffect(() => this.actions$.pipe(
+        ofType(fetchChallenges),
+        switchMap((action: any) =>
+        from(this.contractService.getChallenges())
+                .pipe(
+                    tap(v => console.log('challenges: ', v)),
+                    map((data) => setChallenges({ challenges: data })),
+                    catchError(() => EMPTY)
+                ))
+    )
+    );
+
 
     // createRestaurant$ = createEffect(() => this.actions$.pipe(
     //     ofType(createRestaurantType),
@@ -63,7 +76,7 @@ export class AppEffects {
     
     constructor(
         private actions$: Actions,
-        // private contractService: ContractService,
+        private contractService: ContractService,
         private concept2Service: Concept2Service,
         private store$: Store<any>
     ) { }

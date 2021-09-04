@@ -29,6 +29,7 @@ import { AppEffects } from './ngrx/app.effects';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { AdminComponent } from './admin/admin.component';
 import { FormsModule } from '@angular/forms';
+import { HomeComponent } from './home/home.component';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { FormsModule } from '@angular/forms';
     TrainingComponent,
     SettingsComponent,
     MembershipsComponent,
-    AdminComponent
+    AdminComponent,
+    HomeComponent
   ],
   imports: [
     StoreModule.forRoot({ data: appReducer }),
