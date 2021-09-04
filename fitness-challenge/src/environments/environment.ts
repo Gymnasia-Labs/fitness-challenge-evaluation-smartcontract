@@ -11,7 +11,7 @@ export const environment = {
   client_id: 'asWj9Gh7mrXWZI0JjoyLHP2aP2ytQV4dYQrX4w0k',
   client_secret: '',
   redirect_uri: 'http://localhost:4200/#/',
-  contractAdress: '0xE1144F7793801acC3EfB5593df4a5d85fFB57eD1',
+  contractAdress: '0x788483DbD99Be7B7bc8e7e34265731a2ad8461e9',
   contractAbi: [
     {
       "anonymous": false,
