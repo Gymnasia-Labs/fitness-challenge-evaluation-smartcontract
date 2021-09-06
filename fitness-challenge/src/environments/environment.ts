@@ -10,7 +10,7 @@ export const environment = {
   GYMNASIA_API: 'https://api.gymnasia.app:3000',
   client_id: 'asWj9Gh7mrXWZI0JjoyLHP2aP2ytQV4dYQrX4w0k',
   client_secret: '',
-  redirect_uri: 'http://localhost:4200/#/',
+  redirect_uri: 'http://localhost:4200/%23/',
   contractAdress: '0x9B2409115Bb15a46ebD0aefF3e62febf8f320312',
   contractAbi: [
     {
