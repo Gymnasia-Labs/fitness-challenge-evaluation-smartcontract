@@ -25,6 +25,20 @@ contract ChallengeManager is LockFactory, ERC721, Ownable {
         // LeaderboardEntry[] leaderBoard;
     }
 
+        struct ChallengeExternal {
+        uint256 id;
+        address creator;
+        string title;
+        string description;
+        uint256 start;
+        uint256 end;
+        uint256 participantsCount;
+        uint256 price;
+        address winner;
+        // Evaluation evaluation;
+        // LeaderboardEntry[] leaderBoard;
+    }
+
     struct LeaderboardEntry {
         address challenger;
         uint256 data;
@@ -51,7 +65,7 @@ contract ChallengeManager is LockFactory, ERC721, Ownable {
     ) external // Evaluation evaluation
     {
         createNewLock(
-            bytes32(counter++),
+            bytes32(counter),
             end - start,
             price,
             participantsCount
@@ -70,6 +84,7 @@ contract ChallengeManager is LockFactory, ERC721, Ownable {
         uint256 tokenId = counter;
         challenges[counter] = challenge;
         _safeMint(msg.sender, tokenId);
+        counter++;
         // return challenge;
     }
 
@@ -90,10 +105,18 @@ contract ChallengeManager is LockFactory, ERC721, Ownable {
         return challenges[challengeKey].winner;
     }
 
-    function getChallenges() public view returns (Challenge[] memory) {
-        Challenge[] memory ret = new Challenge[](counter);
+    function getChallenges() public view returns (ChallengeExternal[] memory) {
+        ChallengeExternal[] memory ret = new ChallengeExternal[](counter);
         for (uint256 i = 0; i < counter; i++) {
-            ret[i] = challenges[i];
+            ret[i].id = i;
+            ret[i].creator = challenges[i].creator;
+            ret[i].title = challenges[i].title;
+            ret[i].description = challenges[i].description;
+            ret[i].start = challenges[i].start;
+            ret[i].end = challenges[i].end;
+            ret[i].participantsCount = challenges[i].participantsCount;
+            ret[i].price = challenges[i].price;
+            ret[i].winner = challenges[i].winner;
         }
         return ret;
     }

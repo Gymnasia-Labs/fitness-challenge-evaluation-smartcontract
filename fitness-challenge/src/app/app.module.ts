@@ -65,7 +65,7 @@ import { HomeComponent } from './home/home.component';
     MatProgressSpinnerModule
   ],
   providers: [
-    // {provide: LocationStrategy, useClass: HashLocationStrategy},
+    {provide: LocationStrategy, useClass: HashLocationStrategy},
       {
         provide: HTTP_INTERCEPTORS,
         useClass: AuthInterceptor,

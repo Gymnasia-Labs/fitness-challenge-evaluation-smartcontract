@@ -1,9 +1,12 @@
 <mat-card style="cursor: pointer;">
     <!-- <mat-card-title>{{challenge.title}}</mat-card-title> -->
-    <mat-card-title class="centerTxt">{{challenge?.title}}</mat-card-title>
-    <mat-card-subtitle class="centerTxt">{{challenge?.description}}</mat-card-subtitle>
+    <mat-card-title class="">{{challenge?.title}}</mat-card-title>
+    <mat-card-subtitle >
+        <h3>Description</h3>
+        <div class="">{{challenge?.description}}</div>
+    </mat-card-subtitle>
     <mat-card-content>
-        <img class="cryptopunk" src="{{challenge?.image}}">
+        <!-- <img class="cryptopunk" src="{{challenge?.image}}"> -->
         <div class="rulesWrapper">
             Rules:
             <div class="rules">

@@ -1,7 +1,7 @@
 import { Inject, Injectable, InjectionToken } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ethers, utils } from 'ethers';
-import { fetchChallenges, setAddress } from '../ngrx/app.actions';
+import { fetchChallenges, setAddress, setChallenges } from '../ngrx/app.actions';
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
@@ -59,8 +59,8 @@ export class ContractService {
 
     this.contract = new ethers.Contract(environment.contractAdress, environment.contractAbi, provider);
     this.contract = this.contract.connect(provider.getSigner());
-    console.log('fetching challenges...');
-    this.store.dispatch({ type: fetchChallenges });
+    this.getChallenges().then(challenges => this.store.dispatch(setChallenges({ challenges : challenges })));
+    // this.store.dispatch({ type: fetchChallenges });
   }
 
   public createChallenge(
