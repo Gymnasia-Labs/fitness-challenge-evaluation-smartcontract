@@ -4,7 +4,7 @@ export const environment = {
   GYMNASIA_API: 'https://api.gymnasia.app:3000',
   client_id: 'asWj9Gh7mrXWZI0JjoyLHP2aP2ytQV4dYQrX4w0k',
   client_secret: '',
-  redirect_uri: 'https://www.gymnasia.app/%23/',
+  redirect_uri: 'https://www.gymnasia.app/#/',
   contractAdress: '0x35Eb63224b6e92325c802f19bfe37C4bd3832B75',
   contractAbi: [
     {

@@ -59,7 +59,7 @@ export class AuthService {
       .set('redirect_uri', environment.redirect_uri)
       .set('code', code)
       .set('scope', scope)
-      .set('url', environment.CONCEPT2_API);
+      // .set('url', environment.CONCEPT2_API);
 
     return this.http
       .post<any>(
@@ -127,7 +127,7 @@ export class AuthService {
 
   getLoginLink(brand: string) {
     if (brand === 'concept2') {
-      return `${environment.CONCEPT2_API}/oauth/authorize?client_id=${environment.client_id}&scope=${scope}&response_type=code&redirect_uri=${environment.redirect_uri}`;
+      return `${environment.CONCEPT2_API}/oauth/authorize?client_id=${environment.client_id}&scope=${scope}&response_type=code&redirect_uri=${environment.redirect_uri.replace('#', '%23')}`;
     }
     return '';
   }
