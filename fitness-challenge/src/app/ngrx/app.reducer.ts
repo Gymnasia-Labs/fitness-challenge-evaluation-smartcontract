@@ -32,7 +32,8 @@ export const initialState: AppState =
       creationTime: new Date(),
       start: new Date(new Date().valueOf() - 1000 * 60 * 60 * 24 ),
       end: new Date(new Date().valueOf() + 100 * 60 * 60 * 24),
-      participants: 0
+      participants: 0,
+      price: 1
     },
     {
       id: 1,
@@ -48,7 +49,8 @@ export const initialState: AppState =
       creationTime: new Date(),
       start: new Date(new Date().valueOf() + 100 * 60 * 60 * 24),
       end: new Date(new Date().valueOf() + 300 * 60 * 60 * 24),
-      participants: 10
+      participants: 10,
+      price: 2
     },
     // {
     //   id: 2,
@@ -155,7 +157,7 @@ export const selectTrainingData = createSelector<any, any, any>(
       distance: result.distance + 'm',
       time: result.time_formatted,
       pace: 0,
-      hearthRate: 0
+      hearthRate: 0,
     }
   ))
 );

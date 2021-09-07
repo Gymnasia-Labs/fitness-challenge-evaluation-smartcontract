@@ -59,7 +59,7 @@ export class ContractService {
 
     this.contract = new ethers.Contract(environment.contractAdress, environment.contractAbi, provider);
     this.contract = this.contract.connect(provider.getSigner());
-    this.getChallenges().then(challenges => this.store.dispatch(setChallenges({ challenges : challenges })));
+    // this.getChallenges().then(challenges => this.store.dispatch(setChallenges({ challenges : challenges })));
     // this.store.dispatch({ type: fetchChallenges });
   }
 

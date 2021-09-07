@@ -11,15 +11,22 @@
     </div>
     <app-challenge-detail [challenge]="challenge$|async" [joinActive]="false"></app-challenge-detail>
    
-    <a [href]="getLoginLink('concept2')" (click)="saveChallengeId()" class="sumbitButton" mat-flat-button>Connect your Concept2</a>
-
+    <!-- <a [href]="getLoginLink('concept2')" (click)="saveChallengeId()" class="sumbitButton" mat-flat-button>Connect your Concept2</a> -->
+   <h1 class="tutorial">Video Tutorial</h1> 
+   <mat-card>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <!-- <iframe [src]='safeURL' frameborder="0" allowfullscreen></iframe> -->
+   </mat-card>
   </div>
   <div>
-    <h1>Submissions</h1>
-    <div class="icon">
-      <mat-icon (click)="refresh()" aria-hidden="false" style="cursor: pointer;" [inline]="true"
-        aria-label="load new data">sync</mat-icon>
+    <div class="attempts">
+      <div><h1>Attempts</h1></div>
+      <div class="icon">
+        <mat-icon (click)="refresh()" aria-hidden="false" style="cursor: pointer;" [inline]="true"
+          aria-label="load new data">sync</mat-icon>
+      </div>
     </div>
+
     <div *ngIf="concept2Loading$ | async" class="spinner">
       <mat-spinner></mat-spinner>
     </div>

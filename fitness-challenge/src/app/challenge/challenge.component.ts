@@ -7,6 +7,8 @@ import { selectChallengeById, selectConcept2DataLoading, selectTrainingData, sel
 import { TrainingData } from '../models/training.data';
 import { merge } from 'rxjs';
 import { fetchConcept2Data, setConcept2DataLoading } from '../ngrx/app.actions';
+import { DomSanitizer } from '@angular/platform-browser';
+
 
 export interface PeriodicElement {
   distance: string,
@@ -29,7 +31,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 
 export class ChallengeComponent implements OnInit {
-
+  safeURL: any;
   displayedColumns: string[] = ['distance', 'time', 'account'];
   dataSource = ELEMENT_DATA;
   id:number =-1;
@@ -63,7 +65,8 @@ export class ChallengeComponent implements OnInit {
     private actRoute: ActivatedRoute, 
     private store: Store,
     private authService: AuthService,
-    private concept2: Concept2Service
+    private concept2: Concept2Service,
+    private _sanitizer: DomSanitizer
     ) {
     this.id = +this.actRoute.snapshot.params.id;
     this.challenge$ = this.store.pipe(
@@ -72,6 +75,7 @@ export class ChallengeComponent implements OnInit {
    this.logData$ = this.store.pipe(
     select(selectTrainingsForChallenge(this.id))
   );
+  this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl('https://youtu.be/dQw4w9WgXcQ');
    }
 
   ngOnInit(): void {

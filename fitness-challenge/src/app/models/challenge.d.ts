@@ -9,5 +9,5 @@ export interface Challenge {
     start: Date,
     end: Date,
     participants: number,
-
+    price: number
 }

@@ -1,43 +1,67 @@
-<mat-card style="cursor: pointer;">
+<mat-card>
     <!-- <mat-card-title>{{challenge.title}}</mat-card-title> -->
-    <mat-card-title class="">{{challenge?.title}}</mat-card-title>
-    <mat-card-subtitle >
-        <h3>Description</h3>
-        <div class="">{{challenge?.description}}</div>
+    <mat-card-title class="centerTxt">{{challenge?.title}}</mat-card-title>
+    <mat-card-subtitle>
+
     </mat-card-subtitle>
     <mat-card-content>
+        <div></div>
+        <div class="title">Description</div>
+        <div>{{challenge?.description}}</div>
         <!-- <img class="cryptopunk" src="{{challenge?.image}}"> -->
         <div class="rulesWrapper">
-            Rules:
+            <div class="title">Rules</div>
             <div class="rules">
-                <div *ngFor="let rule of challenge?.rules; index as i" class="rulesGrid">
+                <!-- <div *ngFor="let rule of challenge?.rules; index as i" class="rulesGrid">
                     <div>{{i + 1}}.</div>
                     <div>{{rule}}</div>
+                </div> -->
+                <div class="rulesGrid">
+                    <div>1.</div>
+                    <div>use a concept2 pm5 rower</div>
+                </div>
+                <div class="rulesGrid">
+                    <div>2.</div>
+                    <div>be logged in to their logbook
+                        <a *ngIf="!(concept2Name$ | async)" (click)="saveChallengeId()" class="loginbutton"
+                            [href]="getLoginURL('concept2')">{{ '{' }}sign in{{ '}' }}</a>
+                        <b *ngIf="(concept2Name$ | async)" style="color:green">{{ '{' }}signed in{{ '}' }}</b>
+                    </div>
+                </div>
+                <div class="rulesGrid">
+                    <div>3.</div>
+                    <div>pay {{challenge?.price}} ETH to submit challenge attempts to the leaderboard</div>
                 </div>
             </div>
-            <br>
+            
+            <!-- <br>
             <div>
                 <p *ngIf="isLive()">challenge is live</p>
                 <p *ngIf="!isLive()">challenge begins ({{challenge?.start | date : 'short'}}) ends ({{challenge?.end |
                     date : 'short'}})</p>
-            </div>
+            </div> -->
         </div>
+        <div class="title">
+            Participation
+        </div>
+        <div>
+            The athlete who submits a winning result before ({{challenge?.end |date : 'short'}}) will win
+            (//todo:get submission fees) paid in (//todo:get currency).
+        </div>
+       <div class="title">
+           Fees
+       </div>
+       <div>
+        50% of submission fees will be paid to the winning athlete.
+        The submission fee is {{challenge?.price}} (//todo:get currency)
+       </div>  
     </mat-card-content>
 
 </mat-card>
-<!-- <div style="margin-top: 20px; ">
-<mat-chip-list aria-label="Fish selection" >
-    <mat-chip *ngIf="isLive()" style="font-size: xx-small;" >challenge is live</mat-chip>
-    <mat-chip *ngIf="!isLive()" style="font-size: xx-small;">begins on {{challenge?.start | date : 'short'}}</mat-chip>
-    <mat-chip style="font-size: xx-small;" >ends on {{challenge?.end | date : 'short'}}</mat-chip>
-    <mat-chip style="font-size: xx-small;" >{{challenge?.participants}} of active participants</mat-chip>
-    <mat-chip [routerLink]="['/challenge/', challenge?.id]" *ngIf="isLive() && joinActive" style="font-size: xx-small;" >Join challenge now</mat-chip>
-    <mat-chip [routerLink]="['/challenge/', challenge?.id]" *ngIf="!isLive() && joinActive" style="font-size: xx-small;" >Register for challenge</mat-chip>
-  </mat-chip-list>
+
+
+<!-- <div style="width: 100%;display: flex;">
+    <a style="margin-right: 0;margin-left: auto;" mat-button [routerLink]="['/challenge/', challenge?.id]"
+        *ngIf="joinActive">Join
+        challenge</a>
 </div> -->
-<!-- <button *ngIf="isLive()"   mat-flat-button>challenge is live</button>
-<button *ngIf="!isLive()"  mat-flat-button>challenge begins on {{challenge?.start | date : 'short'}}</button> -->
-<div style="width: 100%;display: flex;">
-        <a style="margin-right: 0;margin-left: auto;" mat-button [routerLink]="['/challenge/', challenge?.id]" *ngIf="joinActive">Join
-            challenge</a>
-</div>

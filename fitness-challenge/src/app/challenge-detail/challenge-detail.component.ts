@@ -1,5 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+import { CHALLENGE_ID } from '../challenge/challenge.component';
 import { Challenge } from '../models/challenge';
+import { selectConcept2Name } from '../ngrx/app.reducer';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-challenge-detail',
@@ -8,10 +12,20 @@ import { Challenge } from '../models/challenge';
 })
 export class ChallengeDetailComponent implements OnInit {
 
-  constructor() { }
+
+  constructor(private store: Store,
+    private authService: AuthService,
+    
+    ) {
+     
+    }
 
   @Input() challenge: Challenge| null = null ;
   @Input() joinActive: boolean = false ;
+
+  concept2Name$ = this.store.pipe(
+    select(selectConcept2Name)
+  );
 
 
   ngOnInit(): void {
@@ -21,6 +35,14 @@ export class ChallengeDetailComponent implements OnInit {
     let now = new Date();
     if(this.challenge) return now >= this.challenge?.start && now <= this.challenge?.end;
     return false;
+  }
+
+  getLoginURL(brand:string){
+    return this.authService.getLoginLink(brand);
+  }
+
+  saveChallengeId(){
+    localStorage.setItem(CHALLENGE_ID, ''+ this.challenge?.id);
   }
 
 }

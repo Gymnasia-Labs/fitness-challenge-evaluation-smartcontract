@@ -12,16 +12,26 @@
     
   }
 
-  .rulesWrapper{
-      margin: 40px;
+  .title{
+      margin-top: 30px;
+      font-weight: bold;
+      font-size: large;
+  }
+
+  .loginbutton{
+     font-weight: bold;
   }
   
   .rules{
-      margin-left: 20px;
-      font-size: small;
+      margin-left: 15px;
   }
 
   .rulesGrid{
     display: grid;
     grid-template-columns: 0.5fr 9fr;
+  }
+
+  .descTitle{
+      font-weight: bold;
+      margin-bottom: 0;
   }
