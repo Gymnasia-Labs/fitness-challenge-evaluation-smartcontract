@@ -6,9 +6,9 @@ import "./ChallengeManager.sol";
 contract Challenger {
     ChallengeManager internal manager;
 
-    // constructor(address adr) public {
-    //     manager = ChallengeManager(adr);
-    // }
+    constructor(address adr) public {
+        manager = ChallengeManager(adr);
+    }
     function unlockChallenge(uint256 id) external payable {
         IPublicLock lock = manager.getLock(id);
         require(address(lock) != address(0), "NO_LOCK_WITH_THIS_KEY");
