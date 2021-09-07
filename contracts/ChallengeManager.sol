@@ -4,28 +4,13 @@ pragma experimental ABIEncoderV2;
 
 import "./Evaluation.sol";
 import "./LockFactory.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/ownership/Ownable.sol";
 
-contract ChallengeManager is LockFactory, ERC721, Ownable {
+contract ChallengeManager is LockFactory {
     uint256 counter = 0;
     // only for testing, used to determine which chellenge gets displayed on the frontEnd
     uint256 displayedChallenge = 0;
 
     struct Challenge {
-        address creator;
-        string title;
-        string description;
-        uint256 start;
-        uint256 end;
-        uint256 participantsCount;
-        uint256 price;
-        address winner;
-        // Evaluation evaluation;
-        // LeaderboardEntry[] leaderBoard;
-    }
-
-        struct ChallengeExternal {
         uint256 id;
         address creator;
         string title;
@@ -34,9 +19,9 @@ contract ChallengeManager is LockFactory, ERC721, Ownable {
         uint256 end;
         uint256 participantsCount;
         uint256 price;
-        address winner;
-        // Evaluation evaluation;
-        // LeaderboardEntry[] leaderBoard;
+        address first;
+        LeaderboardEntry[] leaderBoard;
+        Evaluation evaluation;
     }
 
     struct LeaderboardEntry {
@@ -47,7 +32,7 @@ contract ChallengeManager is LockFactory, ERC721, Ownable {
 
     mapping(uint256 => Challenge) public challenges;
 
-    function setDisplayedChallengeID(uint256 id) external onlyOwner {
+    function setDisplayedChallengeID(uint256 id) external {
         displayedChallenge = id;
     }
 
@@ -61,63 +46,51 @@ contract ChallengeManager is LockFactory, ERC721, Ownable {
         uint256 start,
         uint256 end,
         uint256 participantsCount,
-        uint256 price
-    ) external // Evaluation evaluation
-    {
-        createNewLock(
-            bytes32(counter),
-            end - start,
-            price,
-            participantsCount
-        );
-        Challenge memory challenge = Challenge(
-            msg.sender,
-            title,
-            description,
-            start,
-            end,
-            participantsCount,
-            price,
-            address(0)
-            // evaluation
-        );
-        uint256 tokenId = counter;
-        challenges[counter] = challenge;
-        _safeMint(msg.sender, tokenId);
-        counter++;
-        // return challenge;
-    }
+        uint256 price,
+        address evaluationAdr
+    ) external returns (Challenge memory) {
+        createNewLock(counter, end - start, price, participantsCount);
 
-    function ownerOf(uint256 tokenId) public view returns (address) {
-        return ownerOf(tokenId);
+        challenges[counter].id = counter;
+        challenges[counter].creator = msg.sender;
+        challenges[counter].title = title;
+        challenges[counter].description = description;
+        challenges[counter].start = start;
+        challenges[counter].end = end;
+        challenges[counter].participantsCount = participantsCount;
+        challenges[counter].price = price;
+        challenges[counter].evaluation = Evaluation(evaluationAdr);
+
+        return challenges[counter++];
     }
 
     function addLeaderboardEntry(
-        bytes32 key,
+        uint256 id,
         address sender,
         uint256 data,
         uint256 time
     ) public {
-        //     challenges[key].leaderBoard.push(LeaderboardEntry(sender, data, time));
+        challenges[id].leaderBoard.push(LeaderboardEntry(sender, data, time));
     }
 
-    function getWinner(uint256 challengeKey) public view returns (address) {
-        return challenges[challengeKey].winner;
+    function getWinner(uint256 challengeId) public view returns (address) {
+        require(block.timestamp >= challenges[challengeId].end);
+        return challenges[challengeId].first;
     }
 
-    function getChallenges() public view returns (ChallengeExternal[] memory) {
-        ChallengeExternal[] memory ret = new ChallengeExternal[](counter);
-        for (uint256 i = 0; i < counter; i++) {
-            ret[i].id = i;
-            ret[i].creator = challenges[i].creator;
-            ret[i].title = challenges[i].title;
-            ret[i].description = challenges[i].description;
-            ret[i].start = challenges[i].start;
-            ret[i].end = challenges[i].end;
-            ret[i].participantsCount = challenges[i].participantsCount;
-            ret[i].price = challenges[i].price;
-            ret[i].winner = challenges[i].winner;
+    function getAllChallenges() public view returns (Challenge[] memory) {
+        Challenge[] memory array = new Challenge[](counter);
+        for (uint256 i = 0; i < array.length; i++) {
+            array[i].id = challenges[i].id;
+            array[i].creator = challenges[i].creator;
+            array[i].title = challenges[i].title;
+            array[i].description = challenges[i].description;
+            array[i].start = challenges[i].start;
+            array[i].end = challenges[i].end;
+            array[i].participantsCount = challenges[i].participantsCount;
+            array[i].price = challenges[i].price;
+            array[i].first = challenges[i].first;
         }
-        return ret;
+        return array;
     }
 }
