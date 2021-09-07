@@ -59,7 +59,7 @@ export class AuthService {
       .set('redirect_uri', environment.redirect_uri)
       .set('code', code)
       .set('scope', scope)
-      // .set('url', environment.CONCEPT2_API);
+      .set('url', environment.CONCEPT2_API);
 
     return this.http
       .post<any>(
