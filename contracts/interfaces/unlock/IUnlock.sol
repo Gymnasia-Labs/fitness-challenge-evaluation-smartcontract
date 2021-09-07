@@ -1,190 +1,169 @@
 pragma solidity 0.5.17;
 
-
 /**
  * @title The Unlock Interface
  * @author Nick Furfaro (unlock-protocol.com)
-**/
+ **/
 
-interface IUnlock
-{
-  // Use initialize instead of a constructor to support proxies(for upgradeability via zos).
-  function initialize(address _unlockOwner) external;
-
-  /**
-  * @dev Create lock
-  * This deploys a lock for a creator. It also keeps track of the deployed lock.
-  * @param _tokenAddress set to the ERC20 token address, or 0 for ETH.
-  * @param _salt an identifier for the Lock, which is unique for the user.
-  * This may be implemented as a sequence ID or with RNG. It's used with `create2`
-  * to know the lock's address before the transaction is mined.
-  */
-  function createLock(
-    uint _expirationDuration,
-    address _tokenAddress,
-    uint _keyPrice,
-    uint _maxNumberOfKeys,
-    string calldata _lockName,
-    bytes12 _salt
-  ) external;
+interface IUnlock {
+    // Use initialize instead of a constructor to support proxies(for upgradeability via zos).
+    function initialize(address _unlockOwner) external;
 
     /**
-   * This function keeps track of the added GDP, as well as grants of discount tokens
-   * to the referrer, if applicable.
-   * The number of discount tokens granted is based on the value of the referal,
-   * the current growth rate and the lock's discount token distribution rate
-   * This function is invoked by a previously deployed lock only.
-   */
-  function recordKeyPurchase(
-    uint _value,
-    address _referrer // solhint-disable-line no-unused-vars
-  )
-    external;
+     * @dev Create lock
+     * This deploys a lock for a creator. It also keeps track of the deployed lock.
+     * @param _tokenAddress set to the ERC20 token address, or 0 for ETH.
+     * @param _salt an identifier for the Lock, which is unique for the user.
+     * This may be implemented as a sequence ID or with RNG. It's used with `create2`
+     * to know the lock's address before the transaction is mined.
+     */
+    function createLock(
+        uint256 _expirationDuration,
+        address _tokenAddress,
+        uint256 _keyPrice,
+        uint256 _maxNumberOfKeys,
+        string calldata _lockName,
+        bytes12 _salt
+    ) external returns (address);
 
     /**
-   * This function will keep track of consumed discounts by a given user.
-   * It will also grant discount tokens to the creator who is granting the discount based on the
-   * amount of discount and compensation rate.
-   * This function is invoked by a previously deployed lock only.
-   */
-  function recordConsumedDiscount(
-    uint _discount,
-    uint _tokens // solhint-disable-line no-unused-vars
-  )
-    external;
+     * This function keeps track of the added GDP, as well as grants of discount tokens
+     * to the referrer, if applicable.
+     * The number of discount tokens granted is based on the value of the referal,
+     * the current growth rate and the lock's discount token distribution rate
+     * This function is invoked by a previously deployed lock only.
+     */
+    function recordKeyPurchase(
+        uint256 _value,
+        address _referrer // solhint-disable-line no-unused-vars
+    ) external;
 
     /**
-   * This function returns the discount available for a user, when purchasing a
-   * a key from a lock.
-   * This does not modify the state. It returns both the discount and the number of tokens
-   * consumed to grant that discount.
-   */
-  function computeAvailableDiscountFor(
-    address _purchaser, // solhint-disable-line no-unused-vars
-    uint _keyPrice // solhint-disable-line no-unused-vars
-  )
-    external
-    view
-    returns(uint discount, uint tokens);
+     * This function will keep track of consumed discounts by a given user.
+     * It will also grant discount tokens to the creator who is granting the discount based on the
+     * amount of discount and compensation rate.
+     * This function is invoked by a previously deployed lock only.
+     */
+    function recordConsumedDiscount(
+        uint256 _discount,
+        uint256 _tokens // solhint-disable-line no-unused-vars
+    ) external;
 
-  // Function to read the globalTokenURI field.
-  function globalBaseTokenURI()
-    external
-    view
-    returns(string memory);
+    /**
+     * This function returns the discount available for a user, when purchasing a
+     * a key from a lock.
+     * This does not modify the state. It returns both the discount and the number of tokens
+     * consumed to grant that discount.
+     */
+    function computeAvailableDiscountFor(
+        address _purchaser, // solhint-disable-line no-unused-vars
+        uint256 _keyPrice // solhint-disable-line no-unused-vars
+    ) external view returns (uint256 discount, uint256 tokens);
 
-  /**
-   * @dev Redundant with globalBaseTokenURI() for backwards compatibility with v3 & v4 locks.
-   */
-  function getGlobalBaseTokenURI()
-    external
-    view
-    returns (string memory);
+    // Function to read the globalTokenURI field.
+    function globalBaseTokenURI() external view returns (string memory);
 
-  // Function to read the globalTokenSymbol field.
-  function globalTokenSymbol()
-    external
-    view
-    returns(string memory);
+    /**
+     * @dev Redundant with globalBaseTokenURI() for backwards compatibility with v3 & v4 locks.
+     */
+    function getGlobalBaseTokenURI() external view returns (string memory);
 
-  // Function to read the chainId field.
-  function chainId()
-    external
-    view
-    returns(uint);
+    // Function to read the globalTokenSymbol field.
+    function globalTokenSymbol() external view returns (string memory);
 
-  /**
-   * @dev Redundant with globalTokenSymbol() for backwards compatibility with v3 & v4 locks.
-   */
-  function getGlobalTokenSymbol()
-    external
-    view
-    returns (string memory);
+    // Function to read the chainId field.
+    function chainId() external view returns (uint256);
 
-  /**
-   * @notice Allows the owner to update configuration variables
-   */
-  function configUnlock(
-    address _udt,
-    address _weth,
-    uint _estimatedGasForPurchase,
-    string calldata _symbol,
-    string calldata _URI,
-    uint _chainId
-  )
-    external;
+    /**
+     * @dev Redundant with globalTokenSymbol() for backwards compatibility with v3 & v4 locks.
+     */
+    function getGlobalTokenSymbol() external view returns (string memory);
 
-  /**
-   * @notice Upgrade the PublicLock template used for future calls to `createLock`.
-   * @dev This will initialize the template and revokeOwnership.
-   */
-  function setLockTemplate(
-    address payable _publicLockAddress
-  ) external;
+    /**
+     * @notice Allows the owner to update configuration variables
+     */
+    function configUnlock(
+        address _udt,
+        address _weth,
+        uint256 _estimatedGasForPurchase,
+        string calldata _symbol,
+        string calldata _URI,
+        uint256 _chainId
+    ) external;
 
-  // Allows the owner to change the value tracking variables as needed.
-  function resetTrackedValue(
-    uint _grossNetworkProduct,
-    uint _totalDiscountGranted
-  ) external;
+    /**
+     * @notice Upgrade the PublicLock template used for future calls to `createLock`.
+     * @dev This will initialize the template and revokeOwnership.
+     */
+    function setLockTemplate(address payable _publicLockAddress) external;
 
-  function grossNetworkProduct() external view returns(uint);
+    // Allows the owner to change the value tracking variables as needed.
+    function resetTrackedValue(
+        uint256 _grossNetworkProduct,
+        uint256 _totalDiscountGranted
+    ) external;
 
-  function totalDiscountGranted() external view returns(uint);
+    function grossNetworkProduct() external view returns (uint256);
 
-  function locks(address) external view returns(bool deployed, uint totalSales, uint yieldedDiscountTokens);
+    function totalDiscountGranted() external view returns (uint256);
 
-  // The address of the public lock template, used when `createLock` is called
-  function publicLockAddress() external view returns(address);
+    function locks(address)
+        external
+        view
+        returns (
+            bool deployed,
+            uint256 totalSales,
+            uint256 yieldedDiscountTokens
+        );
 
-  // Map token address to exchange contract address if the token is supported
-  // Used for GDP calculations
-  function uniswapOracles(address) external view returns(address);
+    // The address of the public lock template, used when `createLock` is called
+    function publicLockAddress() external view returns (address);
 
-  // The WETH token address, used for value calculations
-  function weth() external view returns(address);
+    // Map token address to exchange contract address if the token is supported
+    // Used for GDP calculations
+    function uniswapOracles(address) external view returns (address);
 
-  // The UDT token address, used to mint tokens on referral
-  function udt() external view returns(address);
+    // The WETH token address, used for value calculations
+    function weth() external view returns (address);
 
-  // The approx amount of gas required to purchase a key
-  function estimatedGasForPurchase() external view returns(uint);
+    // The UDT token address, used to mint tokens on referral
+    function udt() external view returns (address);
 
-  // The version number of the current Unlock implementation on this network
-  function unlockVersion() external pure returns(uint16);
+    // The approx amount of gas required to purchase a key
+    function estimatedGasForPurchase() external view returns (uint256);
 
-  /**
-   * @notice allows the owner to set the oracle address to use for value conversions
-   * setting the _oracleAddress to address(0) removes support for the token
-   * @dev This will also call update to ensure at least one datapoint has been recorded.
-   */
-  function setOracle(
-    address _tokenAddress,
-    address _oracleAddress
-  ) external;
+    // The version number of the current Unlock implementation on this network
+    function unlockVersion() external pure returns (uint16);
 
-  /**
-   * @dev Returns true if the caller is the current owner.
-   */
-  function isOwner() external view returns(bool);
+    /**
+     * @notice allows the owner to set the oracle address to use for value conversions
+     * setting the _oracleAddress to address(0) removes support for the token
+     * @dev This will also call update to ensure at least one datapoint has been recorded.
+     */
+    function setOracle(address _tokenAddress, address _oracleAddress) external;
 
-  /**
-   * @dev Returns the address of the current owner.
-   */
-  function owner() external view returns(address);
+    /**
+     * @dev Returns true if the caller is the current owner.
+     */
+    function isOwner() external view returns (bool);
 
-  /**
-   * @dev Leaves the contract without owner. It will not be possible to call
-   * `onlyOwner` functions anymore. Can only be called by the current owner.
-   *
-   * NOTE: Renouncing ownership will leave the contract without an owner,
-   * thereby removing any functionality that is only available to the owner.
-   */
-  function renounceOwnership() external;
+    /**
+     * @dev Returns the address of the current owner.
+     */
+    function owner() external view returns (address);
 
-  /**
-   * @dev Transfers ownership of the contract to a new account (`newOwner`).
-   * Can only be called by the current owner.
-   */
-  function transferOwnership(address newOwner) external;
+    /**
+     * @dev Leaves the contract without owner. It will not be possible to call
+     * `onlyOwner` functions anymore. Can only be called by the current owner.
+     *
+     * NOTE: Renouncing ownership will leave the contract without an owner,
+     * thereby removing any functionality that is only available to the owner.
+     */
+    function renounceOwnership() external;
+
+    /**
+     * @dev Transfers ownership of the contract to a new account (`newOwner`).
+     * Can only be called by the current owner.
+     */
+    function transferOwnership(address newOwner) external;
 }
