@@ -35,8 +35,8 @@ export class ContractService {
         .then((address: string) =>
           this.store.dispatch(setAddress({ address: address[0] }))
         );
+        this.connectContract(this.provider);
     }
-    this.connectContract(this.provider);
 
 
 
