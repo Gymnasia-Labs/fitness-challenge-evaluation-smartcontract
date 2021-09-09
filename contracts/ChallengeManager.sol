@@ -4,8 +4,10 @@ pragma experimental ABIEncoderV2;
 
 import "./Evaluation.sol";
 import "./LockFactory.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/ownership/Ownable.sol";
 
-contract ChallengeManager is LockFactory {
+contract ChallengeManager is LockFactory, ERC721 {
     uint256 counter = 0;
     // only for testing, used to determine which chellenge gets displayed on the frontEnd
     uint256 displayedChallenge = 0;
@@ -60,6 +62,9 @@ contract ChallengeManager is LockFactory {
         challenges[counter].participantsCount = participantsCount;
         challenges[counter].price = price;
         challenges[counter].evaluation = Evaluation(evaluationAdr);
+
+        // mint nft
+        _safeMint(msg.sender, counter);
 
         return challenges[counter++];
     }
