@@ -6,6 +6,6 @@
   "devDependencies": {
     "solhint": "^2.1.0",
     "truffle": "^5.1.5",
-    "truffle-plugin-verify": "^0.5.13"
+    "truffle-plugin-verify": "^0.5.14"
   }
 }

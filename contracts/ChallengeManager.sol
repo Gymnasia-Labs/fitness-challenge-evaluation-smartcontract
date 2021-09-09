@@ -5,7 +5,6 @@ pragma experimental ABIEncoderV2;
 import "./Evaluation.sol";
 import "./LockFactory.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/ownership/Ownable.sol";
 
 contract ChallengeManager is LockFactory, ERC721 {
     uint256 counter = 0;
