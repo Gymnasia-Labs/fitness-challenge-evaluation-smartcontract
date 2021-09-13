@@ -51,10 +51,6 @@ export class ChallengeDetailComponent implements OnInit {
     let start = this.challenge?.start.valueOf();
     let end = this.challenge?.end.valueOf();
     let now = new Date().valueOf();
-
-    console.log(this.challenge?.start, this.challenge?.end, new Date());
-    
-
     if(!start || ! end) return 0;
     if(now < start ) return 0; 
     return (now - start) / ( end - start ) *100 ;

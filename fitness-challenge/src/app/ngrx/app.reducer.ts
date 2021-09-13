@@ -187,7 +187,8 @@ export const selectTrainingsForChallenge = (challengeId: number) => createSelect
           brand: 'concept2',
           type: result.type,
           distance: result.distance + 'm',
-          time: result.time_formatted,
+          timeFormated: result.time_formatted,
+          time: result.time,
           pace: 0,
           hearthRate: 0
         }

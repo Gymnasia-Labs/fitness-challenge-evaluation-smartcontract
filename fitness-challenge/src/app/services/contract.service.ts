@@ -68,7 +68,7 @@ export class ContractService {
     this.challengeManager = this.challengeManager.connect(provider.getSigner());
 
     this.challenger = new ethers.Contract(environment.challengerAddress, environment.challengerAbi, provider);
-    this.challengeManager = this.challengeManager.connect(provider.getSigner());
+    this.challenger = this.challenger.connect(provider.getSigner());
     // this.getChallenges().then(challenges => this.store.dispatch(setChallenges({ challenges : challenges })));
     // this.store.dispatch({ type: fetchChallenges });
   }
@@ -86,6 +86,13 @@ export class ContractService {
 
   public getChallenges(): Promise<Challenge[]> {
     return this.challengeManager.getAllChallenges();
+  }
+
+  public submitChallenge(id: number, data: string, time: number) {
+    data = data.substring(0, data.length - 1)
+    console.log(data);
+    
+    this.challenger.submitData(id, +data, time);
   }
 
 }

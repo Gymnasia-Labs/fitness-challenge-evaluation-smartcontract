@@ -826,5 +826,5 @@ challengerAbi: [
     "stateMutability": "view",
     "type": "function"
   }
-]
+],
 }
