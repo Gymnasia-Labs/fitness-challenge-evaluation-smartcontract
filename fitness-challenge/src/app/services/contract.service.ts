@@ -20,8 +20,12 @@ export const WEB3PROVIDER = new InjectionToken('Web3 provider', {
 export class ContractService {
 
   public address: any;
-  public contract: any;
   public provider: any;
+  private userAddress: string = '';
+
+  // Contracts
+  public challengeManager: any;
+  public challenger: any;
 
   constructor(
     @Inject(WEB3PROVIDER) public web3provider: any,
@@ -32,8 +36,10 @@ export class ContractService {
       console.log(this.provider);
 
       this.web3provider.enable()
-        .then((address: string) =>
+        .then((address: string) =>{
+          this.userAddress = address[0];
           this.store.dispatch(setAddress({ address: address[0] }))
+        }
         );
         this.connectContract(this.provider);
     }
@@ -48,7 +54,8 @@ export class ContractService {
       infuraId: "27e484dcd9e3efcfd25a83a78777cdf1",
     });
     provider.on("accountsChanged", (accounts: string[]) => {
-      this.store.dispatch(setAddress({ address: accounts[0] }))
+      this.userAddress = accounts[0];
+      this.store.dispatch(setAddress({ address: accounts[0] }));
     });
     provider.enable();
 
@@ -57,8 +64,11 @@ export class ContractService {
 
   private connectContract(provider: any) {
 
-    this.contract = new ethers.Contract(environment.contractAdress, environment.contractAbi, provider);
-    this.contract = this.contract.connect(provider.getSigner());
+    this.challengeManager = new ethers.Contract(environment.challengeManagerAddress, environment.challengeManagerAbi, provider);
+    this.challengeManager = this.challengeManager.connect(provider.getSigner());
+
+    this.challenger = new ethers.Contract(environment.challengerAddress, environment.challengerAbi, provider);
+    this.challengeManager = this.challengeManager.connect(provider.getSigner());
     // this.getChallenges().then(challenges => this.store.dispatch(setChallenges({ challenges : challenges })));
     // this.store.dispatch({ type: fetchChallenges });
   }
@@ -71,11 +81,11 @@ export class ContractService {
     participantsCount: number,
     price: number
   ): Observable<boolean> {
-    return this.contract.createChallenge(title, description, start, end, participantsCount, price);
+    return this.challengeManager.createChallenge(title, description, start, end, participantsCount, price, this.userAddress);
   }
 
   public getChallenges(): Promise<Challenge[]> {
-    return this.contract.getChallenges();
+    return this.challengeManager.getAllChallenges();
   }
 
 }

@@ -1,4 +1,6 @@
+import { BigNumber } from "@ethersproject/bignumber";
 import { createSelector, createFeatureSelector, createReducer, on } from "@ngrx/store";
+import { ethers } from "ethers";
 import { Challenge } from "../models/challenge";
 import { Concept2 } from "../models/concept2";
 import { TrainingData } from "../models/training.data";
@@ -107,13 +109,16 @@ export const appReducer = createReducer(
 );
 
 const toChallenge = (challenge: Challenge) => {
-  console.log(challenge);
+  console.log(+challenge.id);
   
   // challenge.start = new Date( +challenge.start * 1000);
   // challenge.end = new Date( +challenge.end * 1000);
   return {...challenge, 
+    id: +challenge.id.toString(),
     start: new Date( +challenge.start * 1000), 
-    end : new Date( +challenge.end * 1000)};
+    end : new Date( +challenge.end * 1000),
+    price: +challenge.price.toString()
+  };
 }
 
 export const selectChallenges = createSelector<any, any, any>(
