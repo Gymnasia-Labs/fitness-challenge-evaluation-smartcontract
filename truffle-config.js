@@ -92,7 +92,9 @@ module.exports = {
     // production: true    // Treats this network as if it was a public net. (default: false)
     // }
   },
-  plugins: ["truffle-plugin-verify"],
+  plugins: [
+    'truffle-plugin-verify'
+  ],
   api_keys: {
     etherscan: etherscan,
   },
