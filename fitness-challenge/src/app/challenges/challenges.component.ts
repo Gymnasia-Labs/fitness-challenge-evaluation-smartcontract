@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
+import { fetchChallenges } from '../ngrx/app.actions';
 import { AppState, selectChallenges } from '../ngrx/app.reducer';
 
 @Component({
@@ -14,6 +15,7 @@ export class ChallengesComponent implements OnInit {
     select(selectChallenges)
   );
   ngOnInit(): void {
+    this.store.dispatch({ type: fetchChallenges })
   }
 
 }

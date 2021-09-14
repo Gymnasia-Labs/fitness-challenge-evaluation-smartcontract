@@ -3,12 +3,14 @@ import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { AuthService } from '../services/auth.service';
 import { Concept2Service } from '../services/concept2.service';
-import { selectChallengeById, selectConcept2DataLoading, selectTrainingData, selectTrainingsForChallenge } from '../ngrx/app.reducer';
+import { selectChallengeById, selectConcept2DataLoading, selectDisplayedChallenge, selectTrainingData, selectTrainingsForDisplayedChallenge } from '../ngrx/app.reducer';
 import { TrainingData } from '../models/training.data';
 import { merge } from 'rxjs';
-import { fetchConcept2Data, setConcept2DataLoading } from '../ngrx/app.actions';
+import { fetchChallenges, fetchConcept2Data, setConcept2DataLoading, setDisplayedChallenge } from '../ngrx/app.actions';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ContractService } from '../services/contract.service';
+import { filter, take, tap } from 'rxjs/operators';
+import { Challenge } from '../models/challenge';
 
 
 export interface PeriodicElement {
@@ -20,9 +22,9 @@ export interface PeriodicElement {
 export const CHALLENGE_ID: string = 'challenge_id';
 
 const ELEMENT_DATA: PeriodicElement[] = [
-  {distance: '1500m', time: '3:21 secs', account: 'Account #0001', },
-  {distance: '1500m', time: '3:34 secs', account: 'Account #0002', },
-  {distance: '1500m', time: '3:57 secs', account: 'Account #0003', },
+  { distance: '1500m', time: '3:21 secs', account: 'Account #0001', },
+  { distance: '1500m', time: '3:34 secs', account: 'Account #0002', },
+  { distance: '1500m', time: '3:57 secs', account: 'Account #0003', },
 ];
 
 @Component({
@@ -35,13 +37,13 @@ export class ChallengeComponent implements OnInit {
   safeURL: any;
   displayedColumns: string[] = [
     // 'distance',
-     'time',
-      'account'];
+    'time',
+    'account'];
   dataSource = ELEMENT_DATA;
-  id:number =-1;
+  id: number = -1;
 
   logData$ = this.store.pipe(
-    select(selectTrainingsForChallenge(-1))
+    select(selectTrainingsForDisplayedChallenge)
   );
 
   concept2Loading$ = this.store.pipe(
@@ -63,71 +65,70 @@ export class ChallengeComponent implements OnInit {
   ];
 
   challenge$ = this.store.pipe(
-    select(selectChallengeById(-1))
+    select(selectDisplayedChallenge)
   );
 
   constructor(
-    private actRoute: ActivatedRoute, 
+    private actRoute: ActivatedRoute,
     private store: Store,
     private authService: AuthService,
     private concept2: Concept2Service,
     private _sanitizer: DomSanitizer,
     private contractService: ContractService
-    ) {
+  ) {
+    // this.store.dispatch({ type: fetchChallenges });
     this.id = +this.actRoute.snapshot.params.id;
-    this.challenge$ = this.store.pipe(
-      select(selectChallengeById(this.id))
-      );
-   this.logData$ = this.store.pipe(
-    select(selectTrainingsForChallenge(this.id))
-  );
-  this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl('https://youtu.be/dQw4w9WgXcQ');
-   }
+    this.store.dispatch(setDisplayedChallenge({ id: this.id }));
+    this.logData$  =  this.store.pipe(
+      select(selectTrainingsForDisplayedChallenge)
+    );
+    this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl('https://youtu.be/dQw4w9WgXcQ');
+  }
 
   ngOnInit(): void {
   }
 
-  loginConcept2(){
+  loginConcept2() {
     // this.authService.login().subscribe(
     //   r => console.log('res',r)
     // );
   }
 
-  getUserDataOf(user?:string){
-    if(!user) user = 'me';
-    console.log(user);
-    
+  getUserDataOf(user?: string) {
+    if (!user) user = 'me';
+
     this.concept2.getUserData(user).subscribe(console.log)
   }
 
-  getChallengeDataOf(user?:string){
-    if(!user) user = 'me';
-    user= '491';
+  getChallengeDataOf(user?: string) {
+    if (!user) user = 'me';
+    user = '491';
     this.concept2.getResultsData(user).subscribe(console.log)
   }
 
-  getStrokeData(user?:string, resultId?:string){
-    if(!user) user = 'me';
-    if(!resultId) resultId = '55327159'
-    this.concept2.getStrokesData(user,resultId).subscribe(console.log)
+  getStrokeData(user?: string, resultId?: string) {
+    if (!user) user = 'me';
+    if (!resultId) resultId = '55327159'
+    this.concept2.getStrokesData(user, resultId).subscribe(console.log)
   }
 
-  getLoginLink(brand: string){
+  getLoginLink(brand: string) {
     return this.authService.getLoginLink(brand);
   }
 
   refresh() {
-    this.store.dispatch(setConcept2DataLoading({isLoading:true}));
+    this.store.dispatch(setConcept2DataLoading({ isLoading: true }));
     this.store.dispatch({ type: fetchConcept2Data });
-}
 
-saveChallengeId(){
-  localStorage.setItem(CHALLENGE_ID, ''+this.id);
-}
+  }
 
-submit(element: any) {
-  console.log(element);
-  this.contractService.submitChallenge(this.id, element.distance, element.time);
-}
+  saveChallengeId() {
+    localStorage.setItem(CHALLENGE_ID, '' + this.id);
+  }
+
+  submit(element: any) {
+    console.log(element);
+    this.contractService.submitChallenge(this.id, element.distance, element.time);
+  }
 
 }

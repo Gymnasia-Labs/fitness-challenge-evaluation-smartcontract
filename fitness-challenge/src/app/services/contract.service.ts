@@ -69,8 +69,7 @@ export class ContractService {
 
     this.challenger = new ethers.Contract(environment.challengerAddress, environment.challengerAbi, provider);
     this.challenger = this.challenger.connect(provider.getSigner());
-    // this.getChallenges().then(challenges => this.store.dispatch(setChallenges({ challenges : challenges })));
-    // this.store.dispatch({ type: fetchChallenges });
+    this.store.dispatch({ type: fetchChallenges });
   }
 
   public createChallenge(
