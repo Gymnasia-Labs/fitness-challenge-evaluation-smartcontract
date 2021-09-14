@@ -10,8 +10,8 @@ import { ContractService } from '../services/contract.service';
 })
 export class AdminComponent implements OnInit {
 
-  title : string ='';
-  desc: string ='';
+  title: string = '';
+  desc: string = '';
   start: number = 0;
   end: number = 0;
   count: number = 2;
@@ -25,14 +25,17 @@ export class AdminComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  saveChallenge(){
+  saveChallenge() {
     console.log(this.title, this.desc, this.start, this.end, this.count, this.price);
-    let unixStart = Math.floor(new Date(this.start).valueOf() / 1000 );
-    let unixEnd = Math.floor(new Date(this.end).valueOf() / 1000 );
-    this.contractService.createChallenge(this.title, this.desc, unixStart, unixEnd, this.count, this.price);
+    let unixStart = Math.floor(new Date(this.start).valueOf() / 1000);
+    let unixEnd = Math.floor(new Date(this.end).valueOf() / 1000);
+    this.contractService
+      .createChallenge(this.title, this.desc, unixStart, unixEnd, this.count, this.price)
+      .subscribe(() =>this.store.dispatch({ type: fetchChallenges }));
+    
   }
 
-  fetchChallenges(){
+  fetchChallenges() {
     this.store.dispatch({ type: fetchChallenges });
   }
 

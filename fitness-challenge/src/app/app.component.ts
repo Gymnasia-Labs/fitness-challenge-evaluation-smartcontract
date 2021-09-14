@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { switchMap, tap } from 'rxjs/operators';
 import { CHALLENGE_ID } from './challenge/challenge.component';
-import { fetchConcept2Data, fetchConcept2User, setConcept2DataLoading, setConcept2Name } from './ngrx/app.actions';
+import { fetchChallenges, fetchConcept2Data, fetchConcept2User, setConcept2DataLoading, setConcept2Name } from './ngrx/app.actions';
 import { selectAddress } from './ngrx/app.reducer';
 import { AuthService } from './services/auth.service';
 import { Concept2Service } from './services/concept2.service';
@@ -38,7 +38,7 @@ export class AppComponent implements OnInit {
       this.store.dispatch(setConcept2DataLoading({ isLoading: true }))
       this.store.dispatch({ type: fetchConcept2Data });
       this.store.dispatch({ type: fetchConcept2User });
-
+      this.store.dispatch({ type: fetchChallenges });
       // this.concept2Service
       //         .getUserData('me')
       //         .subscribe(
