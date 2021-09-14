@@ -9,7 +9,8 @@ contract Challenger {
     constructor(address adr) public {
         manager = ChallengeManager(adr);
     }
-    function unlockChallenge(uint256 id) external payable {
+
+    function unlockChallenge(uint256 id) public payable {
         IPublicLock lock = manager.getLock(id);
         require(address(lock) != address(0), "NO_LOCK_WITH_THIS_KEY");
         lock.purchase.value(msg.value)(
@@ -26,14 +27,19 @@ contract Challenger {
         uint256 time
     ) external returns (bool) {
         IPublicLock lock = manager.getLock(id);
+        bool withUnlock = false;
 
-        if(!lock.getHasValidKey()) unlockChallenge(id);
+        if (!lock.getHasValidKey(msg.sender)) {
+            unlockChallenge(id);
+            withUnlock = true;
+        }
 
-        manager.addLeaderboardEntry(id, msg.sender, data, time);
+        manager.addLeaderboardEntry(id, msg.sender, data, time, withUnlock);
     }
 
-    function receivePrice(uint256 challengeId) external {
+    function receivePrice(uint256 challengeId) external view {
         require(isWinner(challengeId), "Not the winner");
+        IPublicLock lock = manager.getLock(challengeId);
         //add lock withdraw
     }
 

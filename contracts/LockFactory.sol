@@ -42,10 +42,6 @@ contract LockFactory {
         return lockToId[id].keyPrice();
     }
 
-    function updateKeyPrice(uint256 id, uint256 keyPrice) external {
-        lockToId[id].updateKeyPricing(keyPrice, address(0));
-    }
-
     function getLock(uint256 id) public view returns (IPublicLock) {
         return lockToId[id];
     }

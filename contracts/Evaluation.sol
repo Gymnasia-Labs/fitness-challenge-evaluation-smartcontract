@@ -4,10 +4,18 @@ pragma experimental ABIEncoderV2;
 
 import "./ChallengeManager.sol";
 
-interface Evaluation {
+contract Evaluation {
+    uint256 ruleset;
+
     function evaluate(ChallengeManager.LeaderboardEntry[] calldata entry)
         external
-        returns (uint256 id);
+        returns (address);
 
-    function setRules(string calldata rules) external;
+    function setRules(uint256 rules) public {
+        ruleset = rules;
+    }
+
+    function checkRules(uint256 rules) public view returns (bool) {
+        return ruleset == rules;
+    }
 }
