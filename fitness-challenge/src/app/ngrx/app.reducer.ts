@@ -6,14 +6,15 @@ import { Concept2 } from "../models/concept2";
 import { TrainingData } from "../models/training.data";
 import {
   fetchConcept2Data,
-  setAddress, setChallenges, setConcept2Data, setConcept2DataLoading, setConcept2Name, setTrainingData
+  setAddress, setChallenges, setConcept2Data, setConcept2DataLoading, setConcept2Name, setDisplayedChallenge, setTrainingData
 } from "./app.actions";
 
 export interface AppState {
   challenges: Challenge[],
   address: string,
   concept2: Concept2,
-  trainingData: TrainingData[] // the commulated training data of all brands
+  trainingData: TrainingData[], // the commulated training data of all brands
+  displayedChallenge: number
 };
 
 export const initialState: AppState =
@@ -94,6 +95,7 @@ export const initialState: AppState =
     loading: false
   },
   trainingData: [],
+  displayedChallenge: -1
 }
   ;
 
@@ -106,10 +108,11 @@ export const appReducer = createReducer(
   on(setConcept2Data, (state, { data }) => ({ ...state, concept2: { ...state.concept2, data: data, loading: false } })),
   on(setTrainingData, (state, { data }) => ({ ...state, trainingData: data })),
   on(setConcept2DataLoading, (state, { isLoading }) => ({ ...state, concept2: { ...state.concept2, loading: isLoading, } })),
-);
+  on(setDisplayedChallenge, (state, { id }) => ({ ...state, displayedChallenge: id})),
+
+  );
 
 const toChallenge = (challenge: Challenge) => {
-  console.log(+challenge.id);
   
   // challenge.start = new Date( +challenge.start * 1000);
   // challenge.end = new Date( +challenge.end * 1000);
@@ -124,6 +127,11 @@ const toChallenge = (challenge: Challenge) => {
 export const selectChallenges = createSelector<any, any, any>(
   (reducer: any) => reducer.data,
   (state: AppState) => state.challenges
+);
+
+export const selectDisplayedChallenge = createSelector<any, any, any>(
+  (reducer: any) => reducer.data,
+  (state: AppState) => state.challenges.find(challenge => challenge.id === state.displayedChallenge)
 );
 
 export const selectChallengeById = (id: number) => createSelector<any, any, any>(
@@ -160,25 +168,26 @@ export const selectTrainingData = createSelector<any, any, any>(
       brand: 'concept2',
       type: result.type,
       distance: result.distance + 'm',
-      time: result.time_formatted,
+      timeFormated: result.time_formatted,
+      time: result.time,
       pace: 0,
-      hearthRate: 0,
+      hearthRate: 0
     }
   ))
 );
 
-export const selectTrainingsForChallenge = (challengeId: number) => createSelector<any, any, any>(
+export const selectTrainingsForDisplayedChallenge  = createSelector<any, any, any>(
   (reducer: any) => reducer.data,
   (state: AppState,) => {
-    let challenge = state.challenges.find(challenge => challenge.id === challengeId);
-    console.log(challenge);
+    let challenge = state.challenges.find(challenge => challenge.id === state.displayedChallenge);
+    console.log('i got called');
+    console.log(state.concept2.data);
     
     return state.concept2.data.
       filter(data => {
-        console.log(challenge,data, new Date(data.date), (challenge as Challenge).start);
-        
         return new Date(data.date) >= (challenge as Challenge).start
           && new Date(data.date) <= (challenge as Challenge).end
+        
       })
       .map(result => (
         {

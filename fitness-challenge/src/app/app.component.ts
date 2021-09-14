@@ -34,11 +34,11 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.store.dispatch({ type: fetchChallenges });
     if (this.tokenService.getToken()) {
       this.store.dispatch(setConcept2DataLoading({ isLoading: true }))
       this.store.dispatch({ type: fetchConcept2Data });
       this.store.dispatch({ type: fetchConcept2User });
-      this.store.dispatch({ type: fetchChallenges });
       // this.concept2Service
       //         .getUserData('me')
       //         .subscribe(

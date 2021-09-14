@@ -41,6 +41,11 @@ export const setConcept2DataLoading = createAction(
     props<{ isLoading: boolean }>()
 );
 
+export const setDisplayedChallenge = createAction(
+    '[Challenges] set displayed Challenge',
+    props<{ id: number }>()
+);
+
 //fetchActions that trigger effects
 
 export const fetchConcept2Data = '[Concept2] fetch data';

@@ -52,27 +52,6 @@ export class LogComponent implements OnInit {
     private concept2Service: Concept2Service,
     private store: Store
   ) {
-
-    // this.concept2Service.getResultsData('me').pipe(
-    //   map(results => results.data),
-    //   tap(console.log),
-    //   map(
-    //     (results: any[]) => {
-    //       return  results.map(result =>(
-    //         {
-    //           id: result.id,
-    //           date: result.date,
-    //           brand: 'concept2',
-    //           type: result.type,
-    //           distance: result.distance + 'm',
-    //           time: result.time_formatted,
-    //           pace: 0,
-    //           hearthRate: 0
-    //         }
-    //       ))
-    //     }
-    //   )
-    // )
   }
 
   displayedColumns: string[] = [
