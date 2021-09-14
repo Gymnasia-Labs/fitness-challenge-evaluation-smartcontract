@@ -12,6 +12,7 @@ import { AuthService } from '../services/auth.service';
 })
 export class ChallengeDetailComponent implements OnInit {
 
+  public progressBarValue: number = 0;
 
   constructor(private store: Store,
     private authService: AuthService,
@@ -29,6 +30,7 @@ export class ChallengeDetailComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.progressBarValue = this.calculateProgressbarLevel();
   }
 
   isLive(){
@@ -43,6 +45,15 @@ export class ChallengeDetailComponent implements OnInit {
 
   saveChallengeId(){
     localStorage.setItem(CHALLENGE_ID, ''+ this.challenge?.id);
+  }
+
+  calculateProgressbarLevel() {
+    let start = this.challenge?.start.valueOf();
+    let end = this.challenge?.end.valueOf();
+    let now = new Date().valueOf();
+    if(!start || ! end) return 0;
+    if(now < start ) return 0; 
+    return (now - start) / ( end - start ) *100 ;
   }
 
 }

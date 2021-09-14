@@ -30,6 +30,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { AdminComponent } from './admin/admin.component';
 import { FormsModule } from '@angular/forms';
 import { HomeComponent } from './home/home.component';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+
 
 
 @NgModule({
@@ -62,7 +64,8 @@ import { HomeComponent } from './home/home.component';
     MatChipsModule,
     MatIconModule,
     MatSidenavModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatProgressBarModule
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},

@@ -4,7 +4,8 @@ export interface TrainingData{
     brand: string,
     type: string,
     distance: string,
-    time: string,
+    time: number,
+    timeFormated: string,
     pace: number,
     hearthRate: number
 }

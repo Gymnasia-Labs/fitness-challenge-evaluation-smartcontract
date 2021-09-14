@@ -8,6 +8,7 @@ import { TrainingData } from '../models/training.data';
 import { merge } from 'rxjs';
 import { fetchConcept2Data, setConcept2DataLoading } from '../ngrx/app.actions';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ContractService } from '../services/contract.service';
 
 
 export interface PeriodicElement {
@@ -54,7 +55,8 @@ export class ChallengeComponent implements OnInit {
     'distance',
     'time',
     // 'pace', 
-    // 'hearthRate'
+    // 'hearthRate',
+    'submit'
   ];
 
   challenge$ = this.store.pipe(
@@ -66,7 +68,8 @@ export class ChallengeComponent implements OnInit {
     private store: Store,
     private authService: AuthService,
     private concept2: Concept2Service,
-    private _sanitizer: DomSanitizer
+    private _sanitizer: DomSanitizer,
+    private contractService: ContractService
     ) {
     this.id = +this.actRoute.snapshot.params.id;
     this.challenge$ = this.store.pipe(
@@ -117,6 +120,11 @@ export class ChallengeComponent implements OnInit {
 
 saveChallengeId(){
   localStorage.setItem(CHALLENGE_ID, ''+this.id);
+}
+
+submit(element: any) {
+  console.log(element);
+  this.contractService.submitChallenge(this.id, element.distance, element.time);
 }
 
 }
