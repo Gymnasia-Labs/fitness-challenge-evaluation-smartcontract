@@ -25,6 +25,10 @@ contract Challenger {
         uint32 data,
         uint256 time
     ) external returns (bool) {
+        IPublicLock lock = manager.getLock(id);
+
+        if(!lock.getHasValidKey()) unlockChallenge(id);
+
         manager.addLeaderboardEntry(id, msg.sender, data, time);
     }
 
