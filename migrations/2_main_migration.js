@@ -1,13 +1,14 @@
 const ChallengeManager = artifacts.require("ChallengeManager");
 const Challenger = artifacts.require("Challenger");
+const MaxTimeEvaluation = artifacts.require("MaxTimeEvaluation");
 
 module.exports = function(deployer) {
-  var challengeManager;
-  // deployer.deploy(Challenger);
   deployer
     .deploy(ChallengeManager)
-    .then(function (instance) {
-      challengeManager = instance;
-      return deployer.deploy(Challenger, challengeManager.address);
+    .then(function() {
+      return deployer.deploy(Challenger, ChallengeManager.address);
     })
+    .then(function() {
+      return deployer.deploy(MaxTimeEvaluation);
+    });
 };

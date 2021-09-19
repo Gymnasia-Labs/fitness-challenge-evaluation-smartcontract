@@ -9,11 +9,14 @@ contract MaxTimeEvaluation is Evaluation {
         public
         returns (address)
     {
+        require(entry.length > 0, "EMPTY_ARRAY");
         address firstAdr = entry[0].challenger;
         if (entry.length == 1) return firstAdr;
+
         uint256 first = entry[0].time;
+
         for (uint256 i = 1; i < entry.length; i++) {
-            if (first < entry[i].time) {
+            if (entry[i].time < first) {
                 first = entry[i].time;
                 firstAdr = entry[i].challenger;
             }

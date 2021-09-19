@@ -32,10 +32,11 @@ contract ChallengeManager is LockFactory {
         uint256 time;
     }
 
+    mapping(uint256 => LeaderboardEntry) public leaderboard;
     mapping(uint256 => Challenge) public challenges;
 
-    function setDisplayedChallengeID(uint256 id) external {
-        displayedChallenge = id;
+    function setDisplayedChallengeID(uint256 challengeId) external {
+        displayedChallenge = challengeId;
     }
 
     function getDisplayedChallengeID() public view returns (uint256) {
@@ -70,23 +71,34 @@ contract ChallengeManager is LockFactory {
     }
 
     function addLeaderboardEntry(
-        uint256 id,
+        uint256 challengeId,
         address sender,
         uint256 data,
         uint256 time,
         bool withUnlock
     ) public {
         require(
-            challenges[id].evaluation.checkRules(data),
+            challenges[challengeId].evaluation.checkRules(data),
             "WRONG DATA FOR THIS RULESET"
         );
-        challenges[id].leaderBoard.push(LeaderboardEntry(sender, data, time));
-
-        if (withUnlock) challenges[id].price += challenges[id].fee;
-
-        challenges[id].first = challenges[id].evaluation.evaluate(
-            challenges[id].leaderBoard
+        challenges[challengeId].leaderBoard.push(
+            LeaderboardEntry(sender, data, time)
         );
+        //for testing purpose
+        leaderboard[
+            challenges[challengeId].leaderBoard.length - 1
+        ] = challenges[challengeId].leaderBoard[
+            challenges[challengeId].leaderBoard.length - 1
+        ];
+
+        if (withUnlock) {
+            challenges[challengeId].price += challenges[challengeId].fee;
+            challenges[challengeId].currentParticipantsCount++;
+        }
+
+        challenges[challengeId].first = challenges[challengeId]
+            .evaluation
+            .evaluate(challenges[challengeId].leaderBoard);
     }
 
     function getWinner(uint256 challengeId) public view returns (address) {
@@ -111,5 +123,21 @@ contract ChallengeManager is LockFactory {
             array[i].first = challenges[i].first;
         }
         return array;
+    }
+
+    function getMaxParticipants(uint256 challengeId)
+        public
+        view
+        returns (uint256)
+    {
+        return challenges[challengeId].maxParticipantsCount;
+    }
+
+    function getCurrentParticipants(uint256 challengeId)
+        public
+        view
+        returns (uint256)
+    {
+        return challenges[challengeId].currentParticipantsCount;
     }
 }
