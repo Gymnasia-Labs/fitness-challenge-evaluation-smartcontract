@@ -49,9 +49,12 @@ contract Challenger {
 
     function receivePrice(uint256 challengeId) external {
         require(isWinner(challengeId), "Not the winner");
+
         IPublicLock lock = manager.getLock(challengeId);
-        // lock.withdraw(msg.sender, 0);
         lock.updateBeneficiary(msg.sender);
+        lock.withdraw(address(0), 0);
+
+        // lock.updateBeneficiary(address(this));
     }
 
     function isWinner(uint256 challengeId) public view returns (bool) {

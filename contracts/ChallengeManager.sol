@@ -60,6 +60,10 @@ contract ChallengeManager is LockFactory {
         uint256 fee,
         address evaluationAdr
     ) external returns (Challenge memory) {
+        //todo keys could be bought before start time through unlock
+        require(start > block.timestamp, "START_TIME_IN_THE_PAST");
+        require(end > start, "END_TIME_BEFORE_START_TIME");
+
         createNewLock(counter, end - start, fee, maxParticipantsCount);
 
         challenges[counter].id = counter;
@@ -92,25 +96,28 @@ contract ChallengeManager is LockFactory {
         challenges[challengeId].leaderBoard.push(
             LeaderboardEntry(sender, data, time)
         );
+
+        if (withUnlock) {
+            challenges[challengeId].price += challenges[challengeId].fee;
+            challenges[challengeId].currentParticipantsCount++;
+        }
+        challenges[challengeId].first = challenges[challengeId]
+            .evaluation
+            .evaluate(challenges[challengeId].leaderBoard);
+
         //for testing purpose
         leaderboard[
             challenges[challengeId].leaderBoard.length - 1
         ] = challenges[challengeId].leaderBoard[
             challenges[challengeId].leaderBoard.length - 1
         ];
-
-        if (withUnlock) {
-            challenges[challengeId].price += challenges[challengeId].fee;
-            challenges[challengeId].currentParticipantsCount++;
-        }
-
-        challenges[challengeId].first = challenges[challengeId]
-            .evaluation
-            .evaluate(challenges[challengeId].leaderBoard);
     }
 
     function getWinner(uint256 challengeId) public view returns (address) {
-        require(block.timestamp >= challenges[challengeId].end);
+        require(
+            block.timestamp >= challenges[challengeId].end,
+            "CHALLENGE_NOT_ENDED_YET"
+        );
         return challenges[challengeId].first;
     }
 
