@@ -41,7 +41,7 @@
         </div>
         <div>
             The athlete who submits a winning result before ({{challenge?.end |date : 'short'}}) will win
-            {{formatEther(challenge?.price)}} paid in (//todo:get currency).
+            {{formatEther(challenge?.price)}} paid in Ether.
         </div>
         <br>
         <div style="font-weight: bold;"> {{ (challenge?.maxParticipantsCount || 0) - (challenge?.currentParticipantsCount || 0) }} spot(s) left </div>
@@ -53,14 +53,14 @@
             Reward
         </div>
         <div>
-The athlete who submits a winning result before {{challenge?.end | date: 'short'}} will win {{formatEther(challenge?.price)}} paid in (//todo:get currency).
+The athlete who submits a winning result before {{challenge?.end | date: 'short'}} will win {{formatEther(challenge?.price)}} paid in Ether.
         </div>
         <div class="title">
             Fees
         </div>
         <div>
             50% of submission fees will be paid to the winning athlete.
-            The submission fee is {{formatEther(challenge?.fee)}} (//todo:get currency)
+            The submission fee is {{formatEther(challenge?.fee)}} Ether
         </div>
     </mat-card-content>
 
