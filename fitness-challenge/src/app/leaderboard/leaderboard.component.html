@@ -13,7 +13,7 @@
   <!-- time Column -->
   <ng-container matColumnDef="time">
     <th mat-header-cell *matHeaderCellDef> Time </th>
-    <td mat-cell *matCellDef="let element"> {{element.time}} </td>
+    <td mat-cell *matCellDef="let element"> {{getFormatedTime(element.time)}} </td>
   </ng-container>
 
   <!-- account Column -->

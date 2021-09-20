@@ -36,29 +36,29 @@ export class ContractService {
 
     if (typeof window.ethereum !== 'undefined') {
       // const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-  
+
       this.provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
-      this.provider.on("network", (newNetwork:any, oldNetwork:any) => {
+      this.provider.on("network", (newNetwork: any, oldNetwork: any) => {
         // When a Provider makes its initial connection, it emits a "network"
         // event with a null oldNetwork along with the newNetwork. So, if the
         // oldNetwork exists, it represents a changing network
-      
+
         if (oldNetwork) {
-            window.location.reload();
+          window.location.reload();
         } else
-        if(newNetwork.name !== 'rinkeby'){
-          alert('please use rinkeby network');
-        }
-    });
+          if (newNetwork.name !== 'rinkeby') {
+            alert('please use rinkeby network');
+          }
+      });
       console.log(this.provider);
 
       this.web3provider.enable()
-        .then((address: string) =>{
+        .then((address: string) => {
           this.userAddress = address[0];
           this.store.dispatch(setAddress({ address: address[0] }))
         }
         );
-        this.connectContract(this.provider);
+      this.connectContract(this.provider);
     }
 
 
@@ -87,7 +87,7 @@ export class ContractService {
     this.store.dispatch({ type: fetchChallenges });
   }
 
-  public getUnsignedTransaction (contract:any, functionName:string, args:Array<any>) {
+  public getUnsignedTransaction(contract: any, functionName: string, args: Array<any>) {
     return contract.interface.functions[functionName].encode(args);
   };
 
@@ -100,9 +100,9 @@ export class ContractService {
     price: string,
     meters: number
   ): Observable<boolean> {
-    console.log(price, ethers.utils.parseEther(''+price));
-    
-    return of(this.challengeManager.createChallenge(title, description, meters, start, end, participantsCount, ethers.utils.parseEther(''+price), evaluation));
+    console.log(price, ethers.utils.parseEther('' + price));
+
+    return of(this.challengeManager.createChallenge(title, description, meters, start, end, participantsCount, ethers.utils.parseEther('' + price), evaluation));
   }
 
   public getChallenges(): Promise<Challenge[]> {
@@ -112,18 +112,29 @@ export class ContractService {
   public async submitChallenge(id: number, data: string, time: number) {
     data = data.substring(0, data.length - 1)
     console.log(data);
-    
-    let price = await this.challengeManager.getKeyPrice(id);
-    price = ethers.utils.formatEther(price);
 
-    let tx = await this.challenger.populateTransaction.submitData(id, +data, time, {value: ethers.utils.parseEther(price)});
-    
-    let gas = await this.challenger.estimateGas.submitData(id, +data, time, {value: ethers.utils.parseEther(price)});
+    let challengeUnlocked = await this.challenger.hasUnlockedChallenge(id, this.userAddress);
+    let args = {};
+    if (!challengeUnlocked) {
+      let price = await this.challengeManager.getKeyPrice(id);
+      price = ethers.utils.formatEther(price);
+      console.log(price);
+      
 
-    console.log(gas);
+      let gas = await this.challenger.estimateGas.submitData(id, +data, time, { value: ethers.utils.parseEther(price) });
+      let add = gas.div(2);
+      gas = gas.add(add);
+      
+      args = { 
+        value: ethers.utils.parseEther(price), 
+        gasLimit: gas 
+       };
+    }
 
-    
-    this.challenger.submitData(id, +data, time, {value: ethers.utils.parseEther(price), gasLimit: gas*2});
+     this.challenger.submitData(id, +data, time, args)
+ 
+     
+
   }
 
 }

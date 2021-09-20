@@ -1,5 +1,5 @@
 export const contracts:any = {
-challengeManagerAddress: '0x463De6d3BC041247554C2C3912107A5C4383E494',
+challengeManagerAddress: '0xe7FAcc2248F86535931901e3349d85D84f5D5B20',
 challengeManagerAbi : [
   {
     "constant": true,
@@ -148,6 +148,21 @@ challengeManagerAbi : [
     ],
     "payable": false,
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "adr",
+        "type": "address"
+      }
+    ],
+    "name": "setChallenger",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -518,8 +533,8 @@ challengeManagerAbi : [
     "type": "function"
   }
 ],
-challengerAddress: '0x6593a4682A3E234365C1e30e7dfaD01F449a4e14',
-challengerAbi: [
+challengerAddress: '0xCECef5FbC8a4b5801359EC5F93ce605496e9b04c',
+challengerAbi:[
   {
     "inputs": [
       {
@@ -564,7 +579,7 @@ challengerAbi: [
     "type": "function"
   },
   {
-    "constant": true,
+    "constant": false,
     "inputs": [
       {
         "internalType": "uint256",
@@ -575,7 +590,7 @@ challengerAbi: [
     "name": "receivePrice",
     "outputs": [],
     "payable": false,
-    "stateMutability": "view",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -588,6 +603,47 @@ challengerAbi: [
       }
     ],
     "name": "isWinner",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "challengeId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "challenger",
+        "type": "address"
+      }
+    ],
+    "name": "hasUnlockedChallenge",
     "outputs": [
       {
         "internalType": "bool",

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Challenge } from '../models/challenge';
+import { Challenge, LeaderBoard } from '../models/challenge';
 
 @Component({
   selector: 'app-leaderboard',
@@ -15,9 +15,19 @@ export class LeaderboardComponent implements OnInit {
     'time',
     'account'];
 
-  @Input() dataSource: Challenge[] = [];
+  @Input() dataSource: LeaderBoard[] = [];
 
   ngOnInit(): void {
+   
+  }
+
+  getFormatedTime(time: number) {
+    let mins = Math.floor(time / 600);
+    let secs = (time % 600) / 10;
+    if(secs < 10)
+    return `${mins}:0${secs}`
+    else
+    return `${mins}:${secs}`
   }
 
 }

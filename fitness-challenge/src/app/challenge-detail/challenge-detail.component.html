@@ -44,7 +44,7 @@
             {{formatEther(challenge?.price)}} paid in (//todo:get currency).
         </div>
         <br>
-        <div style="font-weight: bold;"> {{ (challenge?.maxParticipantsCount || 0) - (challenge?.currentParticipantsCount || 0) }} spots left </div>
+        <div style="font-weight: bold;"> {{ (challenge?.maxParticipantsCount || 0) - (challenge?.currentParticipantsCount || 0) }} spot(s) left </div>
         <br>
         <div>Starts: {{challenge?.start | date: 'short'}}</div>
         <mat-progress-bar mode="determinate" [value]="progressBarValue"></mat-progress-bar>
