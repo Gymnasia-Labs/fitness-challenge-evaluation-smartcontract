@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.5.17 <0.9.0;
 
+import "./interfaces/unlock/IPublicLock.sol";
 import "./ChallengeManager.sol";
 
 contract Challenger {
@@ -8,6 +9,8 @@ contract Challenger {
 
     constructor(address adr) public {
         manager = ChallengeManager(adr);
+
+        manager.setChallenger(address(this));
     }
 
     function submitData(
@@ -44,13 +47,26 @@ contract Challenger {
         );
     }
 
-    function receivePrice(uint256 challengeId) external view {
+    function receivePrice(uint256 challengeId) external {
         require(isWinner(challengeId), "Not the winner");
-        // IPublicLock lock = manager.getLock(challengeId);
-        //add lock withdraw
+        IPublicLock lock = manager.getLock(challengeId);
+        // lock.withdraw(msg.sender, 0);
+        lock.updateBeneficiary(msg.sender);
     }
 
     function isWinner(uint256 challengeId) public view returns (bool) {
         return msg.sender == manager.getWinner(challengeId);
+    }
+
+    function getAddress() public view returns (address) {
+        return address(this);
+    }
+
+    function hasUnlockedChallenge(uint256 challengeId, address challenger)
+        external
+        view
+        returns (bool)
+    {
+        return manager.getLock(challengeId).getHasValidKey(challenger);
     }
 }

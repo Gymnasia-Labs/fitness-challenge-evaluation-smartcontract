@@ -4,9 +4,12 @@ pragma experimental ABIEncoderV2;
 
 import "./Evaluation.sol";
 import "./LockFactory.sol";
+import "./Challenger.sol";
 
 contract ChallengeManager is LockFactory {
     uint256 counter = 0;
+    Challenger challenger;
+
     // only for testing, used to determine which chellenge gets displayed on the frontEnd
     uint256 displayedChallenge = 0;
 
@@ -34,6 +37,10 @@ contract ChallengeManager is LockFactory {
 
     mapping(uint256 => LeaderboardEntry) public leaderboard;
     mapping(uint256 => Challenge) public challenges;
+
+    function setChallenger(address adr) public {
+        challenger = Challenger(adr);
+    }
 
     function setDisplayedChallengeID(uint256 challengeId) external {
         displayedChallenge = challengeId;
@@ -66,6 +73,7 @@ contract ChallengeManager is LockFactory {
         challenges[counter].evaluation = Evaluation(evaluationAdr);
 
         challenges[counter].evaluation.setRules(rules);
+        lockToId[counter].addLockManager(challenger.getAddress());
 
         return challenges[counter++];
     }
