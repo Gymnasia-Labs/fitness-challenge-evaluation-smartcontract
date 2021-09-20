@@ -20,41 +20,43 @@ export interface AppState {
 export const initialState: AppState =
 {
   challenges: [
-    {
-      id: 0,
-      title: '2000m Rowing Challenge',
-      description: 'The rower who can row the fastest distance within 1 minute will win 1 Bitcoin',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1024px-Bitcoin.svg.png',
-      rules: [
-        /* bitcoin-2136339_960_720 1 */
-        'Must use a concept2 pm5 rower',
-        `All logs must be submitted by ${new Date(new Date().valueOf() + 100 * 60 * 60 * 24).getHours()}pm EST on (${new Date(new Date().valueOf() + 100 * 60 * 60 * 24).toDateString()})`,
-        '.0005btc is required to submit your results'
-      ],
-      creator: 'Account #135',
-      creationTime: new Date(),
-      start: new Date(new Date().valueOf() - 1000 * 60 * 60 * 24 ),
-      end: new Date(new Date().valueOf() + 100 * 60 * 60 * 24),
-      participants: 0,
-      price: 1
-    },
-    {
-      id: 1,
-      title: '4000m Rowing Challenge',
-      description: 'The rower who can row the fastest distance within 2 minutes will win 1 Bitcoin',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1024px-Bitcoin.svg.png',
-      rules: [
-        'Must use a concept2 pm5 rower',
-        `All logs must be submitted by ${new Date(new Date().valueOf() + 300 * 60 * 60 * 24).getHours()}pm EST on (${new Date(new Date().valueOf() + 300 * 60 * 60 * 24).toDateString()})`,
-        '.0005btc is required to submit your results'
-      ],
-      creator: 'Account #135',
-      creationTime: new Date(),
-      start: new Date(new Date().valueOf() + 100 * 60 * 60 * 24),
-      end: new Date(new Date().valueOf() + 300 * 60 * 60 * 24),
-      participants: 10,
-      price: 2
-    },
+    // {
+    //   id: 0,
+    //   title: '2000m Rowing Challenge',
+    //   description: 'The rower who can row the fastest distance within 1 minute will win 1 Bitcoin',
+    //   image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1024px-Bitcoin.svg.png',
+    //   rules: [
+    //     /* bitcoin-2136339_960_720 1 */
+    //     'Must use a concept2 pm5 rower',
+    //     `All logs must be submitted by ${new Date(new Date().valueOf() + 100 * 60 * 60 * 24).getHours()}pm EST on (${new Date(new Date().valueOf() + 100 * 60 * 60 * 24).toDateString()})`,
+    //     '.0005btc is required to submit your results'
+    //   ],
+    //   creator: 'Account #135',
+    //   creationTime: new Date(),
+    //   start: new Date(new Date().valueOf() - 1000 * 60 * 60 * 24 ),
+    //   end: new Date(new Date().valueOf() + 100 * 60 * 60 * 24),
+    //   participants: 0,
+    //   price: 1,
+    //   leaderBoard: []
+    // },
+    // {
+    //   id: 1,
+    //   title: '4000m Rowing Challenge',
+    //   description: 'The rower who can row the fastest distance within 2 minutes will win 1 Bitcoin',
+    //   image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1024px-Bitcoin.svg.png',
+    //   rules: [
+    //     'Must use a concept2 pm5 rower',
+    //     `All logs must be submitted by ${new Date(new Date().valueOf() + 300 * 60 * 60 * 24).getHours()}pm EST on (${new Date(new Date().valueOf() + 300 * 60 * 60 * 24).toDateString()})`,
+    //     '.0005btc is required to submit your results'
+    //   ],
+    //   creator: 'Account #135',
+    //   creationTime: new Date(),
+    //   start: new Date(new Date().valueOf() + 100 * 60 * 60 * 24),
+    //   end: new Date(new Date().valueOf() + 300 * 60 * 60 * 24),
+    //   participants: 10,
+    //   price: 2,
+    //   leaderBoard: []
+    // },
     // {
     //   id: 2,
     //   title: '2500m Rowing Challenge',

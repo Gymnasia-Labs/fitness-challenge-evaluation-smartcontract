@@ -31,6 +31,7 @@ import { AdminComponent } from './admin/admin.component';
 import { FormsModule } from '@angular/forms';
 import { HomeComponent } from './home/home.component';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { LeaderboardComponent } from './leaderboard/leaderboard.component';
 
 
 
@@ -46,7 +47,8 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     SettingsComponent,
     MembershipsComponent,
     AdminComponent,
-    HomeComponent
+    HomeComponent,
+    LeaderboardComponent
   ],
   imports: [
     StoreModule.forRoot({ data: appReducer }),
