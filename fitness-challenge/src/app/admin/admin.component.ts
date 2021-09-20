@@ -15,7 +15,10 @@ export class AdminComponent implements OnInit {
   start: number = 0;
   end: number = 0;
   count: number = 2;
-  price: number = 0;
+  price: string = '';
+  meters: number = 1000;
+  startTime: string = '';
+  endTime: string = '';
 
   constructor(
     private contractService: ContractService,
@@ -26,11 +29,20 @@ export class AdminComponent implements OnInit {
   }
 
   saveChallenge() {
+    console.log(this.startTime);
+    
     console.log(this.title, this.desc, this.start, this.end, this.count, this.price);
-    let unixStart = Math.floor(new Date(this.start).valueOf() / 1000);
+    let start = new Date(this.start);
+    start.setHours(+this.startTime.slice(0,2));
+    start.setMinutes(+this.startTime.slice(3,5))
+    let unixStart = Math.floor(start.valueOf() / 1000);
+
+    let end = new Date(this.end);
+    end.setHours(+this.endTime.slice(0,2));
+    end.setMinutes(+this.endTime.slice(3,5));
     let unixEnd = Math.floor(new Date(this.end).valueOf() / 1000);
     this.contractService
-      .createChallenge(this.title, this.desc, unixStart, unixEnd, this.count, this.price)
+      .createChallenge(this.title, this.desc, unixStart, unixEnd, this.count, this.price, this.meters)
       .subscribe(() =>this.store.dispatch({ type: fetchChallenges }));
     
   }

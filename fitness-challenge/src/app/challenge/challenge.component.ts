@@ -35,11 +35,8 @@ const ELEMENT_DATA: PeriodicElement[] = [
 
 export class ChallengeComponent implements OnInit {
   safeURL: any;
-  displayedColumns: string[] = [
-    // 'distance',
-    'time',
-    'account'];
-  dataSource = ELEMENT_DATA;
+
+  dataSource$ = ELEMENT_DATA;
   id: number = -1;
 
   logData$ = this.store.pipe(

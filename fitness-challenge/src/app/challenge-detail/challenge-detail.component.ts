@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
+import { ethers } from 'ethers';
 import { CHALLENGE_ID } from '../challenge/challenge.component';
 import { Challenge } from '../models/challenge';
 import { selectConcept2Name } from '../ngrx/app.reducer';
@@ -54,6 +55,12 @@ export class ChallengeDetailComponent implements OnInit {
     if(!start || ! end) return 0;
     if(now < start ) return 0; 
     return (now - start) / ( end - start ) *100 ;
+  }
+
+  formatEther(wei:number|undefined){
+    if(wei)
+    return ethers.utils.formatEther(wei);
+    return 0;
   }
 
 }

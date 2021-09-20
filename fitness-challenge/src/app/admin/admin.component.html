@@ -4,12 +4,14 @@ title <input type="text" id="title" [(ngModel)]="title">
 <br>
 description <input type="text" [(ngModel)]="desc">
 <br> 
-start <input type="date" [(ngModel)]="start">
+start UTC <input type="date" [(ngModel)]="start"> : <input type="time" [(ngModel)]="startTime">
 <br>
-end <input type="date" [(ngModel)]="end">
+end UTC <input type="date" [(ngModel)]="end"> : <input type="time" [(ngModel)]="endTime">
+<br>
+required meters <input type="number" [(ngModel)]="meters">
 <br>
 participantsCount <input type="number" [(ngModel)]="count">
 <br>
-price <input type="number" [(ngModel)]="price">
+fee (Ether) <input type="number" [(ngModel)]="price">
 <button (click)="saveChallenge()">submit</button>
 <button (click)="fetchChallenges()">fetchChallenges</button>

@@ -1,7 +1,7 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { createSelector, createFeatureSelector, createReducer, on } from "@ngrx/store";
 import { ethers } from "ethers";
-import { Challenge } from "../models/challenge";
+import { Challenge, LeaderBoard} from "../models/challenge";
 import { Concept2 } from "../models/concept2";
 import { TrainingData } from "../models/training.data";
 import {
@@ -20,41 +20,43 @@ export interface AppState {
 export const initialState: AppState =
 {
   challenges: [
-    {
-      id: 0,
-      title: '2000m Rowing Challenge',
-      description: 'The rower who can row the fastest distance within 1 minute will win 1 Bitcoin',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1024px-Bitcoin.svg.png',
-      rules: [
-        /* bitcoin-2136339_960_720 1 */
-        'Must use a concept2 pm5 rower',
-        `All logs must be submitted by ${new Date(new Date().valueOf() + 100 * 60 * 60 * 24).getHours()}pm EST on (${new Date(new Date().valueOf() + 100 * 60 * 60 * 24).toDateString()})`,
-        '.0005btc is required to submit your results'
-      ],
-      creator: 'Account #135',
-      creationTime: new Date(),
-      start: new Date(new Date().valueOf() - 1000 * 60 * 60 * 24 ),
-      end: new Date(new Date().valueOf() + 100 * 60 * 60 * 24),
-      participants: 0,
-      price: 1
-    },
-    {
-      id: 1,
-      title: '4000m Rowing Challenge',
-      description: 'The rower who can row the fastest distance within 2 minutes will win 1 Bitcoin',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1024px-Bitcoin.svg.png',
-      rules: [
-        'Must use a concept2 pm5 rower',
-        `All logs must be submitted by ${new Date(new Date().valueOf() + 300 * 60 * 60 * 24).getHours()}pm EST on (${new Date(new Date().valueOf() + 300 * 60 * 60 * 24).toDateString()})`,
-        '.0005btc is required to submit your results'
-      ],
-      creator: 'Account #135',
-      creationTime: new Date(),
-      start: new Date(new Date().valueOf() + 100 * 60 * 60 * 24),
-      end: new Date(new Date().valueOf() + 300 * 60 * 60 * 24),
-      participants: 10,
-      price: 2
-    },
+    // {
+    //   id: 0,
+    //   title: '2000m Rowing Challenge',
+    //   description: 'The rower who can row the fastest distance within 1 minute will win 1 Bitcoin',
+    //   image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1024px-Bitcoin.svg.png',
+    //   rules: [
+    //     /* bitcoin-2136339_960_720 1 */
+    //     'Must use a concept2 pm5 rower',
+    //     `All logs must be submitted by ${new Date(new Date().valueOf() + 100 * 60 * 60 * 24).getHours()}pm EST on (${new Date(new Date().valueOf() + 100 * 60 * 60 * 24).toDateString()})`,
+    //     '.0005btc is required to submit your results'
+    //   ],
+    //   creator: 'Account #135',
+    //   creationTime: new Date(),
+    //   start: new Date(new Date().valueOf() - 1000 * 60 * 60 * 24 ),
+    //   end: new Date(new Date().valueOf() + 100 * 60 * 60 * 24),
+    //   participants: 0,
+    //   price: 1,
+    //   leaderBoard: []
+    // },
+    // {
+    //   id: 1,
+    //   title: '4000m Rowing Challenge',
+    //   description: 'The rower who can row the fastest distance within 2 minutes will win 1 Bitcoin',
+    //   image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1024px-Bitcoin.svg.png',
+    //   rules: [
+    //     'Must use a concept2 pm5 rower',
+    //     `All logs must be submitted by ${new Date(new Date().valueOf() + 300 * 60 * 60 * 24).getHours()}pm EST on (${new Date(new Date().valueOf() + 300 * 60 * 60 * 24).toDateString()})`,
+    //     '.0005btc is required to submit your results'
+    //   ],
+    //   creator: 'Account #135',
+    //   creationTime: new Date(),
+    //   start: new Date(new Date().valueOf() + 100 * 60 * 60 * 24),
+    //   end: new Date(new Date().valueOf() + 300 * 60 * 60 * 24),
+    //   participants: 10,
+    //   price: 2,
+    //   leaderBoard: []
+    // },
     // {
     //   id: 2,
     //   title: '2500m Rowing Challenge',
@@ -120,7 +122,8 @@ const toChallenge = (challenge: Challenge) => {
     id: +challenge.id.toString(),
     start: new Date( +challenge.start * 1000), 
     end : new Date( +challenge.end * 1000),
-    price: +challenge.price.toString()
+    price: +challenge.price.toString(),
+    leaderBoard: [...challenge.leaderBoard].sort( (a:LeaderBoard, b:LeaderBoard)=> a.time - b.time)
   };
 }
 
