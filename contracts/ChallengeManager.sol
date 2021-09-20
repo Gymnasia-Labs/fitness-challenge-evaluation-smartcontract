@@ -128,6 +128,8 @@ contract ChallengeManager is LockFactory {
             array[i].maxParticipantsCount = challenges[i].maxParticipantsCount;
             array[i].leaderBoard = challenges[i].leaderBoard;
             array[i].fee = challenges[i].fee;
+            array[i].price = challenges[i].price;
+            array[i].evaluation = challenges[i].evaluation;
             array[i].first = challenges[i].first;
         }
         return array;
