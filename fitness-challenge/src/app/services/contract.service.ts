@@ -132,9 +132,11 @@ export class ContractService {
     }
 
      this.challenger.submitData(id, +data, time, args)
- 
-     
 
+  }
+
+  redeemPrice(id:number){
+    this.challenger.receivePrice(id);
   }
 
 }

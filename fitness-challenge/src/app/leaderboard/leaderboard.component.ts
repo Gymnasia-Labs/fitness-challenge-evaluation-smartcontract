@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Challenge, LeaderBoard } from '../models/challenge';
 
 @Component({
@@ -7,7 +7,7 @@ import { Challenge, LeaderBoard } from '../models/challenge';
   styleUrls: ['./leaderboard.component.scss']
 })
 export class LeaderboardComponent implements OnInit {
-
+  @Output() redeemPrice = new EventEmitter();
   constructor() { }
 
   displayedColumns: string[] = [
@@ -28,6 +28,10 @@ export class LeaderboardComponent implements OnInit {
     return `${mins}:0${secs}`
     else
     return `${mins}:${secs}`
+  }
+
+  getPrice(){
+    this.redeemPrice.emit();
   }
 
 }
