@@ -157,4 +157,20 @@ contract ChallengeManager is LockFactory {
     {
         return challenges[challengeId].currentParticipantsCount;
     }
+
+    function getEndOfChallenge(uint256 challengeId)
+        public
+        view
+        returns (uint256)
+    {
+        return challenges[challengeId].end;
+    }
+
+    function getStartOfChallenge(uint256 challengeId)
+        public
+        view
+        returns (uint256)
+    {
+        return challenges[challengeId].start;
+    }
 }
