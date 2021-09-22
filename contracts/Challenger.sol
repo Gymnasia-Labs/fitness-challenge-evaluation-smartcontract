@@ -24,11 +24,20 @@ contract Challenger {
         if (!lock.getHasValidKey(msg.sender)) {
             require(address(lock) != address(0), "NO_LOCK_WITH_THIS_KEY");
             require(
+                manager.getEndOfChallenge(challengeId) > block.timestamp,
+                "CHALLENGE_ALREADY_OVER"
+            );
+            require(
+                manager.getStartOfChallenge(challengeId) < block.timestamp,
+                "CHALLENGE_NOT_STARTED_YET"
+            );
+            require(
                 manager.getCurrentParticipants(challengeId) <
                     manager.getMaxParticipants(challengeId),
                 // || manager.getMaxParticipants(challengeId) == 0
                 "CHALLENGE_FULL"
             );
+
             lock.purchase.value(msg.value)(
                 lock.keyPrice(),
                 msg.sender,
