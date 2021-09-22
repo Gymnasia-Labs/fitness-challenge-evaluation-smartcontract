@@ -9,9 +9,9 @@ export interface Challenge {
     start: Date,
     end: Date,
     participants: number,
-    price: number,
+    price: string,
     leaderBoard: LeaderBoard[];
-    fee: number,
+    fee: string,
     currentParticipantsCount: number,
     maxParticipantsCount: number
 }
