@@ -7,8 +7,9 @@ import {
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { TokenService } from './token.service';
-import { catchError, tap } from 'rxjs/operators';
+import { brands, TokenService } from './token.service';
+import { catchError, switchMap, tap } from 'rxjs/operators';
+import { Concept2Service } from './concept2.service';
 
 const HTTP_OPTIONS = {
   headers: new HttpHeaders({
@@ -45,7 +46,10 @@ export class AuthService {
     console.log(message);
   }
 
-  constructor(private http: HttpClient, private tokenService: TokenService) {}
+  constructor(
+    private http: HttpClient, 
+    private tokenService: TokenService,
+    private concept2Service: Concept2Service) {}
 
   login(code: string): Observable<any> {
     console.log(code);
@@ -73,17 +77,20 @@ export class AuthService {
           this.tokenService.saveToken(res.access_token);
           this.tokenService.saveRefreshToken(res.refresh_token);
         }),
+        switchMap(() =>this.concept2Service.getUserData('me')),
+        tap((res) => this.tokenService.saveUserId(res.data.username, brands.CONCEPT2) ),
         catchError(AuthService.handleError)
       );
   }
 
   refreshToken(refreshData: any): Observable<any> {
-    // this.tokenService.removeToken();
-    // this.tokenService.removeRefreshToken();
-
+    this.tokenService.removeToken();
+    this.tokenService.removeRefreshToken();
+    let userid = this.tokenService.getUserId(brands.CONCEPT2);
+    if(!userid) userid = '';
     const body = new HttpParams()
       .set('client_id', environment.client_id)
-      .set('client_secret', environment.client_secret)
+      .set('user_id', userid)
       .set('grant_type', 'refresh_token')
       .set('redirect_uri', environment.redirect_uri)
       .set('refresh_token', refreshData.refresh_token)
