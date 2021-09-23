@@ -60,7 +60,7 @@ export class AuthInterceptor implements HttpInterceptor {
                     location.reload();
                   });
               } else {
-                // this.router.navigate(['login']).then(_ => console.log('redirect to login'));
+                this.router.navigate(['settings']).then(_ => console.log('redirect to login'));
               }
             }
             return throwError(error);

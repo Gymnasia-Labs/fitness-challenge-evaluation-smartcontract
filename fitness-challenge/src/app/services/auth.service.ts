@@ -90,7 +90,7 @@ export class AuthService {
     if(!userid) userid = '';
     const body = new HttpParams()
       .set('client_id', environment.client_id)
-      .set('user_id', userid)
+      // .set('user_id', userid)
       .set('grant_type', 'refresh_token')
       .set('redirect_uri', environment.redirect_uri)
       .set('refresh_token', refreshData.refresh_token)
@@ -99,7 +99,7 @@ export class AuthService {
 
     return this.http
       .post<any>(
-        environment.CONCEPT2_API + '/oauth/access_token',
+        environment.GYMNASIA_API + '/oauth/access_token',
         body,
         HTTP_OPTIONS
       )
