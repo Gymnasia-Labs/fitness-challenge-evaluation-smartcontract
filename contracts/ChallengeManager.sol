@@ -173,7 +173,7 @@ contract ChallengeManager is LockFactory {
     function getLeaderboard(uint256 challengeId)
         external
         view
-        returns (uint256)
+        returns (LeaderboardEntry[] memory)
     {
         return leaderboards[challengeId];
     }
