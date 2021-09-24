@@ -10,9 +10,6 @@ contract ChallengeManager is LockFactory {
     uint256 counter = 0;
     Challenger challenger;
 
-    // only for testing, used to determine which chellenge gets displayed on the frontEnd
-    uint256 displayedChallenge = 0;
-
     struct Challenge {
         uint256 id;
         address creator;
@@ -25,35 +22,33 @@ contract ChallengeManager is LockFactory {
         uint256 fee;
         uint256 price;
         address first;
-        LeaderboardEntry[] leaderBoard;
-        Evaluation evaluation;
+        // LeaderboardEntry[] leaderBoard;
+    }
+
+    struct Rules {
+        uint32[] types;
+        uint32[] ruleset;
     }
 
     struct LeaderboardEntry {
         address challenger;
-        uint256 data; //todo change data to array if multiple challenges in one needed
-        uint256 time;
+        uint32[] data; //todo change data to array if multiple challenges in one needed
+        uint32[] time;
     }
 
-    mapping(uint256 => LeaderboardEntry) public leaderboard;
+    mapping(uint256 => LeaderboardEntry[]) public leaderboards;
     mapping(uint256 => Challenge) public challenges;
+    mapping(uint256 => Rules) internal rules;
+    mapping(uint256 => Evaluation) public evaluations;
 
     function setChallenger(address adr) public {
         challenger = Challenger(adr);
     }
 
-    function setDisplayedChallengeID(uint256 challengeId) external {
-        displayedChallenge = challengeId;
-    }
-
-    function getDisplayedChallengeID() public view returns (uint256) {
-        return displayedChallenge;
-    }
-
     function createChallenge(
         string calldata title,
-        string calldata description,
-        uint256 rules,
+        uint32[] calldata types,
+        uint32[] calldata ruleset,
         uint256 start,
         uint256 end,
         uint256 maxParticipantsCount,
@@ -61,22 +56,25 @@ contract ChallengeManager is LockFactory {
         address evaluationAdr
     ) external returns (Challenge memory) {
         //todo keys could be bought before start time through unlock
-        require(start > block.timestamp, "START_TIME_IN_THE_PAST");
+        require(start > block.timestamp, "START_TIME_IN_THE_PAST"); //start
         require(end > start, "END_TIME_BEFORE_START_TIME");
 
         createNewLock(counter, end - start, fee, maxParticipantsCount);
 
+        rules[counter] = Rules(types, ruleset);
+
         challenges[counter].id = counter;
         challenges[counter].creator = msg.sender;
         challenges[counter].title = title;
-        challenges[counter].description = description;
+        challenges[counter]
+            .description = "In this challenge you need to row 2000m in the shortes amount of time.";
         challenges[counter].start = start;
         challenges[counter].end = end;
         challenges[counter].maxParticipantsCount = maxParticipantsCount;
         challenges[counter].fee = fee;
-        challenges[counter].evaluation = Evaluation(evaluationAdr);
+        evaluations[counter] = Evaluation(evaluationAdr);
 
-        challenges[counter].evaluation.setRules(rules);
+        evaluations[counter].setRules(counter, ruleset);
         lockToId[counter].addLockManager(challenger.getAddress());
 
         return challenges[counter++];
@@ -85,32 +83,25 @@ contract ChallengeManager is LockFactory {
     function addLeaderboardEntry(
         uint256 challengeId,
         address sender,
-        uint256 data,
-        uint256 time,
+        uint32[] memory data,
+        uint32[] memory time,
         bool withUnlock
     ) public {
+        require(msg.sender == challenger.getAddress(), "NOT_CHALLENGER");
         require(
-            challenges[challengeId].evaluation.checkRules(data),
+            evaluations[challengeId].checkRules(challengeId, data),
             "WRONG DATA FOR THIS RULESET"
         );
-        challenges[challengeId].leaderBoard.push(
-            LeaderboardEntry(sender, data, time)
-        );
+        leaderboards[challengeId].push(LeaderboardEntry(sender, data, time));
 
         if (withUnlock) {
             challenges[challengeId].price += challenges[challengeId].fee;
             challenges[challengeId].currentParticipantsCount++;
         }
-        challenges[challengeId].first = challenges[challengeId]
-            .evaluation
-            .evaluate(challenges[challengeId].leaderBoard);
 
-        //for testing purpose
-        leaderboard[
-            challenges[challengeId].leaderBoard.length - 1
-        ] = challenges[challengeId].leaderBoard[
-            challenges[challengeId].leaderBoard.length - 1
-        ];
+        challenges[challengeId].first = evaluations[challengeId].evaluate(
+            leaderboards[challengeId]
+        );
     }
 
     function getWinner(uint256 challengeId) public view returns (address) {
@@ -133,13 +124,19 @@ contract ChallengeManager is LockFactory {
             array[i].currentParticipantsCount = challenges[i]
                 .currentParticipantsCount;
             array[i].maxParticipantsCount = challenges[i].maxParticipantsCount;
-            array[i].leaderBoard = challenges[i].leaderBoard;
             array[i].fee = challenges[i].fee;
             array[i].price = challenges[i].price;
-            array[i].evaluation = challenges[i].evaluation;
             array[i].first = challenges[i].first;
         }
         return array;
+    }
+
+    function getChallengeRuleSet(uint256 challengeId)
+        external
+        view
+        returns (Rules memory)
+    {
+        return rules[challengeId];
     }
 
     function getMaxParticipants(uint256 challengeId)

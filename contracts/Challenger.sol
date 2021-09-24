@@ -15,22 +15,24 @@ contract Challenger {
 
     function submitData(
         uint256 challengeId,
-        uint32 data,
-        uint256 time
+        uint32[] calldata data,
+        uint32[] calldata time
     ) external payable returns (bool) {
         IPublicLock lock = manager.getLock(challengeId);
+        require(address(lock) != address(0), "THERE_IS_NO_LOCK");
+
+        require(
+            manager.getEndOfChallenge(challengeId) > block.timestamp,
+            "CHALLENGE_ALREADY_OVER"
+        );
+        require(
+            manager.getStartOfChallenge(challengeId) < block.timestamp,
+            "CHALLENGE_NOT_STARTED_YET"
+        );
+
         bool withUnlock = false;
 
         if (!lock.getHasValidKey(msg.sender)) {
-            require(address(lock) != address(0), "NO_LOCK_WITH_THIS_KEY");
-            require(
-                manager.getEndOfChallenge(challengeId) > block.timestamp,
-                "CHALLENGE_ALREADY_OVER"
-            );
-            require(
-                manager.getStartOfChallenge(challengeId) < block.timestamp,
-                "CHALLENGE_NOT_STARTED_YET"
-            );
             require(
                 manager.getCurrentParticipants(challengeId) <
                     manager.getMaxParticipants(challengeId),
