@@ -22,7 +22,6 @@ contract ChallengeManager is LockFactory {
         uint256 fee;
         uint256 price;
         address first;
-        // LeaderboardEntry[] leaderBoard;
     }
 
     struct Rules {
@@ -169,5 +168,13 @@ contract ChallengeManager is LockFactory {
         returns (uint256)
     {
         return challenges[challengeId].start;
+    }
+
+    function getLeaderboard(uint256 challengeId)
+        external
+        view
+        returns (uint256)
+    {
+        return leaderboards[challengeId];
     }
 }
