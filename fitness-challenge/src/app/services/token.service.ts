@@ -3,6 +3,10 @@ import { Injectable } from '@angular/core';
 const ACCESS_TOKEN = 'access_token';
 const REFRESH_TOKEN = 'refresh_token';
 
+export const brands = {
+  CONCEPT2: "concept2"
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -18,12 +22,20 @@ export class TokenService {
     return localStorage.getItem(REFRESH_TOKEN);
   }
 
+  getUserId( brand: string){
+    return localStorage.getItem('user_' + brand);
+  }
+
   saveToken(token:string): void {
     localStorage.setItem(ACCESS_TOKEN, token);
   }
 
   saveRefreshToken(refreshToken:string): void {
     localStorage.setItem(REFRESH_TOKEN, refreshToken);
+  }
+
+  saveUserId(id: string, brand: string){
+    localStorage.setItem('user_' + brand, id);
   }
 
   removeToken(): void {

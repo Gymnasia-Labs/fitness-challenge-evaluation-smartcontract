@@ -57,7 +57,7 @@ export class ChallengeDetailComponent implements OnInit {
     return (now - start) / ( end - start ) *100 ;
   }
 
-  formatEther(wei:number|undefined){
+  formatEther(wei:string|undefined){
     if(wei)
     return ethers.utils.formatEther(wei);
     return 0;

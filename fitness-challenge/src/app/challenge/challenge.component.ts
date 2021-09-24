@@ -128,4 +128,9 @@ export class ChallengeComponent implements OnInit {
     this.contractService.submitChallenge(this.id, element.distance, element.time);
   }
 
+  redeemPrice() {
+    console.log('redeemprice called');
+    this.contractService.redeemPrice(this.id)
+  }
+
 }

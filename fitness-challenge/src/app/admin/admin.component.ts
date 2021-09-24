@@ -40,7 +40,8 @@ export class AdminComponent implements OnInit {
     let end = new Date(this.end);
     end.setHours(+this.endTime.slice(0,2));
     end.setMinutes(+this.endTime.slice(3,5));
-    let unixEnd = Math.floor(new Date(this.end).valueOf() / 1000);
+    let unixEnd = Math.floor(end.valueOf() / 1000);
+    
     this.contractService
       .createChallenge(this.title, this.desc, unixStart, unixEnd, this.count, this.price, this.meters)
       .subscribe(() =>this.store.dispatch({ type: fetchChallenges }));

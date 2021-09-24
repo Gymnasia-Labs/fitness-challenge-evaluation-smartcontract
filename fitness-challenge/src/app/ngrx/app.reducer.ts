@@ -122,7 +122,7 @@ const toChallenge = (challenge: Challenge) => {
     id: +challenge.id.toString(),
     start: new Date( +challenge.start * 1000), 
     end : new Date( +challenge.end * 1000),
-    price: +challenge.price.toString(),
+    price: challenge.price.toString(),
     leaderBoard: [...challenge.leaderBoard].sort( (a:LeaderBoard, b:LeaderBoard)=> a.time - b.time)
   };
 }
@@ -188,9 +188,9 @@ export const selectTrainingsForDisplayedChallenge  = createSelector<any, any, an
     
     return state.concept2.data.
       filter(data => {
-        return new Date(data.date) >= (challenge as Challenge).start
-          && new Date(data.date) <= (challenge as Challenge).end
-        
+        // return new Date(data.date) >= (challenge as Challenge).start
+        //   && new Date(data.date) <= (challenge as Challenge).end
+        return true;
       })
       .map(result => (
         {
