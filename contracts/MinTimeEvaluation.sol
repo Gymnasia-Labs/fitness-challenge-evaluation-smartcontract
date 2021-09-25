@@ -4,7 +4,7 @@ pragma experimental ABIEncoderV2;
 
 import "./Evaluation.sol";
 
-contract MinSingleTimeEvaluation is Evaluation {
+contract MinTimeEvaluation is Evaluation {
     constructor(address adr) public Evaluation(adr) {}
 
     function evaluate(ChallengeManager.LeaderboardEntry[] memory entry)
@@ -15,13 +15,24 @@ contract MinSingleTimeEvaluation is Evaluation {
         address challenger = entry[0].challenger;
         if (entry.length == 1) return challenger;
 
-        uint256 first = entry[0].time[0];
+        uint256 i;
+        uint256 j;
+        uint256 sum = 0;
+        uint256 min = 0;
 
-        for (uint256 i = 1; i < entry.length; i++) {
-            if (entry[i].time[0] < first) {
-                first = entry[i].time[0];
+        for (i = 0; i < entry[0].time.length; i++) {
+            min += entry[0].time[i];
+        }
+
+        for (i = 1; i < entry.length; i++) {
+            for (j = 0; j < entry[i].time.length; j++) {
+                sum += entry[i].time[j];
+            }
+            if (sum < min) {
+                min = sum;
                 challenger = entry[i].challenger;
             }
+            sum = 0;
         }
         return challenger;
     }
