@@ -11,17 +11,6 @@ import { fetchChallenges, fetchConcept2Data, fetchConcept2User, setChallenges, s
 @Injectable()
 export class AppEffects {
 
-    // fetchConcept2Lo$ = createEffect(() => this.actions$.pipe(
-    //     ofType(fetchConcept2Data),
-    //     mergeMap(() => from(this.concept2Service.getResultsData('me'))
-    //         .pipe(
-    //             tap(res => console.log(res)),
-    //             map(result => setConcept2Data({ data: result })),
-    //             catchError(() => EMPTY)
-    //         ))
-    // )
-    // );
-
     fetchConcept2Log$ = createEffect(() => this.actions$.pipe(
         ofType(fetchConcept2Data),
         switchMap((action: any) =>
@@ -60,18 +49,6 @@ export class AppEffects {
     )
     );
 
-
-    // createRestaurant$ = createEffect(() => this.actions$.pipe(
-    //     ofType(createRestaurantType),
-    //     switchMap((action: any) =>
-    //         from(this.contractService.createRestaurant(action.payload.name, action.payload.time))
-    //             .pipe(
-    //                 // tap(console.log),
-    //                 map(() => setRestaurantsLoading({ isLoading: true })),
-    //                 catchError(() => EMPTY)
-    //             ))
-    // )
-    // );
 
     
     constructor(

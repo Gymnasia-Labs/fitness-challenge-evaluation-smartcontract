@@ -29,9 +29,6 @@ export class AdminComponent implements OnInit {
   }
 
   saveChallenge() {
-    console.log(this.startTime);
-    
-    console.log(this.title, this.desc, this.start, this.end, this.count, this.price);
     let start = new Date(this.start);
     start.setHours(+this.startTime.slice(0,2));
     start.setMinutes(+this.startTime.slice(3,5))

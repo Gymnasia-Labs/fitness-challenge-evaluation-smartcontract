@@ -50,8 +50,6 @@ export class ContractService {
             alert('please use rinkeby network');
           }
       });
-      console.log(this.provider);
-
       this.web3provider.enable()
         .then((address: string) => {
           this.userAddress = address[0];
@@ -100,8 +98,6 @@ export class ContractService {
     price: string,
     meters: number
   ): Observable<boolean> {
-    console.log(price, ethers.utils.parseEther('' + price));
-
     return of(this.challengeManager.createChallenge(title, description, meters, start, end, participantsCount, ethers.utils.parseEther('' + price), evaluation));
   }
 
@@ -110,16 +106,13 @@ export class ContractService {
   }
 
   public async submitChallenge(id: number, data: string, time: number) {
-    data = data.substring(0, data.length - 1)
-    console.log(data);
+    data = data.substring(0, data.length - 1);
 
     let challengeUnlocked = await this.challenger.hasUnlockedChallenge(id, this.userAddress);
     let args = {};
     if (!challengeUnlocked) {
       let price = await this.challengeManager.getKeyPrice(id);
       price = ethers.utils.formatEther(price);
-      console.log(price);
-      
 
       let gas = await this.challenger.estimateGas.submitData(id, +data, time, { value: ethers.utils.parseEther(price) });
       let add = gas.div(2);

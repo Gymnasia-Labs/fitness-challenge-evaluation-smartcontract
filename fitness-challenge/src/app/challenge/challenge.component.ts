@@ -129,7 +129,6 @@ export class ChallengeComponent implements OnInit {
   }
 
   redeemPrice() {
-    console.log('redeemprice called');
     this.contractService.redeemPrice(this.id)
   }
 

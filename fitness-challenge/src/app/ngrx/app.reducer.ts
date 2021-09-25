@@ -104,7 +104,7 @@ export const initialState: AppState =
 export const appReducer = createReducer(
   initialState,
   // on(setRestaurants, (state, { restaurants }) =>({ ...state, restaurants: [...restaurants], restaurantsLoading: false })) ,
-  on(setChallenges, (state, { challenges }) => {console.log('setting challenges...'); return  ({ ...state, challenges: challenges.map(toChallenge) })}),
+  on(setChallenges, (state, { challenges }) => ({ ...state, challenges: challenges.map(toChallenge) })),
   on(setAddress, (state, { address }) => ({ ...state, address: address })),
   on(setConcept2Name, (state, { name }) => ({ ...state, concept2: { ...state.concept2, name: name, } })),
   on(setConcept2Data, (state, { data }) => ({ ...state, concept2: { ...state.concept2, data: data, loading: false } })),
@@ -183,14 +183,12 @@ export const selectTrainingsForDisplayedChallenge  = createSelector<any, any, an
   (reducer: any) => reducer.data,
   (state: AppState,) => {
     let challenge = state.challenges.find(challenge => challenge.id === state.displayedChallenge);
-    console.log('i got called');
-    console.log(state.concept2.data);
     
     return state.concept2.data.
       filter(data => {
-        // return new Date(data.date) >= (challenge as Challenge).start
-        //   && new Date(data.date) <= (challenge as Challenge).end
-        return true;
+        return new Date(data.date) >= (challenge as Challenge).start
+          && new Date(data.date) <= (challenge as Challenge).end
+        // return true;
       })
       .map(result => (
         {

@@ -66,9 +66,9 @@ export class LogComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.logData$.subscribe(
-      data => console.log('commulatedData: ', data)
-    )
+    // this.logData$.subscribe(
+    //   data => console.log('commulatedData: ', data)
+    // )
 
   }
 

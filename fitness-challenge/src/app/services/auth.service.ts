@@ -52,8 +52,6 @@ export class AuthService {
     private concept2Service: Concept2Service) {}
 
   login(code: string): Observable<any> {
-    console.log(code);
-
     this.tokenService.removeToken();
     this.tokenService.removeRefreshToken();
     const body = new HttpParams()
