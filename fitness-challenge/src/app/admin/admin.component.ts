@@ -20,12 +20,19 @@ export class AdminComponent implements OnInit {
   startTime: string = '';
   endTime: string = '';
 
+  types: string[]= []
+
   constructor(
-    private contractService: ContractService,
+    public contractService: ContractService,
     private store: Store
   ) { }
 
   ngOnInit(): void {
+    this.contractService.trainingTypes.forEach(
+      (value, key) => {
+        this.types.push(value)
+      }
+    )
   }
 
   saveChallenge() {

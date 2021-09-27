@@ -1,5 +1,5 @@
 export const contracts:any = {
-challengeManagerAddress: '0xEf74cCa802C6232324250cBC9e026C001ee4A978',
+challengeManagerAddress: '0xfA9Ee2Fcd5Ab04b1Ee4bcBF8eb60F0b2540C4D21',
 challengeManagerAbi : [
   {
     "constant": true,
@@ -66,10 +66,26 @@ challengeManagerAbi : [
         "internalType": "address",
         "name": "first",
         "type": "address"
-      },
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "evaluations",
+    "outputs": [
       {
         "internalType": "contract Evaluation",
-        "name": "evaluation",
+        "name": "",
         "type": "address"
       }
     ],
@@ -126,24 +142,19 @@ challengeManagerAbi : [
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
-    "name": "leaderboard",
+    "name": "leaderboards",
     "outputs": [
       {
         "internalType": "address",
         "name": "challenger",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "data",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "time",
-        "type": "uint256"
       }
     ],
     "payable": false,
@@ -169,49 +180,19 @@ challengeManagerAbi : [
     "constant": false,
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "challengeId",
-        "type": "uint256"
-      }
-    ],
-    "name": "setDisplayedChallengeID",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "getDisplayedChallengeID",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
         "internalType": "string",
         "name": "title",
         "type": "string"
       },
       {
-        "internalType": "string",
-        "name": "description",
-        "type": "string"
+        "internalType": "uint32[]",
+        "name": "types",
+        "type": "uint32[]"
       },
       {
-        "internalType": "uint256",
-        "name": "rules",
-        "type": "uint256"
+        "internalType": "uint32[]",
+        "name": "ruleset",
+        "type": "uint32[]"
       },
       {
         "internalType": "uint256",
@@ -297,33 +278,6 @@ challengeManagerAbi : [
             "internalType": "address",
             "name": "first",
             "type": "address"
-          },
-          {
-            "components": [
-              {
-                "internalType": "address",
-                "name": "challenger",
-                "type": "address"
-              },
-              {
-                "internalType": "uint256",
-                "name": "data",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "time",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct ChallengeManager.LeaderboardEntry[]",
-            "name": "leaderBoard",
-            "type": "tuple[]"
-          },
-          {
-            "internalType": "contract Evaluation",
-            "name": "evaluation",
-            "type": "address"
           }
         ],
         "internalType": "struct ChallengeManager.Challenge",
@@ -349,14 +303,14 @@ challengeManagerAbi : [
         "type": "address"
       },
       {
-        "internalType": "uint256",
+        "internalType": "uint32[]",
         "name": "data",
-        "type": "uint256"
+        "type": "uint32[]"
       },
       {
-        "internalType": "uint256",
+        "internalType": "uint32[]",
         "name": "time",
-        "type": "uint256"
+        "type": "uint32[]"
       },
       {
         "internalType": "bool",
@@ -452,38 +406,44 @@ challengeManagerAbi : [
             "internalType": "address",
             "name": "first",
             "type": "address"
-          },
-          {
-            "components": [
-              {
-                "internalType": "address",
-                "name": "challenger",
-                "type": "address"
-              },
-              {
-                "internalType": "uint256",
-                "name": "data",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "time",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct ChallengeManager.LeaderboardEntry[]",
-            "name": "leaderBoard",
-            "type": "tuple[]"
-          },
-          {
-            "internalType": "contract Evaluation",
-            "name": "evaluation",
-            "type": "address"
           }
         ],
         "internalType": "struct ChallengeManager.Challenge[]",
         "name": "",
         "type": "tuple[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "challengeId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getChallengeRuleSet",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint32[]",
+            "name": "types",
+            "type": "uint32[]"
+          },
+          {
+            "internalType": "uint32[]",
+            "name": "ruleset",
+            "type": "uint32[]"
+          }
+        ],
+        "internalType": "struct ChallengeManager.Rules",
+        "name": "",
+        "type": "tuple"
       }
     ],
     "payable": false,
@@ -531,9 +491,89 @@ challengeManagerAbi : [
     "payable": false,
     "stateMutability": "view",
     "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "challengeId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getEndOfChallenge",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "challengeId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getStartOfChallenge",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "challengeId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getLeaderboard",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "challenger",
+            "type": "address"
+          },
+          {
+            "internalType": "uint32[]",
+            "name": "data",
+            "type": "uint32[]"
+          },
+          {
+            "internalType": "uint32[]",
+            "name": "time",
+            "type": "uint32[]"
+          }
+        ],
+        "internalType": "struct ChallengeManager.LeaderboardEntry[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
   }
 ],
-challengerAddress: '0x4CE57339B0668b02443f76BC7b6766875be65D11',
+challengerAddress: '0x2adF8fcB5Fffe466AfC2f675B90E3Cc5b2e44122',
 challengerAbi:[
   {
     "inputs": [
@@ -556,14 +596,14 @@ challengerAbi:[
         "type": "uint256"
       },
       {
-        "internalType": "uint32",
+        "internalType": "uint32[]",
         "name": "data",
-        "type": "uint32"
+        "type": "uint32[]"
       },
       {
-        "internalType": "uint256",
+        "internalType": "uint32[]",
         "name": "time",
-        "type": "uint256"
+        "type": "uint32[]"
       }
     ],
     "name": "submitData",

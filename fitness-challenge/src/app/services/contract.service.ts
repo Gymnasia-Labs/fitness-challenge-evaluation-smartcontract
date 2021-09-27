@@ -25,6 +25,18 @@ export class ContractService {
   public provider: any;
   private userAddress: string = '';
 
+  public trainingTypes = new Map([
+    [0, "rower"],
+    [1, "skierg"],
+    [2, "bike"],
+    [3, "paddle"],
+    [4, "water"],
+    [5, "snow"],
+    [6, "rollerski"],
+    [7, "slides"],
+    [8, "dynamic"],
+]); 
+
   // Contracts
   public challengeManager: any;
   public challenger: any;
@@ -98,7 +110,15 @@ export class ContractService {
     price: string,
     meters: number
   ): Observable<boolean> {
-    return of(this.challengeManager.createChallenge(title, description, meters, start, end, participantsCount, ethers.utils.parseEther('' + price), evaluation));
+    return of(
+      this.challengeManager.createChallenge(
+        title,
+        [0],
+        [meters],
+        start,
+        end,
+        participantsCount,
+        ethers.utils.parseEther('' + price), evaluation));
   }
 
   public getChallenges(): Promise<Challenge[]> {
@@ -117,18 +137,18 @@ export class ContractService {
       let gas = await this.challenger.estimateGas.submitData(id, +data, time, { value: ethers.utils.parseEther(price) });
       let add = gas.div(2);
       gas = gas.add(add);
-      
-      args = { 
-        value: ethers.utils.parseEther(price), 
-        gasLimit: gas 
-       };
+
+      args = {
+        value: ethers.utils.parseEther(price),
+        gasLimit: gas
+      };
     }
 
-     this.challenger.submitData(id, +data, time, args)
+    this.challenger.submitData(id, +data, time, args)
 
   }
 
-  redeemPrice(id:number){
+  redeemPrice(id: number) {
     this.challenger.receivePrice(id);
   }
 

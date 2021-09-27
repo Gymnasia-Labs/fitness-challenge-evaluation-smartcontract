@@ -32,7 +32,7 @@ import { FormsModule } from '@angular/forms';
 import { HomeComponent } from './home/home.component';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { LeaderboardComponent } from './leaderboard/leaderboard.component';
-
+import {MatSelectModule} from '@angular/material/select';
 
 
 @NgModule({
@@ -67,7 +67,8 @@ import { LeaderboardComponent } from './leaderboard/leaderboard.component';
     MatIconModule,
     MatSidenavModule,
     MatProgressSpinnerModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatSelectModule
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
