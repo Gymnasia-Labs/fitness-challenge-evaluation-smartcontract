@@ -15,11 +15,15 @@ contract Challenger {
 
     function submitData(
         uint256 challengeId,
-        uint32[] calldata data,
+        uint32[] calldata condition,
         uint32[] calldata time
     ) external payable returns (bool) {
         IPublicLock lock = manager.getLock(challengeId);
         require(address(lock) != address(0), "THERE_IS_NO_LOCK");
+        require(
+            time.length == condition.length,
+            "ARRAY_LENGTHS_IN_SUBMITION_INPUT_NOT_MATCHING"
+        );
 
         require(
             manager.getEndOfChallenge(challengeId) > block.timestamp,
@@ -52,7 +56,7 @@ contract Challenger {
         manager.addLeaderboardEntry(
             challengeId,
             msg.sender,
-            data,
+            condition,
             time,
             withUnlock
         );
