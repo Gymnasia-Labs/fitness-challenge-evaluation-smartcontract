@@ -29,14 +29,10 @@ export class AdminComponent implements OnInit {
   }
 
   saveChallenge() {
-    let start = new Date(this.start);
-    start.setHours(+this.startTime.slice(0,2));
-    start.setMinutes(+this.startTime.slice(3,5))
+    let start = new Date(`${this.start} ${this.startTime}`);
     let unixStart = Math.floor(start.valueOf() / 1000);
 
-    let end = new Date(this.end);
-    end.setHours(+this.endTime.slice(0,2));
-    end.setMinutes(+this.endTime.slice(3,5));
+    let end = new Date(`${this.end} ${this.endTime}`);
     let unixEnd = Math.floor(end.valueOf() / 1000);
     
     this.contractService
