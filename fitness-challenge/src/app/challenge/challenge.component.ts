@@ -11,6 +11,9 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { ContractService } from '../services/contract.service';
 import { filter, take, tap } from 'rxjs/operators';
 import { Challenge } from '../models/challenge';
+import { Container, Main } from 'tsparticles';
+import { loadConfettiShape } from "tsparticles-shape-confetti";
+
 
 
 export interface PeriodicElement {
@@ -38,6 +41,179 @@ export class ChallengeComponent implements OnInit {
 
   dataSource$ = ELEMENT_DATA;
   id: number = -1;
+  particlesId: any = "tsparticles";
+  public isWinner: boolean = false;
+
+  public particlesOptions: any = {
+    "background": {
+      "color": {
+        "value": "#ea2d2d"
+      },
+      "opacity": 0
+    },
+    "fullScreen": {
+      "enable": true
+    },
+    "particles": {
+      "bounce": {
+        "horizontal": {
+          "value": 0
+        },
+        "vertical": {
+          "value": 0
+        }
+      },
+      "color": {
+        "value": [
+          "#1E00FF",
+          "#FF0061",
+          "#E1FF00",
+          "#00FF9E"
+        ],
+        "animation": {
+          "h": {
+            "enable": true,
+            "speed": 30
+          }
+        }
+      },
+      "move": {
+        "decay": 0.1,
+        "direction": "top",
+        "enable": true,
+        "gravity": {
+          "enable": true,
+          "maxSpeed": 200
+        },
+        "path": {},
+        "outModes": {
+          "default": "destroy",
+          "bottom": "bounce",
+          "left": "destroy",
+          "right": "destroy",
+          "top": "none"
+        },
+        "speed": {
+          "min": 50,
+          "max": 150
+        },
+        "spin": {}
+      },
+      "number": {
+        "limit": 300,
+        "value": 0
+      },
+      "opacity": {
+        "animation": {
+          "speed": 0.3,
+          "sync": true,
+          "destroy": "min",
+          "startValue": "max"
+        }
+      },
+      "roll": {
+        "darken": {
+          "enable": true,
+          "value": 30
+        },
+        "enable": true,
+        "enlighten": {
+          "enable": true,
+          "value": 30
+        },
+        "speed": {
+          "min": 15,
+          "max": 25
+        }
+      },
+      "rotate": {
+        "value": {
+          "min": 0,
+          "max": 360
+        },
+        "animation": {
+          "enable": true,
+          "speed": 60
+        },
+        "direction": "random"
+      },
+      "shape": {
+        "options": {
+          "polygon": [
+            {
+              "sides": 5
+            },
+            {
+              "sides": 6
+            }
+          ],
+          "character": [
+            {
+              "value": [
+                "💩",
+                "🤡",
+                "🍀",
+                "🍙"
+              ]
+            }
+          ]
+        },
+        "type": [
+          "circle",
+          "square",
+          "polygon",
+          "character",
+          "character",
+          "character"
+        ]
+      },
+      "size": {
+        "animation": {}
+      },
+      "tilt": {
+        "value": {
+          "min": 0,
+          "max": 360
+        },
+        "animation": {
+          "enable": true,
+          "speed": 60
+        },
+        "direction": "random",
+        "enable": true
+      },
+      "wobble": {
+        "distance": 30,
+        "enable": true,
+        "speed": {
+          "min": -15,
+          "max": 15
+        }
+      }
+    },
+    "emitters": {
+      "autoPlay": true,
+      "fill": true,
+      "life": {
+        "wait": false
+      },
+      "rate": {
+        "quantity": 10,
+        "delay": 0.1
+      },
+      "shape": "square",
+      "startCount": 0,
+      "size": {
+        "mode": "percent",
+        "height": 0,
+        "width": 0
+      },
+      "position": {
+        "x": 50,
+        "y": 100
+      }
+    }
+  }
 
   logData$ = this.store.pipe(
     select(selectTrainingsForDisplayedChallenge)
@@ -71,18 +247,29 @@ export class ChallengeComponent implements OnInit {
     private authService: AuthService,
     private concept2: Concept2Service,
     private _sanitizer: DomSanitizer,
-    private contractService: ContractService
+    public contractService: ContractService
   ) {
     // this.store.dispatch({ type: fetchChallenges });
     this.id = +this.actRoute.snapshot.params.id;
     this.store.dispatch(setDisplayedChallenge({ id: this.id }));
-    this.logData$  =  this.store.pipe(
+    this.logData$ = this.store.pipe(
       select(selectTrainingsForDisplayedChallenge)
     );
-    this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl('https://youtu.be/dQw4w9WgXcQ');
+    // this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl('https://youtu.be/dQw4w9WgXcQ');
+    this.contractService.isWinner(this.id).then(winner => this.isWinner = winner)
   }
 
   ngOnInit(): void {
+  }
+
+  particlesLoaded(container: Container): void {
+    console.log(container);
+  }
+
+  particlesInit(main: Main): void {
+    console.log(main);
+    // loadConfettiShape(main);
+    // Starting from 1.19.0 you can add custom presets or shape here, using the current tsParticles instance (main)
   }
 
   loginConcept2() {

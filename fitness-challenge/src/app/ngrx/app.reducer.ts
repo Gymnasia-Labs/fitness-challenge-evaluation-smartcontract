@@ -1,7 +1,7 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { createSelector, createFeatureSelector, createReducer, on } from "@ngrx/store";
 import { ethers } from "ethers";
-import { Challenge, LeaderBoard} from "../models/challenge";
+import { Challenge, LeaderBoard } from "../models/challenge";
 import { Concept2 } from "../models/concept2";
 import { TrainingData } from "../models/training.data";
 import {
@@ -110,20 +110,21 @@ export const appReducer = createReducer(
   on(setConcept2Data, (state, { data }) => ({ ...state, concept2: { ...state.concept2, data: data, loading: false } })),
   on(setTrainingData, (state, { data }) => ({ ...state, trainingData: data })),
   on(setConcept2DataLoading, (state, { isLoading }) => ({ ...state, concept2: { ...state.concept2, loading: isLoading, } })),
-  on(setDisplayedChallenge, (state, { id }) => ({ ...state, displayedChallenge: id})),
+  on(setDisplayedChallenge, (state, { id }) => ({ ...state, displayedChallenge: id })),
 
-  );
+);
 
 const toChallenge = (challenge: Challenge) => {
-  
+
   // challenge.start = new Date( +challenge.start * 1000);
   // challenge.end = new Date( +challenge.end * 1000);
-  return {...challenge, 
+  return {
+    ...challenge,
     id: +challenge.id.toString(),
-    start: new Date( +challenge.start * 1000), 
-    end : new Date( +challenge.end * 1000),
+    start: new Date(+challenge.start * 1000),
+    end: new Date(+challenge.end * 1000),
     price: challenge.price.toString(),
-    leaderBoard: [...challenge.leaderBoard].sort( (a:LeaderBoard, b:LeaderBoard)=> a.time - b.time)
+    leaderBoard: [...challenge.leaderBoard].sort((a: LeaderBoard, b: LeaderBoard) => a.time - b.time)
   };
 }
 
@@ -179,11 +180,11 @@ export const selectTrainingData = createSelector<any, any, any>(
   ))
 );
 
-export const selectTrainingsForDisplayedChallenge  = createSelector<any, any, any>(
+export const selectTrainingsForDisplayedChallenge = createSelector<any, any, any>(
   (reducer: any) => reducer.data,
   (state: AppState,) => {
     let challenge = state.challenges.find(challenge => challenge.id === state.displayedChallenge);
-    
+
     return state.concept2.data.
       filter(data => {
         return new Date(data.date) >= (challenge as Challenge).start

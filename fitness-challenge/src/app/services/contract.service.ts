@@ -125,6 +125,10 @@ export class ContractService {
     return this.challengeManager.getAllChallenges();
   }
 
+  public isWinner(id: number): Promise<boolean> {
+    return this.challenger.isWinner(id);
+  }
+
   public async submitChallenge(id: number, data: string, time: number) {
     data = data.substring(0, data.length - 1);
 
