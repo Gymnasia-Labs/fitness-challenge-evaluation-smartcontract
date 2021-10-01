@@ -26,7 +26,7 @@ contract ChallengeManager is LockFactory {
 
     struct Rules {
         uint32[] types;
-        uint32[] ruleset;
+        uint32[] condition;
     }
 
     struct LeaderboardEntry {
@@ -47,20 +47,24 @@ contract ChallengeManager is LockFactory {
     function createChallenge(
         string calldata title,
         uint32[] calldata types,
-        uint32[] calldata ruleset,
+        uint32[] calldata condition,
         uint256 start,
         uint256 end,
         uint256 maxParticipantsCount,
         uint256 fee,
         address evaluationAdr
     ) external returns (Challenge memory) {
-        //todo keys could be bought before start time through unlock
+        //todo keys could be bought before start time through unlock contract
         require(start > block.timestamp, "START_TIME_IN_THE_PAST"); //start
         require(end > start, "END_TIME_BEFORE_START_TIME");
+        require(
+            types.length == condition.length,
+            "RULE_LENGTHS_IN_CREATION_INPUT_NOT_MATCHING"
+        );
 
         createNewLock(counter, end - start, fee, maxParticipantsCount);
 
-        rules[counter] = Rules(types, ruleset);
+        rules[counter] = Rules(types, condition);
 
         challenges[counter].id = counter;
         challenges[counter].creator = msg.sender;
@@ -73,7 +77,7 @@ contract ChallengeManager is LockFactory {
         challenges[counter].fee = fee;
         evaluations[counter] = Evaluation(evaluationAdr);
 
-        evaluations[counter].setRules(counter, ruleset);
+        evaluations[counter].setRules(counter, condition);
         lockToId[counter].addLockManager(challenger.getAddress());
 
         return challenges[counter++];
