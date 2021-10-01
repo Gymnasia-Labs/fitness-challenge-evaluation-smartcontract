@@ -34,6 +34,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { LeaderboardComponent } from './leaderboard/leaderboard.component';
 import { MatSelectModule } from '@angular/material/select';
 import { NgParticlesModule } from "ng-particles";
+import { MatDialogModule } from '@angular/material/dialog';
+import { WinnerDialogComponent } from './winner-dialog/winner-dialog.component';
+
 
 
 
@@ -50,7 +53,8 @@ import { NgParticlesModule } from "ng-particles";
     MembershipsComponent,
     AdminComponent,
     HomeComponent,
-    LeaderboardComponent
+    LeaderboardComponent,
+    WinnerDialogComponent
   ],
   imports: [
     StoreModule.forRoot({ data: appReducer }),
@@ -71,7 +75,8 @@ import { NgParticlesModule } from "ng-particles";
     MatProgressSpinnerModule,
     MatProgressBarModule,
     MatSelectModule,
-    NgParticlesModule
+    NgParticlesModule,
+    MatDialogModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

@@ -13,6 +13,8 @@ import { filter, take, tap } from 'rxjs/operators';
 import { Challenge, LeaderBoard } from '../models/challenge';
 import { Container, Main } from 'tsparticles';
 import { loadConfettiShape } from "tsparticles-shape-confetti";
+import { MatDialog } from '@angular/material/dialog';
+import { WinnerDialogComponent } from '../winner-dialog/winner-dialog.component';
 
 
 
@@ -249,7 +251,8 @@ export class ChallengeComponent implements OnInit {
     private authService: AuthService,
     private concept2: Concept2Service,
     private _sanitizer: DomSanitizer,
-    public contractService: ContractService
+    public contractService: ContractService,
+    public dialog: MatDialog
   ) {
     // this.store.dispatch({ type: fetchChallenges });
     this.id = +this.actRoute.snapshot.params.id;
@@ -258,7 +261,15 @@ export class ChallengeComponent implements OnInit {
       select(selectTrainingsForDisplayedChallenge)
     );
     // this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl('https://youtu.be/dQw4w9WgXcQ');
-    this.contractService.isWinner(this.id).then(winner => this.isWinner = winner);
+    this.contractService.isWinner(this.id).then(winner => {
+      this.isWinner = winner;
+      if (this.isWinner)
+        this.dialog.open(WinnerDialogComponent, {
+          width: '30%',
+          height: '30%',
+          data: { id: this.id }
+        });
+    });
     this.getLeaderboard();
   }
 

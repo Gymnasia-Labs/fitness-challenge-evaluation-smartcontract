@@ -167,7 +167,7 @@ export class ContractService {
   }
 
   redeemPrice(id: number) {
-    this.challenger.receivePrice(id);
+    return this.challenger.receivePrice(id);
   }
 
 }
