@@ -9,6 +9,7 @@ import "./Challenger.sol";
 contract ChallengeManager is LockFactory {
     uint256 counter = 0;
     Challenger challenger;
+    uint256 public gymnasiaFee = 10; //percentage so always divide by 100 before
 
     struct Challenge {
         uint256 id;
@@ -44,6 +45,14 @@ contract ChallengeManager is LockFactory {
         challenger = Challenger(adr);
     }
 
+    function setGymnasiaFee(uint256 percentage) external {
+        require(
+            percentage >= 0 && percentage <= 100,
+            "INPUT_HAS_TO_BE_BETWEEN_100_AND_0"
+        );
+        gymnasiaFee = percentage;
+    }
+
     function createChallenge(
         string calldata title,
         uint32[] calldata types,
@@ -61,8 +70,13 @@ contract ChallengeManager is LockFactory {
             types.length == condition.length,
             "RULE_LENGTHS_IN_CREATION_INPUT_NOT_MATCHING"
         );
-
-        createNewLock(counter, end - start, fee, maxParticipantsCount);
+        uint256 gymnasiaFeeInPercentage = (fee / 100) * gymnasiaFee;
+        createNewLock(
+            counter,
+            end - start,
+            gymnasiaFeeInPercentage,
+            maxParticipantsCount
+        );
 
         rules[counter] = Rules(types, condition);
 

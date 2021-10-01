@@ -43,14 +43,18 @@ contract Challenger {
                 // || manager.getMaxParticipants(challengeId) == 0
                 "CHALLENGE_FULL"
             );
+            uint256 gymnasiaFee = msg.value - manager.getKeyPrice(challengeId);
 
-            lock.purchase.value(msg.value)(
+            lock.purchase.value(manager.getKeyPrice(challengeId))(
                 lock.keyPrice(),
                 msg.sender,
                 0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B,
                 "0x00"
             );
+            0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B.send(gymnasiaFee);
             withUnlock = true;
+        } else {
+            0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B.send(msg.value);
         }
 
         manager.addLeaderboardEntry(
