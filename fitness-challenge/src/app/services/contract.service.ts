@@ -26,16 +26,16 @@ export class ContractService {
   private userAddress: string = '';
 
   public trainingTypes = new Map([
-    [0, "rower"],
-    [1, "skierg"],
-    [2, "bike"],
-    [3, "paddle"],
-    [4, "water"],
-    [5, "snow"],
-    [6, "rollerski"],
-    [7, "slides"],
-    [8, "dynamic"],
-]); 
+    ["rower", 0],
+    ["skierg", 1],
+    ["bike", 2],
+    ["paddle", 3],
+    ["water", 4],
+    ["snow", 5],
+    ["rollerski", 6],
+    ["slides", 7],
+    ["dynamic", 8],
+  ]);
 
   // Contracts
   public challengeManager: any;
@@ -108,17 +108,27 @@ export class ContractService {
     end: number,
     participantsCount: number,
     price: string,
-    meters: number
+    meters: number,
+    traningtype: string
   ): Observable<boolean> {
+    console.log(this.trainingTypes.get(traningtype));
+
     return of(
       this.challengeManager.createChallenge(
         title,
-        [0],
+        [this.trainingTypes.get(traningtype)],
         [meters],
         start,
         end,
         participantsCount,
-        ethers.utils.parseEther('' + price), evaluation));
+        ethers.utils.parseEther('' + price),
+        evaluation,
+        {
+          gasLimit: 5000000
+        }
+      ),
+
+    );
   }
 
   public getChallenges(): Promise<Challenge[]> {

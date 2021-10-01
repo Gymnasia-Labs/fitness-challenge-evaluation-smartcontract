@@ -6,14 +6,20 @@ start UTC <input type="date" [(ngModel)]="start"> : <input type="time" [(ngModel
 <br>
 end UTC <input type="date" [(ngModel)]="end"> : <input type="time" [(ngModel)]="endTime">
 <br>
-<mat-form-field appearance="fill">
+workout type
+<!-- <mat-form-field appearance="fill">
     <mat-label>Workout Type</mat-label>
-    <mat-select>
-        <!-- <mat-option *ngFor="let type of contractService.trainingTypes.entries()" [value]="type">
+    <mat-select [required]="true">
+        <mat-option *ngFor="let type of types" [value]="type">
             {{type}}
-        </mat-option> -->
+        </mat-option>
     </mat-select>
-</mat-form-field>
+</mat-form-field> -->
+<select name="workout" id="workout" [(ngModel)]="type">
+    <option *ngFor="let type of types" [value]="type">
+        {{type}}
+    </option>
+</select>
 <br>
 required meters <input type="number" [(ngModel)]="meters">
 <br>
