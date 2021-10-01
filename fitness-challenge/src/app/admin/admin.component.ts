@@ -19,13 +19,21 @@ export class AdminComponent implements OnInit {
   meters: number = 1000;
   startTime: string = '';
   endTime: string = '';
+  type = '';
+
+  types: string[] = [];
 
   constructor(
-    private contractService: ContractService,
+    public contractService: ContractService,
     private store: Store
   ) { }
 
   ngOnInit(): void {
+    this.contractService.trainingTypes.forEach(
+      (value, key) => {
+        this.types.push(key)
+      }
+    )
   }
 
   saveChallenge() {
@@ -34,11 +42,14 @@ export class AdminComponent implements OnInit {
 
     let end = new Date(`${this.end} ${this.endTime}`);
     let unixEnd = Math.floor(end.valueOf() / 1000);
-    
+
+    console.log(this.type);
+
+
     this.contractService
-      .createChallenge(this.title, this.desc, unixStart, unixEnd, this.count, this.price, this.meters)
-      .subscribe(() =>this.store.dispatch({ type: fetchChallenges }));
-    
+      .createChallenge(this.title, this.desc, unixStart, unixEnd, this.count, this.price, this.meters, this.type)
+      .subscribe(() => this.store.dispatch({ type: fetchChallenges }));
+
   }
 
   fetchChallenges() {

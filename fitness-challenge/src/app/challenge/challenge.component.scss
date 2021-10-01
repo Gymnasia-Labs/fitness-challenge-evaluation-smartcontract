@@ -62,3 +62,12 @@ table {
   display: flex;
   justify-content: space-between;
 }
+
+#tsparticles {
+  position: fixed;
+  width: 90%;
+  height: 90%;
+  // z-index: 100;
+  pointer-events: none;
+
+}

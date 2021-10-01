@@ -5,7 +5,7 @@ import { fetchChallenges, setAddress, setChallenges } from '../ngrx/app.actions'
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { environment } from 'src/environments/environment';
 import { Observable, of } from 'rxjs';
-import { Challenge } from '../models/challenge';
+import { Challenge, LeaderBoard } from '../models/challenge';
 
 declare const window: any;
 
@@ -14,7 +14,7 @@ export const WEB3PROVIDER = new InjectionToken('Web3 provider', {
   factory: () => (window as any).ethereum
 });
 
-const evaluation = '0xA55A8169e38bb3fBBDD6D0A4A4EBb2da0F7E9fA6';
+const evaluation = '0x5709CcA5f106107CBc804112a3a5CC0078e0ffEE';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +24,18 @@ export class ContractService {
   public address: any;
   public provider: any;
   private userAddress: string = '';
+
+  public trainingTypes = new Map([
+    ["rower", 0],
+    ["skierg", 1],
+    ["bike", 2],
+    ["paddle", 3],
+    ["water", 4],
+    ["snow", 5],
+    ["rollerski", 6],
+    ["slides", 7],
+    ["dynamic", 8],
+  ]);
 
   // Contracts
   public challengeManager: any;
@@ -96,13 +108,39 @@ export class ContractService {
     end: number,
     participantsCount: number,
     price: string,
-    meters: number
+    meters: number,
+    traningtype: string
   ): Observable<boolean> {
-    return of(this.challengeManager.createChallenge(title, description, meters, start, end, participantsCount, ethers.utils.parseEther('' + price), evaluation));
+    console.log(this.trainingTypes.get(traningtype));
+
+    return of(
+      this.challengeManager.createChallenge(
+        title,
+        [this.trainingTypes.get(traningtype)],
+        [meters],
+        start,
+        end,
+        participantsCount,
+        ethers.utils.parseEther('' + price),
+        evaluation,
+        {
+          gasLimit: 5000000
+        }
+      ),
+
+    );
   }
 
   public getChallenges(): Promise<Challenge[]> {
     return this.challengeManager.getAllChallenges();
+  }
+
+  public getLeaderBoard(id: number): Promise<LeaderBoard[]> {
+    return this.challengeManager.getLeaderboard(id);
+  }
+
+  public isWinner(id: number): Promise<boolean> {
+    return this.challenger.isWinner(id);
   }
 
   public async submitChallenge(id: number, data: string, time: number) {
@@ -114,22 +152,22 @@ export class ContractService {
       let price = await this.challengeManager.getKeyPrice(id);
       price = ethers.utils.formatEther(price);
 
-      let gas = await this.challenger.estimateGas.submitData(id, +data, time, { value: ethers.utils.parseEther(price) });
+      let gas = await this.challenger.estimateGas.submitData(id, [+data], [time], { value: ethers.utils.parseEther(price) });
       let add = gas.div(2);
       gas = gas.add(add);
-      
-      args = { 
-        value: ethers.utils.parseEther(price), 
-        gasLimit: gas 
-       };
+
+      args = {
+        value: ethers.utils.parseEther(price),
+        gasLimit: gas
+      };
     }
 
-     this.challenger.submitData(id, +data, time, args)
+    this.challenger.submitData(id, [+data], [time], args)
 
   }
 
-  redeemPrice(id:number){
-    this.challenger.receivePrice(id);
+  redeemPrice(id: number) {
+    return this.challenger.receivePrice(id);
   }
 
 }
