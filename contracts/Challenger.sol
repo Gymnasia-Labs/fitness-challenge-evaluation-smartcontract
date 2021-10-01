@@ -73,6 +73,7 @@ contract Challenger {
         lock.updateBeneficiary(msg.sender);
         lock.withdraw(address(0), 0);
 
+        manager.setRedeemed(challengeId);
         // lock.updateBeneficiary(address(this));
     }
 

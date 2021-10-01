@@ -23,6 +23,7 @@ contract ChallengeManager is LockFactory {
         uint256 fee;
         uint256 price;
         address first;
+        bool redeemed;
     }
 
     struct Rules {
@@ -43,6 +44,11 @@ contract ChallengeManager is LockFactory {
 
     function setChallenger(address adr) public {
         challenger = Challenger(adr);
+    }
+
+    function setRedeemed(uint256 challengeId) public {
+        require(msg.sender == challenger.getAddress(), "NOT_CHALLENGER");
+        challenges[challengeId].redeemed = true;
     }
 
     function setGymnasiaFee(uint256 percentage) external {
