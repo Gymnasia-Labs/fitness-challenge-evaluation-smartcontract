@@ -1,5 +1,5 @@
 export const contracts: any = {
-  challengeManagerAddress: '0xd365D7761d3B083E3b7bA2bd64bBcd6018B13c89',
+  challengeManagerAddress: '0xc91b5eC83DeB0cF59441a966f3443804f47f0D7E',
   challengeManagerAbi: [
     {
       "constant": true,
@@ -191,7 +191,7 @@ export const contracts: any = {
         },
         {
           "internalType": "uint32[]",
-          "name": "ruleset",
+          "name": "condition",
           "type": "uint32[]"
         },
         {
@@ -437,7 +437,7 @@ export const contracts: any = {
             },
             {
               "internalType": "uint32[]",
-              "name": "ruleset",
+              "name": "condition",
               "type": "uint32[]"
             }
           ],
@@ -573,7 +573,7 @@ export const contracts: any = {
       "type": "function"
     }
   ],
-  challengerAddress: '0xE9f6CCE3e961E153ad8b088c88F9AB9a23d59AAF',
+  challengerAddress: '0x9F05fd33Dca8fFB161bb1577B0F2ED397255749d',
   challengerAbi: [
     {
       "inputs": [
@@ -597,7 +597,7 @@ export const contracts: any = {
         },
         {
           "internalType": "uint32[]",
-          "name": "data",
+          "name": "condition",
           "type": "uint32[]"
         },
         {

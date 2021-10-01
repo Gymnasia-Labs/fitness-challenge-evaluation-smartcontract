@@ -10,7 +10,7 @@ import { fetchChallenges, fetchConcept2Data, setConcept2DataLoading, setDisplaye
 import { DomSanitizer } from '@angular/platform-browser';
 import { ContractService } from '../services/contract.service';
 import { filter, take, tap } from 'rxjs/operators';
-import { Challenge } from '../models/challenge';
+import { Challenge, LeaderBoard } from '../models/challenge';
 import { Container, Main } from 'tsparticles';
 import { loadConfettiShape } from "tsparticles-shape-confetti";
 
@@ -237,6 +237,8 @@ export class ChallengeComponent implements OnInit {
     'submit'
   ];
 
+  leaderboard: LeaderBoard[] = [];
+
   challenge$ = this.store.pipe(
     select(selectDisplayedChallenge)
   );
@@ -256,10 +258,12 @@ export class ChallengeComponent implements OnInit {
       select(selectTrainingsForDisplayedChallenge)
     );
     // this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl('https://youtu.be/dQw4w9WgXcQ');
-    this.contractService.isWinner(this.id).then(winner => this.isWinner = winner)
+    this.contractService.isWinner(this.id).then(winner => this.isWinner = winner);
+    this.getLeaderboard();
   }
 
   ngOnInit(): void {
+
   }
 
   particlesLoaded(container: Container): void {
@@ -317,6 +321,15 @@ export class ChallengeComponent implements OnInit {
 
   redeemPrice() {
     this.contractService.redeemPrice(this.id)
+  }
+
+  getLeaderboard() {
+    return this.contractService.getLeaderBoard(this.id).then(leaderBoard => {
+      console.log(this.id);
+
+      console.log('LEADERBOARD', leaderBoard)
+      this.leaderboard = leaderBoard
+    });
   }
 
 }

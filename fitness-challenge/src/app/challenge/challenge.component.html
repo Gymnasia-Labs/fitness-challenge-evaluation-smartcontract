@@ -101,7 +101,7 @@
       </ng-container>
     </table>
 
-    <app-leaderboard (redeemPrice)="redeemPrice()" [dataSource]="(challenge$ | async)?.leaderBoard"></app-leaderboard>
+    <app-leaderboard (redeemPrice)="redeemPrice()" [dataSource]="leaderboard"></app-leaderboard>
 
   </div>
 </div>

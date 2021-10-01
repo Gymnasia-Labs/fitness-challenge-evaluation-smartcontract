@@ -5,7 +5,7 @@ import { fetchChallenges, setAddress, setChallenges } from '../ngrx/app.actions'
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { environment } from 'src/environments/environment';
 import { Observable, of } from 'rxjs';
-import { Challenge } from '../models/challenge';
+import { Challenge, LeaderBoard } from '../models/challenge';
 
 declare const window: any;
 
@@ -14,7 +14,7 @@ export const WEB3PROVIDER = new InjectionToken('Web3 provider', {
   factory: () => (window as any).ethereum
 });
 
-const evaluation = '0xA55A8169e38bb3fBBDD6D0A4A4EBb2da0F7E9fA6';
+const evaluation = '0x5709CcA5f106107CBc804112a3a5CC0078e0ffEE';
 
 @Injectable({
   providedIn: 'root'
@@ -135,6 +135,10 @@ export class ContractService {
     return this.challengeManager.getAllChallenges();
   }
 
+  public getLeaderBoard(id: number): Promise<LeaderBoard[]> {
+    return this.challengeManager.getLeaderboard(id);
+  }
+
   public isWinner(id: number): Promise<boolean> {
     return this.challenger.isWinner(id);
   }
@@ -148,7 +152,7 @@ export class ContractService {
       let price = await this.challengeManager.getKeyPrice(id);
       price = ethers.utils.formatEther(price);
 
-      let gas = await this.challenger.estimateGas.submitData(id, +data, time, { value: ethers.utils.parseEther(price) });
+      let gas = await this.challenger.estimateGas.submitData(id, [+data], [time], { value: ethers.utils.parseEther(price) });
       let add = gas.div(2);
       gas = gas.add(add);
 
@@ -158,7 +162,7 @@ export class ContractService {
       };
     }
 
-    this.challenger.submitData(id, +data, time, args)
+    this.challenger.submitData(id, [+data], [time], args)
 
   }
 
