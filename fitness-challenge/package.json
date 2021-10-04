@@ -24,9 +24,12 @@
     "@ngrx/store": "^12.1.0",
     "@walletconnect/web3-provider": "^1.5.2",
     "ethers": "^5.4.2",
+    "ng-particles": "^2.18.2",
     "node-polyfill-webpack-plugin": "^1.1.4",
     "rxjs": "~6.6.0",
     "tslib": "^2.1.0",
+    "tsparticles": "^1.35.2",
+    "tsparticles-shape-confetti": "^1.14.2",
     "web3": "^1.5.0",
     "zone.js": "~0.11.4"
   },

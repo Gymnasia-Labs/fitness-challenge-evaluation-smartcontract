@@ -18,20 +18,20 @@ export class LeaderboardComponent implements OnInit {
   @Input() dataSource: LeaderBoard[] = [];
 
   ngOnInit(): void {
-   
+
   }
 
   getFormatedTime(time: number) {
     let mins = Math.floor(time / 600);
     let secs = Math.floor((time % 600) / 10);
     let deciSecs = (time % 6);
-    if(secs < 10)
-    return `${mins}:0${secs}:${deciSecs}`
+    if (secs < 10)
+      return `${mins}:0${secs}:${deciSecs}`
     else
-    return `${mins}:${secs}:${deciSecs}`
+      return `${mins}:${secs}:${deciSecs}`
   }
 
-  getPrice(){
+  getPrice() {
     this.redeemPrice.emit();
   }
 

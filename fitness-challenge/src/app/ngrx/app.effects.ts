@@ -14,12 +14,12 @@ export class AppEffects {
     fetchConcept2Log$ = createEffect(() => this.actions$.pipe(
         ofType(fetchConcept2Data),
         switchMap((action: any) =>
-        this.concept2Service.getResultsData('me')
+            this.concept2Service.getResultsData('me')
                 .pipe(
                     tap(console.log),
                     map((data) => setConcept2Data({ data: data.data })),
-                    catchError(() => 
-                         of(setConcept2DataLoading({isLoading: false}))
+                    catchError(() =>
+                        of(setConcept2DataLoading({ isLoading: false }))
                     )
                 ))
     )
@@ -28,7 +28,7 @@ export class AppEffects {
     fetchConcept2User$ = createEffect(() => this.actions$.pipe(
         ofType(fetchConcept2User),
         switchMap((action: any) =>
-        this.concept2Service.getUserData('me')
+            this.concept2Service.getUserData('me')
                 .pipe(
                     tap(console.log),
                     map((data) => setConcept2Name({ name: data.data.username })),
@@ -40,7 +40,7 @@ export class AppEffects {
     fetchChallenges$ = createEffect(() => this.actions$.pipe(
         ofType(fetchChallenges),
         switchMap((action: any) =>
-        from(this.contractService.getChallenges())
+            from(this.contractService.getChallenges())
                 .pipe(
                     tap(v => console.log('challenges: ', v)),
                     map((data) => setChallenges({ challenges: data })),
@@ -50,7 +50,7 @@ export class AppEffects {
     );
 
 
-    
+
     constructor(
         private actions$: Actions,
         private contractService: ContractService,

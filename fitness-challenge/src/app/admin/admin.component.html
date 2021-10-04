@@ -2,11 +2,24 @@ creat challenge
 <br>
 title <input type="text" id="title" [(ngModel)]="title">
 <br>
-description <input type="text" [(ngModel)]="desc">
-<br> 
 start UTC <input type="date" [(ngModel)]="start"> : <input type="time" [(ngModel)]="startTime">
 <br>
 end UTC <input type="date" [(ngModel)]="end"> : <input type="time" [(ngModel)]="endTime">
+<br>
+workout type
+<!-- <mat-form-field appearance="fill">
+    <mat-label>Workout Type</mat-label>
+    <mat-select [required]="true">
+        <mat-option *ngFor="let type of types" [value]="type">
+            {{type}}
+        </mat-option>
+    </mat-select>
+</mat-form-field> -->
+<select name="workout" id="workout" [(ngModel)]="type">
+    <option *ngFor="let type of types" [value]="type">
+        {{type}}
+    </option>
+</select>
 <br>
 required meters <input type="number" [(ngModel)]="meters">
 <br>
