@@ -51,10 +51,10 @@ contract Challenger {
                 0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B,
                 "0x00"
             );
-            0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B.send(gymnasiaFee);
+            0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B.transfer(gymnasiaFee);
             withUnlock = true;
         } else {
-            0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B.send(msg.value);
+            0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B.transfer(msg.value);
         }
 
         manager.addLeaderboardEntry(

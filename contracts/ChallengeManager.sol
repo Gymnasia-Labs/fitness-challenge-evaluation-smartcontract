@@ -150,6 +150,7 @@ contract ChallengeManager is LockFactory {
             array[i].fee = challenges[i].fee;
             array[i].price = challenges[i].price;
             array[i].first = challenges[i].first;
+            array[i].redeemed = challenges[i].redeemed;
         }
         return array;
     }
