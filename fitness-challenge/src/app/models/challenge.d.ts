@@ -13,7 +13,8 @@ export interface Challenge {
     leaderBoard: LeaderBoard[];
     fee: string,
     currentParticipantsCount: number,
-    maxParticipantsCount: number
+    maxParticipantsCount: number,
+    redeemed: boolean
 }
 
 export interface LeaderBoard {
