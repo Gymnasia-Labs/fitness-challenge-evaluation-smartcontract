@@ -345,7 +345,7 @@ export class ChallengeComponent implements OnInit {
     this.challenge$.pipe(
       take(1),
       switchMap(challenge => this.contractService.submitChallenge(this.id, element.distance, element.time, challenge.fee))
-    )
+    ).subscribe();
 
   }
 
