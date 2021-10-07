@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { AuthService } from '../services/auth.service';
 import { Concept2Service } from '../services/concept2.service';
 import { selectChallengeById, selectConcept2DataLoading, selectDisplayedChallenge, selectTrainingData, selectTrainingsForDisplayedChallenge } from '../ngrx/app.reducer';
 import { TrainingData } from '../models/training.data';
-import { from, merge, of } from 'rxjs';
+import { from, merge, of, Subscription } from 'rxjs';
 import { fetchChallenges, fetchConcept2Data, setConcept2DataLoading, setDisplayedChallenge } from '../ngrx/app.actions';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ContractService } from '../services/contract.service';
-import { filter, mergeMap, switchMap, take, tap } from 'rxjs/operators';
+import { filter, map, mergeMap, switchMap, take, tap } from 'rxjs/operators';
 import { Challenge, LeaderBoard } from '../models/challenge';
 import { Container, Main } from 'tsparticles';
 import { loadConfettiShape } from "tsparticles-shape-confetti";
@@ -38,7 +38,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrls: ['./challenge.component.scss']
 })
 
-export class ChallengeComponent implements OnInit {
+export class ChallengeComponent implements OnInit, OnDestroy {
   safeURL: any;
 
   dataSource$ = ELEMENT_DATA;
@@ -244,6 +244,7 @@ export class ChallengeComponent implements OnInit {
   challenge$ = this.store.pipe(
     select(selectDisplayedChallenge)
   );
+  winnerSubscription: Subscription;
 
   constructor(
     private actRoute: ActivatedRoute,
@@ -262,11 +263,12 @@ export class ChallengeComponent implements OnInit {
     );
     // this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl('https://youtu.be/dQw4w9WgXcQ');
     const isWinner$ = from(this.contractService.isWinner(this.id));
-    this.challenge$.pipe(
+    this.winnerSubscription = this.challenge$.pipe(
       filter(challenge => challenge),
       tap(challenge => console.log(challenge, challenge.redeemed)),
       filter(challenge => !challenge.redeemed),
       switchMap(() => isWinner$),
+      tap(console.log),
       filter(Boolean),
       take(1)
     ).subscribe(
@@ -287,6 +289,9 @@ export class ChallengeComponent implements OnInit {
     // });
     this.getLeaderboard();
   }
+  ngOnDestroy(): void {
+    this.winnerSubscription.unsubscribe();
+  }
 
   ngOnInit(): void {
 
@@ -294,6 +299,16 @@ export class ChallengeComponent implements OnInit {
 
   particlesLoaded(container: Container): void {
     console.log(container);
+  }
+
+  isLive() {
+    return this.challenge$.pipe(
+      map(challenge => {
+        let now = new Date();
+        return now >= challenge?.start && now <= challenge?.end;
+      })
+    );
+
   }
 
   particlesInit(main: Main): void {
@@ -355,11 +370,10 @@ export class ChallengeComponent implements OnInit {
 
   getLeaderboard() {
     return this.contractService.getLeaderBoard(this.id).then(leaderBoard => {
-      console.log(this.id);
-
-      console.log('LEADERBOARD', leaderBoard)
       this.leaderboard = leaderBoard
     });
   }
+
+
 
 }

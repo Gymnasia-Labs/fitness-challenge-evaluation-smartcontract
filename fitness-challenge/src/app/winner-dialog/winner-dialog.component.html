@@ -2,6 +2,7 @@
 </ng-particles>
 
 <h1>Congratulations you won the challenge!</h1>
-
+<br>
+<h2>You won {{formatEth((challenge$ | async)?.price)}} Ether</h2>
 <br>
 <button mat-button color="primary" (click)="redeemPrice()">click here to collect your reward</button>

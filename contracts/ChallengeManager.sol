@@ -135,10 +135,6 @@ contract ChallengeManager is LockFactory {
         return challenges[challengeId].first;
     }
 
-    function getRedeemed(uint256 challengeId) public view returns (bool) {
-        return challenges[challengeId].redeemed;
-    }
-
     function getAllChallenges() public view returns (Challenge[] memory) {
         Challenge[] memory array = new Challenge[](counter);
         for (uint256 i = 0; i < array.length; i++) {

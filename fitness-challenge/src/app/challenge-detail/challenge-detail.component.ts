@@ -14,16 +14,17 @@ import { AuthService } from '../services/auth.service';
 export class ChallengeDetailComponent implements OnInit {
 
   public progressBarValue: number = 0;
+  interval: any;
 
   constructor(private store: Store,
     private authService: AuthService,
-    
-    ) {
-     
-    }
 
-  @Input() challenge: Challenge| null = null ;
-  @Input() joinActive: boolean = false ;
+  ) {
+
+  }
+
+  @Input() challenge: Challenge | null = null;
+  @Input() joinActive: boolean = false;
 
   concept2Name$ = this.store.pipe(
     select(selectConcept2Name)
@@ -31,35 +32,37 @@ export class ChallengeDetailComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.progressBarValue = this.calculateProgressbarLevel();
+    this.interval = setInterval(() => {
+      this.progressBarValue = this.calculateProgressbarLevel();
+    }, 1000)
   }
 
-  isLive(){
+  isLive() {
     let now = new Date();
-    if(this.challenge) return now >= this.challenge?.start && now <= this.challenge?.end;
+    if (this.challenge) return now >= this.challenge?.start && now <= this.challenge?.end;
     return false;
   }
 
-  getLoginURL(brand:string){
+  getLoginURL(brand: string) {
     return this.authService.getLoginLink(brand);
   }
 
-  saveChallengeId(){
-    localStorage.setItem(CHALLENGE_ID, ''+ this.challenge?.id);
+  saveChallengeId() {
+    localStorage.setItem(CHALLENGE_ID, '' + this.challenge?.id);
   }
 
   calculateProgressbarLevel() {
     let start = this.challenge?.start.valueOf();
     let end = this.challenge?.end.valueOf();
     let now = new Date().valueOf();
-    if(!start || ! end) return 0;
-    if(now < start ) return 0; 
-    return (now - start) / ( end - start ) *100 ;
+    if (!start || !end) return 0;
+    if (now < start) return 0;
+    return (now - start) / (end - start) * 100;
   }
 
-  formatEther(wei:string|undefined){
-    if(wei)
-    return ethers.utils.formatEther(wei);
+  formatEther(wei: string | undefined) {
+    if (wei)
+      return ethers.utils.formatEther(wei);
     return 0;
   }
 

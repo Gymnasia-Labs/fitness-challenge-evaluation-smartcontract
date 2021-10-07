@@ -1,6 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { select, Store } from '@ngrx/store';
+import { ethers } from 'ethers';
 import { Container, Main } from 'tsparticles';
+import { selectDisplayedChallenge } from '../ngrx/app.reducer';
 import { ContractService } from '../services/contract.service';
 
 export interface DialogData {
@@ -185,10 +188,15 @@ export class WinnerDialogComponent implements OnInit {
     }
   }
 
+  challenge$ = this.store.pipe(
+    select(selectDisplayedChallenge)
+  );
+
   constructor(
     public dialogRef: MatDialogRef<WinnerDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    public contractService: ContractService
+    public contractService: ContractService,
+    public store: Store
   ) { }
 
   ngOnInit(): void {
@@ -201,6 +209,10 @@ export class WinnerDialogComponent implements OnInit {
 
   particlesLoaded(container: Container): void {
     console.log(container);
+  }
+
+  formatEth(eth: string) {
+    return ethers.utils.formatEther('' + eth);
   }
 
   particlesInit(main: Main): void {

@@ -1,5 +1,5 @@
 export const contracts: any = {
-  challengeManagerAddress: '0x57Ea58550130A6c715fBE979749C004dEAD156C4',
+  challengeManagerAddress: '0xc8f1Ef5A04477fd9629c92290c6178B4842645a7',
   challengeManagerAbi: [
     {
       "constant": true,
@@ -31,6 +31,11 @@ export const contracts: any = {
           "internalType": "string",
           "name": "description",
           "type": "string"
+        },
+        {
+          "internalType": "bool",
+          "name": "redeemed",
+          "type": "bool"
         },
         {
           "internalType": "uint256",
@@ -137,6 +142,21 @@ export const contracts: any = {
     },
     {
       "constant": true,
+      "inputs": [],
+      "name": "gymnasiaFee",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
       "inputs": [
         {
           "internalType": "uint256",
@@ -171,6 +191,36 @@ export const contracts: any = {
         }
       ],
       "name": "setChallenger",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "challengeId",
+          "type": "uint256"
+        }
+      ],
+      "name": "setRedeemed",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "percentage",
+          "type": "uint256"
+        }
+      ],
+      "name": "setGymnasiaFee",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -243,6 +293,11 @@ export const contracts: any = {
               "internalType": "string",
               "name": "description",
               "type": "string"
+            },
+            {
+              "internalType": "bool",
+              "name": "redeemed",
+              "type": "bool"
             },
             {
               "internalType": "uint256",
@@ -347,6 +402,27 @@ export const contracts: any = {
     },
     {
       "constant": true,
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "challengeId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getRedeemed",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
       "inputs": [],
       "name": "getAllChallenges",
       "outputs": [
@@ -371,6 +447,11 @@ export const contracts: any = {
               "internalType": "string",
               "name": "description",
               "type": "string"
+            },
+            {
+              "internalType": "bool",
+              "name": "redeemed",
+              "type": "bool"
             },
             {
               "internalType": "uint256",
@@ -573,7 +654,7 @@ export const contracts: any = {
       "type": "function"
     }
   ],
-  challengerAddress: '0xB9DB27D9caa540facD4F206E91c7679C5F84aE81',
+  challengerAddress: '0xd5d1927890E282cfbA6142057ab3eD2f3FE2896f',
   challengerAbi: [
     {
       "inputs": [

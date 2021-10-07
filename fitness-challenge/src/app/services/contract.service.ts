@@ -14,7 +14,7 @@ export const WEB3PROVIDER = new InjectionToken('Web3 provider', {
   factory: () => (window as any).ethereum
 });
 
-const evaluation = '0x0C611d44cfE83caddD7dBeB4877956939EE62a9d';
+const evaluation = '0x615588c053Be083FBaB67e37Aade7B3D90ce40a6';
 
 @Injectable({
   providedIn: 'root'
@@ -131,7 +131,7 @@ export class ContractService {
     );
   }
 
-  public getChallenges(): Promise<Challenge[]> {
+  public getChallenges(): Promise<any[]> {
     return this.challengeManager.getAllChallenges();
   }
 
@@ -166,6 +166,10 @@ export class ContractService {
 
   redeemPrice(id: number) {
     return this.challenger.receivePrice(id);
+  }
+
+  getChallengeRuleset(id: number) {
+    return this.challengeManager.getChallengeRuleSet(id);
   }
 
 }
