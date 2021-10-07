@@ -11,7 +11,7 @@ export const environment = {
   // challengeManagerAbi: contracts.challengeManagerAbi,
   // challengerAddress: contracts.challengerAddress,
   // challengerAbi: contracts.challengerAbi,
-  challengeManagerAddress: '0xc91b5eC83DeB0cF59441a966f3443804f47f0D7E',
+  challengeManagerAddress: '0x57Ea58550130A6c715fBE979749C004dEAD156C4',
   challengeManagerAbi: [
     {
       "constant": true,
@@ -585,7 +585,7 @@ export const environment = {
       "type": "function"
     }
   ],
-  challengerAddress: '0x9F05fd33Dca8fFB161bb1577B0F2ED397255749d',
+  challengerAddress: '0xB9DB27D9caa540facD4F206E91c7679C5F84aE81',
   challengerAbi: [
     {
       "inputs": [
