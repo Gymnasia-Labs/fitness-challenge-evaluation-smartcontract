@@ -1,5 +1,5 @@
 export const contracts: any = {
-  challengeManagerAddress: '0xc91b5eC83DeB0cF59441a966f3443804f47f0D7E',
+  challengeManagerAddress: '0x20Aa015Ca92c7Fd504349b44BfDa7091BA6765E0',
   challengeManagerAbi: [
     {
       "constant": true,
@@ -573,7 +573,7 @@ export const contracts: any = {
       "type": "function"
     }
   ],
-  challengerAddress: '0x9F05fd33Dca8fFB161bb1577B0F2ED397255749d',
+  challengerAddress: '0xB732CE3BEFaB0F3019A1D8d6c5eE8640931a1ced',
   challengerAbi: [
     {
       "inputs": [

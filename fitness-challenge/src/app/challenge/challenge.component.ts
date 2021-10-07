@@ -263,9 +263,12 @@ export class ChallengeComponent implements OnInit {
     // this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl('https://youtu.be/dQw4w9WgXcQ');
     const isWinner$ = from(this.contractService.isWinner(this.id));
     this.challenge$.pipe(
-      filter(challenge => challenge.redeemed === false),
+      filter(challenge => challenge),
+      tap(challenge => console.log(challenge, challenge.redeemed)),
+      filter(challenge => !challenge.redeemed),
       switchMap(() => isWinner$),
-      filter(Boolean)
+      filter(Boolean),
+      take(1)
     ).subscribe(
       () => this.dialog.open(WinnerDialogComponent, {
         width: '30%',
@@ -339,7 +342,11 @@ export class ChallengeComponent implements OnInit {
 
   submit(element: any) {
     console.log(element);
-    this.contractService.submitChallenge(this.id, element.distance, element.time);
+    this.challenge$.pipe(
+      take(1),
+      switchMap(challenge => this.contractService.submitChallenge(this.id, element.distance, element.time, challenge.fee))
+    )
+
   }
 
   redeemPrice() {
