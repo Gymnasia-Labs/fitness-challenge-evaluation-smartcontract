@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import { Challenge, LeaderBoard } from "../models/challenge";
 import { Concept2 } from "../models/concept2";
 import { TrainingData } from "../models/training.data";
+import { trainingTypes } from "../services/contract.service";
 import {
   fetchConcept2Data,
   setAddress, setChallenges, setConcept2Data, setConcept2DataLoading, setConcept2Name, setDisplayedChallenge, setTrainingData
@@ -20,75 +21,6 @@ export interface AppState {
 export const initialState: AppState =
 {
   challenges: [
-    // {
-    //   id: 0,
-    //   title: '2000m Rowing Challenge',
-    //   description: 'The rower who can row the fastest distance within 1 minute will win 1 Bitcoin',
-    //   image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1024px-Bitcoin.svg.png',
-    //   rules: [
-    //     /* bitcoin-2136339_960_720 1 */
-    //     'Must use a concept2 pm5 rower',
-    //     `All logs must be submitted by ${new Date(new Date().valueOf() + 100 * 60 * 60 * 24).getHours()}pm EST on (${new Date(new Date().valueOf() + 100 * 60 * 60 * 24).toDateString()})`,
-    //     '.0005btc is required to submit your results'
-    //   ],
-    //   creator: 'Account #135',
-    //   creationTime: new Date(),
-    //   start: new Date(new Date().valueOf() - 1000 * 60 * 60 * 24 ),
-    //   end: new Date(new Date().valueOf() + 100 * 60 * 60 * 24),
-    //   participants: 0,
-    //   price: 1,
-    //   leaderBoard: []
-    // },
-    // {
-    //   id: 1,
-    //   title: '4000m Rowing Challenge',
-    //   description: 'The rower who can row the fastest distance within 2 minutes will win 1 Bitcoin',
-    //   image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1024px-Bitcoin.svg.png',
-    //   rules: [
-    //     'Must use a concept2 pm5 rower',
-    //     `All logs must be submitted by ${new Date(new Date().valueOf() + 300 * 60 * 60 * 24).getHours()}pm EST on (${new Date(new Date().valueOf() + 300 * 60 * 60 * 24).toDateString()})`,
-    //     '.0005btc is required to submit your results'
-    //   ],
-    //   creator: 'Account #135',
-    //   creationTime: new Date(),
-    //   start: new Date(new Date().valueOf() + 100 * 60 * 60 * 24),
-    //   end: new Date(new Date().valueOf() + 300 * 60 * 60 * 24),
-    //   participants: 10,
-    //   price: 2,
-    //   leaderBoard: []
-    // },
-    // {
-    //   id: 2,
-    //   title: '2500m Rowing Challenge',
-    //   description: 'The fastest 2500m row will win a cyberpunk',
-    //   image: 'https://www.larvalabs.com/public/images/cryptopunks/punk3100.png',
-    //   rules: [
-    //     'Results will be submitted by the concept2 rower via their api',
-    //     'Begins (4.12.21) Ends (4.20.21). All logs must be submitted by 12pm EST on (4.20.21)',
-    //     'ETH is required to participate'
-    //   ],
-    //   creator: '0xEF571ac215b9eC5Ef22a12954fF0d87d90e1F10B',
-    //   creationTime: new Date(),
-    //   start: new Date(new Date().valueOf() + 2 * 100 * 60 * 60 * 24),
-    //   end: new Date( new Date().valueOf() + 4 *  100 * 60 * 60 * 24),
-    //   participants: 20
-    // },
-    // {
-    //   id: 3,
-    //   title: '5000m Rowing Challenge',
-    //   description: 'The fastest 5000m row will win a cyberpunk',
-    //   image: 'https://www.larvalabs.com/public/images/cryptopunks/punk3100.png',
-    //   rules: [
-    //     'Results will be submitted by the concept2 rower via their api',
-    //     'Begins (4.12.21) Ends (4.20.21). All logs must be submitted by 12pm EST on (4.20.21)',
-    //     'ETH is required to participate'
-    //   ],
-    //   creator: '0xEF571ac215b9eC5Ef22a12954fF0d87d90e1F10B',
-    //   creationTime: new Date(),
-    //   start: new Date(new Date().valueOf() + 4 * 100 * 60 * 60 * 24),
-    //   end: new Date( new Date().valueOf() + 8 *  100 * 60 * 60 * 24),
-    //   participants: 5000
-    // }
   ],
   address: '',
   concept2: {
@@ -190,7 +122,9 @@ export const selectTrainingsForDisplayedChallenge = createSelector<any, any, any
       filter(data => {
         // return new Date(data.date) >= (challenge as Challenge).start
         //   && new Date(data.date) <= (challenge as Challenge).end
-        return true;
+        return data.type === challenge?.ruleset.types[0]
+          && data.distance === challenge.ruleset.condition[0];
+        // return true;
       })
       .map(result => (
         {

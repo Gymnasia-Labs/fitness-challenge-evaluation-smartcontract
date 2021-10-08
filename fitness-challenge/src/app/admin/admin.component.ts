@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { fetchChallenges } from '../ngrx/app.actions';
-import { ContractService } from '../services/contract.service';
+import { ContractService, trainingTypes } from '../services/contract.service';
 
 @Component({
   selector: 'app-admin',
@@ -29,7 +29,7 @@ export class AdminComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.contractService.trainingTypes.forEach(
+    trainingTypes.forEach(
       (value, key) => {
         this.types.push(key)
       }

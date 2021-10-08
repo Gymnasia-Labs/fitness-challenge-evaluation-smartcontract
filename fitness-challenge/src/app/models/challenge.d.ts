@@ -14,11 +14,17 @@ export interface Challenge {
     fee: string,
     currentParticipantsCount: number,
     maxParticipantsCount: number,
-    redeemed: boolean
+    redeemed: boolean,
+    ruleset: Ruleset
 }
 
 export interface LeaderBoard {
     challenger: string,
     data: number,
     time: number
+}
+
+export interface Ruleset {
+    condition: number[],
+    types: string[]
 }

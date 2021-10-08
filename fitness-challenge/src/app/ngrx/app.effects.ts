@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { EMPTY, from, of } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { EMPTY, forkJoin, from, of } from 'rxjs';
+import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { Challenge, Ruleset } from '../models/challenge';
 import { Concept2Service } from '../services/concept2.service';
-import { ContractService } from '../services/contract.service';
+import { ContractService, trainingTypes } from '../services/contract.service';
 
 import { fetchChallenges, fetchConcept2Data, fetchConcept2User, setChallenges, setConcept2Data, setConcept2DataLoading, setConcept2Name } from './app.actions';
 
@@ -43,7 +44,28 @@ export class AppEffects {
             from(this.contractService.getChallenges())
                 .pipe(
                     tap(v => console.log('challenges: ', v)),
-                    map((data) => setChallenges({ challenges: data })),
+                    mergeMap((challenges: Challenge[]) => {
+                        const obs = challenges.map(c => this.contractService.getChallengeRuleset(c.id));
+                        return forkJoin(
+                            [
+                                ...obs,
+                                of(challenges),
+
+                            ]
+                        );
+                    }),
+                    map((data: any) => {
+                        let challenges = data.pop();
+                        data = data.map((ruleset: Ruleset) => {
+                            let trainingType = [...trainingTypes.entries()]
+                                .filter(({ 1: v }) => v === +ruleset.types[0])
+                                .map(([k]) => k)[0];
+                            return { ...ruleset, types: [trainingType] }
+                        })
+
+                        challenges = challenges.map((challenge: Challenge, i: number) => ({ ...challenge, ruleset: data[i] }))
+                        return setChallenges({ challenges: challenges })
+                    }),
                     catchError(() => EMPTY)
                 ))
     )

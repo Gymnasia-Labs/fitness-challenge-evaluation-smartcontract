@@ -14,6 +14,18 @@ export const WEB3PROVIDER = new InjectionToken('Web3 provider', {
   factory: () => (window as any).ethereum
 });
 
+export const trainingTypes = new Map([
+  ["rower", 0],
+  ["skierg", 1],
+  ["bike", 2],
+  ["paddle", 3],
+  ["water", 4],
+  ["snow", 5],
+  ["rollerski", 6],
+  ["slides", 7],
+  ["dynamic", 8],
+]);
+
 const evaluation = '0x615588c053Be083FBaB67e37Aade7B3D90ce40a6';
 
 @Injectable({
@@ -25,17 +37,7 @@ export class ContractService {
   public provider: any;
   private userAddress: string = '';
 
-  public trainingTypes = new Map([
-    ["rower", 0],
-    ["skierg", 1],
-    ["bike", 2],
-    ["paddle", 3],
-    ["water", 4],
-    ["snow", 5],
-    ["rollerski", 6],
-    ["slides", 7],
-    ["dynamic", 8],
-  ]);
+
 
   // Contracts
   public challengeManager: any;
@@ -111,12 +113,10 @@ export class ContractService {
     meters: number,
     traningtype: string
   ): Observable<boolean> {
-    console.log(this.trainingTypes.get(traningtype));
-
     return of(
       this.challengeManager.createChallenge(
         title,
-        [this.trainingTypes.get(traningtype)],
+        [trainingTypes.get(traningtype)],
         [meters],
         start,
         end,
