@@ -14,7 +14,7 @@ export const WEB3PROVIDER = new InjectionToken('Web3 provider', {
   factory: () => (window as any).ethereum
 });
 
-const evaluation = '0x5709CcA5f106107CBc804112a3a5CC0078e0ffEE';
+const evaluation = '0x0C611d44cfE83caddD7dBeB4877956939EE62a9d';
 
 @Injectable({
   providedIn: 'root'
@@ -143,21 +143,19 @@ export class ContractService {
     return this.challenger.isWinner(id);
   }
 
-  public async submitChallenge(id: number, data: string, time: number) {
+  public async submitChallenge(id: number, data: string, time: number, fee: number) {
     data = data.substring(0, data.length - 1);
+    console.log('FEE', fee);
 
     let challengeUnlocked = await this.challenger.hasUnlockedChallenge(id, this.userAddress);
     let args = {};
     if (!challengeUnlocked) {
-      let price = await this.challengeManager.getKeyPrice(id);
-      price = ethers.utils.formatEther(price);
-
-      let gas = await this.challenger.estimateGas.submitData(id, [+data], [time], { value: ethers.utils.parseEther(price) });
+      let gas = await this.challenger.estimateGas.submitData(id, [+data], [time], { value: fee });
       let add = gas.div(2);
       gas = gas.add(add);
 
       args = {
-        value: ethers.utils.parseEther(price),
+        value: fee,
         gasLimit: gas
       };
     }

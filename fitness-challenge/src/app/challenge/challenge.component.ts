@@ -5,11 +5,11 @@ import { AuthService } from '../services/auth.service';
 import { Concept2Service } from '../services/concept2.service';
 import { selectChallengeById, selectConcept2DataLoading, selectDisplayedChallenge, selectTrainingData, selectTrainingsForDisplayedChallenge } from '../ngrx/app.reducer';
 import { TrainingData } from '../models/training.data';
-import { merge } from 'rxjs';
+import { from, merge, of } from 'rxjs';
 import { fetchChallenges, fetchConcept2Data, setConcept2DataLoading, setDisplayedChallenge } from '../ngrx/app.actions';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ContractService } from '../services/contract.service';
-import { filter, take, tap } from 'rxjs/operators';
+import { filter, mergeMap, switchMap, take, tap } from 'rxjs/operators';
 import { Challenge, LeaderBoard } from '../models/challenge';
 import { Container, Main } from 'tsparticles';
 import { loadConfettiShape } from "tsparticles-shape-confetti";
@@ -261,15 +261,30 @@ export class ChallengeComponent implements OnInit {
       select(selectTrainingsForDisplayedChallenge)
     );
     // this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl('https://youtu.be/dQw4w9WgXcQ');
-    this.contractService.isWinner(this.id).then(winner => {
-      this.isWinner = winner;
-      if (this.isWinner)
-        this.dialog.open(WinnerDialogComponent, {
-          width: '30%',
-          height: '30%',
-          data: { id: this.id }
-        });
-    });
+    const isWinner$ = from(this.contractService.isWinner(this.id));
+    this.challenge$.pipe(
+      filter(challenge => challenge),
+      tap(challenge => console.log(challenge, challenge.redeemed)),
+      filter(challenge => !challenge.redeemed),
+      switchMap(() => isWinner$),
+      filter(Boolean),
+      take(1)
+    ).subscribe(
+      () => this.dialog.open(WinnerDialogComponent, {
+        width: '30%',
+        height: '30%',
+        data: { id: this.id }
+      })
+    )
+    // this.contractService.isWinner(this.id).then(winner => {
+    //   this.isWinner = winner;
+    //   if (this.isWinner)
+    //     this.dialog.open(WinnerDialogComponent, {
+    //       width: '30%',
+    //       height: '30%',
+    //       data: { id: this.id }
+    //     });
+    // });
     this.getLeaderboard();
   }
 
@@ -327,7 +342,11 @@ export class ChallengeComponent implements OnInit {
 
   submit(element: any) {
     console.log(element);
-    this.contractService.submitChallenge(this.id, element.distance, element.time);
+    this.challenge$.pipe(
+      take(1),
+      switchMap(challenge => this.contractService.submitChallenge(this.id, element.distance, element.time, challenge.fee))
+    ).subscribe();
+
   }
 
   redeemPrice() {

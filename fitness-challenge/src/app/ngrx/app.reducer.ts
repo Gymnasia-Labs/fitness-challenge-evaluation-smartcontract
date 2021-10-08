@@ -124,6 +124,7 @@ const toChallenge = (challenge: Challenge) => {
     start: new Date(+challenge.start * 1000),
     end: new Date(+challenge.end * 1000),
     price: challenge.price.toString(),
+    redeemed: challenge.redeemed
     // leaderBoard: [...challenge.leaderBoard].sort((a: LeaderBoard, b: LeaderBoard) => a.time - b.time)
   };
 }
