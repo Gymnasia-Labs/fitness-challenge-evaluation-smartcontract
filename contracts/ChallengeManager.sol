@@ -12,7 +12,7 @@ contract ChallengeManager is LockFactory {
     uint256 public gymnasiaFee = 10; //percentage so always divide by 100 before
 
     struct Challenge {
-        uint256 id;
+        uint256 id; //todo remove if not needed in frontend
         address creator;
         string title;
         string description;
@@ -28,7 +28,7 @@ contract ChallengeManager is LockFactory {
 
     struct Rules {
         uint32[] types;
-        uint32[] condition;
+        uint32[] conditions;
     }
 
     struct LeaderboardEntry {
@@ -59,10 +59,14 @@ contract ChallengeManager is LockFactory {
         gymnasiaFee = percentage;
     }
 
+    function getFee(uint256 challengeId) public view returns (uint256) {
+        return challenges[challengeId].fee;
+    }
+
     function createChallenge(
         string calldata title,
         uint32[] calldata types,
-        uint32[] calldata condition,
+        uint32[] calldata conditions,
         uint256 start,
         uint256 end,
         uint256 maxParticipantsCount,
@@ -73,18 +77,18 @@ contract ChallengeManager is LockFactory {
         require(start > block.timestamp, "START_TIME_IN_THE_PAST"); //start
         require(end > start, "END_TIME_BEFORE_START_TIME");
         require(
-            types.length == condition.length,
+            types.length == conditions.length,
             "RULE_LENGTHS_IN_CREATION_INPUT_NOT_MATCHING"
         );
-        uint256 gymnasiaFeeInPercentage = (fee / 100) * gymnasiaFee;
+        uint256 lockFeeInPercentage = 100 - (fee / 100) * gymnasiaFee;
         createNewLock(
             counter,
             end - start,
-            gymnasiaFeeInPercentage,
+            lockFeeInPercentage,
             maxParticipantsCount
         );
 
-        rules[counter] = Rules(types, condition);
+        rules[counter] = Rules(types, conditions);
 
         challenges[counter].id = counter;
         challenges[counter].creator = msg.sender;
@@ -97,7 +101,7 @@ contract ChallengeManager is LockFactory {
         challenges[counter].fee = fee;
         evaluations[counter] = Evaluation(evaluationAdr);
 
-        evaluations[counter].setRules(counter, condition);
+        evaluations[counter].setRules(counter, conditions);
         lockToId[counter].addLockManager(challenger.getAddress());
 
         return challenges[counter++];
