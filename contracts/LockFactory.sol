@@ -16,6 +16,7 @@ contract LockFactory {
     }
 
     function createNewLock(
+        string name,
         uint256 id,
         uint256 duration,
         uint256 price,
@@ -29,7 +30,7 @@ contract LockFactory {
                         address(0),
                         price,
                         numberOfKeys,
-                        "foo",
+                        name,
                         bytes12(keccak256(abi.encodePacked(id)))
                     )
                 )

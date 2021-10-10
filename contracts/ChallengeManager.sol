@@ -87,6 +87,7 @@ contract ChallengeManager is LockFactory {
 
         uint256 lockFeeInPercentage = fee - (fee / 100) * gymnasiaFee;
         createNewLock(
+            title,
             counter,
             end - start,
             lockFeeInPercentage,
@@ -116,7 +117,7 @@ contract ChallengeManager is LockFactory {
                 "m"
             );
 
-            if (i != 0)
+            if (conditions.length > 1 && i != conditions.length - 1)
                 descriptionOfChallenge = descriptionOfChallenge.append(" and ");
         }
 
