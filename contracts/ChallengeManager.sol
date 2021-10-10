@@ -108,22 +108,21 @@ contract ChallengeManager is LockFactory {
 
         string memory descriptionOfChallenge = "In this challenge you need to ";
 
-        /*for (uint256 i = 0; i < conditions.length; i++) {
-            descriptionOfChallenge.strConcat(
+        for (uint256 i = 0; i < conditions.length; i++) {
+            descriptionOfChallenge = descriptionOfChallenge.append(
                 typeToString(types[i]),
                 " ",
-                StringUtils.uint2Str(conditions[0])
+                StringUtils.uintToString(conditions[i]),
+                "m"
             );
-            descriptionOfChallenge.strConcat("m");
 
-            if (i != 0) descriptionOfChallenge.strConcat(" and ");
-        }*/
+            if (i != 0)
+                descriptionOfChallenge = descriptionOfChallenge.append(" and ");
+        }
 
-        descriptionOfChallenge.strConcat(
+        challenges[counter].description = descriptionOfChallenge.append(
             evaluations[counter].getSpecificDescriptionPart()
         );
-
-        challenges[counter].description = descriptionOfChallenge;
 
         lockToId[counter].addLockManager(challenger.getAddress());
 

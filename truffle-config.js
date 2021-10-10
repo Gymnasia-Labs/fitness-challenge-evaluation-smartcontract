@@ -65,6 +65,20 @@ module.exports = {
       network_id: 4,
       skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
     },
+    kovan: {
+      // provider: () => new HDWalletProvider( mnemonic, `wss://rinkeby.infura.io/ws/v3/${infuraKey}`),
+      provider: () =>
+        new HDWalletProvider(
+          mnemonic,
+          `wss://kovan.infura.io/ws/v3/${infuraKey}`
+        ),
+
+      // provider: () => new HDWalletProvider(mnemonic, `https://rinkeby.infura.io/v3/${infuraKey}`),
+      gas: 5000000,
+      gasPrice: 2000000000,
+      network_id: 42,
+      skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
+    },
     xDai: {
       provider: () =>
         new HDWalletProvider(mnemonic, "wss://rpc.xdaichain.com/wss"),

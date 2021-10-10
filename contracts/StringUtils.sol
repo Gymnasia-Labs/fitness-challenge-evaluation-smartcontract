@@ -2,7 +2,7 @@
 pragma solidity >=0.5.17 <0.9.0;
 
 library StringUtils {
-    function strConcat(string memory _a, string memory _b)
+    function append(string memory _a, string memory _b)
         internal
         pure
         returns (string memory _concatenatedString)
@@ -10,7 +10,34 @@ library StringUtils {
         return string(abi.encodePacked(_a, _b));
     }
 
-    function uint2Str(uint256 _i)
+    function append(
+        string memory _a,
+        string memory _b,
+        string memory _c
+    ) internal pure returns (string memory _concatenatedString) {
+        return string(abi.encodePacked(_a, _b, _c));
+    }
+
+    function append(
+        string memory _a,
+        string memory _b,
+        string memory _c,
+        string memory _d
+    ) internal pure returns (string memory _concatenatedString) {
+        return string(abi.encodePacked(_a, _b, _c, _d));
+    }
+
+    function append(
+        string memory _a,
+        string memory _b,
+        string memory _c,
+        string memory _d,
+        string memory _e
+    ) internal pure returns (string memory _concatenatedString) {
+        return string(abi.encodePacked(_a, _b, _c, _d, _e));
+    }
+
+    function uintToString(uint256 _i)
         internal
         pure
         returns (string memory _uintAsString)
