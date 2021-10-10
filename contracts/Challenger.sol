@@ -24,7 +24,6 @@ contract Challenger {
             time.length == conditions.length,
             "ARRAY_LENGTHS_IN_SUBMITION_INPUT_NOT_MATCHING"
         );
-
         require(
             manager.getEndOfChallenge(challengeId) > block.timestamp,
             "CHALLENGE_ALREADY_OVER"
@@ -50,15 +49,18 @@ contract Challenger {
             uint256 gymnasiaFee = msg.value - manager.getKeyPrice(challengeId);
 
             lock.purchase.value(manager.getKeyPrice(challengeId))(
+                // lock.purchase.value(msg.value)(
                 lock.keyPrice(),
                 msg.sender,
                 0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B,
                 "0x00"
             );
+
             bool sent = 0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B.send(
                 gymnasiaFee
             );
             require(sent, "Failed to send ether");
+
             withUnlock = true;
         } else {
             bool sent = 0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B.send(

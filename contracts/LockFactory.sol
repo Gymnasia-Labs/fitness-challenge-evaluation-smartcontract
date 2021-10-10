@@ -38,7 +38,7 @@ contract LockFactory {
         lockToId[id] = lock;
     }
 
-    function getKeyPrice(uint256 id) external view returns (uint256) {
+    function getKeyPrice(uint256 id) public view returns (uint256) {
         return lockToId[id].keyPrice();
     }
 
