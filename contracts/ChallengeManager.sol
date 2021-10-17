@@ -126,6 +126,7 @@ contract ChallengeManager is LockFactory {
         );
 
         lockToId[counter].addLockManager(challenger.getAddress());
+        lockToId[counter].updateRefundPenalty(0, 10000);
 
         return challenges[counter++];
     }

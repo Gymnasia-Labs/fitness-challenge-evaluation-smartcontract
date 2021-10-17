@@ -16,7 +16,7 @@ contract LockFactory {
     }
 
     function createNewLock(
-        string name,
+        string memory name,
         uint256 id,
         uint256 duration,
         uint256 price,
