@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MIT
-
 pragma solidity >=0.5.17 <0.9.0;
-pragma experimental ABIEncoderV2;
 
 import "./interfaces/unlock/IPublicLock.sol";
 import "./interfaces/unlock/IUnlock.sol";

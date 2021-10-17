@@ -21,18 +21,9 @@
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 
 const fs = require("fs");
-const mnemonic = fs
-  .readFileSync(".secret")
-  .toString()
-  .trim();
-const infuraKey = fs
-  .readFileSync(".infura")
-  .toString()
-  .trim();
-const etherscan = fs
-  .readFileSync(".etherscan")
-  .toString()
-  .trim();
+const mnemonic = fs.readFileSync(".secret").toString().trim();
+const infuraKey = fs.readFileSync(".infura").toString().trim();
+const etherscan = fs.readFileSync(".etherscan").toString().trim();
 
 module.exports = {
   /**
@@ -106,9 +97,7 @@ module.exports = {
     // production: true    // Treats this network as if it was a public net. (default: false)
     // }
   },
-  plugins: [
-    'truffle-plugin-verify'
-  ],
+  plugins: ["truffle-plugin-verify"],
   api_keys: {
     etherscan: etherscan,
   },
@@ -121,8 +110,7 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      //version: "0.5.17"
-      version: "^0.5.17", // Fetch exact version from solc-bin (default: truffle's version)
+      version: "pragma", // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       // settings: {          // See the solidity docs for advice about optimization and evmVersion
       //  optimizer: {
