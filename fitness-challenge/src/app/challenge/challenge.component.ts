@@ -5,11 +5,11 @@ import { AuthService } from '../services/auth.service';
 import { Concept2Service } from '../services/concept2.service';
 import { selectChallengeById, selectConcept2DataLoading, selectDisplayedChallenge, selectTrainingData, selectTrainingsForDisplayedChallenge } from '../ngrx/app.reducer';
 import { TrainingData } from '../models/training.data';
-import { from, merge, of, Subscription } from 'rxjs';
+import { from, merge, of, Subscription, timer } from 'rxjs';
 import { fetchChallenges, fetchConcept2Data, setConcept2DataLoading, setDisplayedChallenge } from '../ngrx/app.actions';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ContractService } from '../services/contract.service';
-import { filter, map, mergeMap, switchMap, take, tap } from 'rxjs/operators';
+import { delay, filter, map, mergeMap, retry, switchMap, take, tap, timeout } from 'rxjs/operators';
 import { Challenge, LeaderBoard } from '../models/challenge';
 import { Container, Main } from 'tsparticles';
 import { loadConfettiShape } from "tsparticles-shape-confetti";
@@ -244,7 +244,7 @@ export class ChallengeComponent implements OnInit, OnDestroy {
   challenge$ = this.store.pipe(
     select(selectDisplayedChallenge)
   );
-  winnerSubscription: Subscription;
+  winnerSubscription: Subscription | null = null;
 
   constructor(
     private actRoute: ActivatedRoute,
@@ -262,38 +262,40 @@ export class ChallengeComponent implements OnInit, OnDestroy {
       select(selectTrainingsForDisplayedChallenge)
     );
     // this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl('https://youtu.be/dQw4w9WgXcQ');
-    const isWinner$ = from(this.contractService.isWinner(this.id));
-    this.winnerSubscription = this.challenge$.pipe(
-      filter(challenge => challenge),
-      tap(challenge => console.log(challenge, challenge.redeemed)),
-      filter(challenge => !challenge.redeemed),
-      switchMap(() => isWinner$),
-      tap(console.log),
-      filter(Boolean),
-      take(1)
-    ).subscribe(
-      () => this.dialog.open(WinnerDialogComponent, {
-        width: '30%',
-        height: '30%',
-        data: { id: this.id }
-      })
-    )
-    // this.contractService.isWinner(this.id).then(winner => {
-    //   this.isWinner = winner;
-    //   if (this.isWinner)
-    //     this.dialog.open(WinnerDialogComponent, {
-    //       width: '30%',
-    //       height: '30%',
-    //       data: { id: this.id }
-    //     });
-    // });
+    // this.checkWinner();
     this.getLeaderboard();
   }
   ngOnDestroy(): void {
-    this.winnerSubscription.unsubscribe();
+    this.winnerSubscription?.unsubscribe();
   }
 
   ngOnInit(): void {
+
+  }
+
+  async checkWinner() {
+    console.log('checkwinner called');
+    await new Promise<void>((resolve, reject) => {
+      this.contractService.provider.once("block", (block: any) => {
+        resolve();
+      })
+    });
+    this.winnerSubscription =
+      this.challenge$.pipe(
+        filter(challenge => challenge),
+        tap(challenge => console.log(challenge, challenge.redeemed)),
+        filter(challenge => !challenge.redeemed),
+        switchMap(() => from(this.contractService.isWinner(this.id))),
+        tap(console.log),
+        filter(Boolean),
+        // retry(100),
+      ).subscribe(
+        () => this.dialog.open(WinnerDialogComponent, {
+          width: '30%',
+          height: '30%',
+          data: { id: this.id }
+        })
+      );
 
   }
 

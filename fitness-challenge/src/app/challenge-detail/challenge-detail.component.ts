@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { ethers } from 'ethers';
 import { CHALLENGE_ID } from '../challenge/challenge.component';
@@ -25,6 +25,7 @@ export class ChallengeDetailComponent implements OnInit {
 
   @Input() challenge: Challenge | null = null;
   @Input() joinActive: boolean = false;
+  @Output() challengeOver: EventEmitter<boolean> = new EventEmitter();
 
   concept2Name$ = this.store.pipe(
     select(selectConcept2Name)
@@ -57,7 +58,12 @@ export class ChallengeDetailComponent implements OnInit {
     let now = new Date().valueOf();
     if (!start || !end) return 0;
     if (now < start) return 0;
-    return (now - start) / (end - start) * 100;
+    let value = (now - start) / (end - start) * 100;
+    if (value >= 100) {
+      clearInterval(this.interval);
+      this.challengeOver.emit(true);
+    }
+    return value;
   }
 
   formatEther(wei: string | undefined) {

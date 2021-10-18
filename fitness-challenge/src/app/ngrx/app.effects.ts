@@ -64,7 +64,7 @@ export class AppEffects {
                         })
 
                         challenges = challenges.map((challenge: Challenge, i: number) => ({ ...challenge, ruleset: data[i] }))
-                        return setChallenges({ challenges: challenges })
+                        return setChallenges({ challenges: challenges.reverse() })
                     }),
                     catchError(() => EMPTY)
                 ))
