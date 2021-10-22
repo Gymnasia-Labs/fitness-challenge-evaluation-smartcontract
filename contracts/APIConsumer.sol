@@ -6,63 +6,68 @@ import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 contract APIConsumer is ChainlinkClient {
     using Chainlink for Chainlink.Request;
 
-    uint256 public volume;
+    bool public isValidated;
+
+    // add mapping to requestId and data
+    // https://ethereum.stackexchange.com/questions/90643/how-to-pass-argument-to-chainlink-selector
 
     address private oracle;
     bytes32 private jobId;
     uint256 private fee;
+    string private jobLocation;
 
-    /**
-     * Network: Kovan
-     * Oracle: 0xc57B33452b4F7BB189bB5AfaE9cc4aBa1f7a4FD8 (Chainlink Devrel
-     * Node)
-     * Job ID: d5270d1c311941d0b08bead21fea7747
-     * Fee: 0.1 LINK
-     */
-    constructor() {
+    constructor(
+        string memory _jobLocation,
+        address _oracle,
+        bytes32 _jobId,
+        uint256 _fee
+    ) {
         setPublicChainlinkToken();
-        oracle = 0xc57B33452b4F7BB189bB5AfaE9cc4aBa1f7a4FD8;
-        jobId = "d5270d1c311941d0b08bead21fea7747";
-        fee = 0.1 * 10 ** 18; // (Varies by network and job)
+        /*
+            example:
+            oracle = 0x1006553C2856F55886c787AAC5899D2Bb6e4DcC6;
+            jobId = "c64340ab822e4ec0a4c16f28e63d89f9";
+            fee = 0.1 * 10**18; // (Varies by network and job)
+        */
+
+        oracle = _oracle;
+        jobId = _jobId;
+        fee = _fee;
+        jobLocation = _jobLocation;
     }
 
-    /**
-     * Create a Chainlink request to retrieve API response, find the target
-     * data, then multiply by 1000000000000000000 (to remove decimal places from data).
-     */
-    function requestVolumeData() public returns (bytes32 requestId)
-    {
-        Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
+    function setJobLocation(string memory _jobLocation) external {
+        // todo require onlyOwner
+        jobLocation = _jobLocation;
+    }
 
-        // Set the URL to perform the GET request on
-        request.add("get", "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=ETH&tsyms=USD");
+    function setOracle(
+        address _oracle,
+        bytes32 _jobId,
+        uint256 _fee
+    ) external {
+        oracle = _oracle;
+        jobId = _jobId;
+        fee = _fee;
+    }
 
-        // Set the path to find the desired data in the API response, where the response format is:
-        // {"RAW":
-        //   {"ETH":
-        //    {"USD":
-        //     {
-        //      "VOLUME24HOUR": xxx.xxx,
-        //     }
-        //    }
-        //   }
-        //  }
-        request.add("path", "RAW.ETH.USD.VOLUME24HOUR");
+    function requestValidation() public returns (bytes32 requestId) {
+        Chainlink.Request memory request = buildChainlinkRequest(
+            jobId,
+            address(this),
+            this.fulfill.selector
+        );
+        request.add("get", jobLocation);
+        request.add("path", "proof");
 
-        // Multiply the result by 1000000000000000000 to remove decimals
-        int timesAmount = 10**18;
-        request.addInt("times", timesAmount);
-
-        // Sends the request
         return sendChainlinkRequestTo(oracle, request, fee);
     }
 
-    /**
-     * Receive the response in the form of uint256
-     */
-    function fulfill(bytes32 _requestId, uint256 _volume) public recordChainlinkFulfillment(_requestId)
+    function fulfill(bytes32 _requestId, bool _isValidated)
+        public
+        recordChainlinkFulfillment(_requestId)
     {
-        volume = _volume;
+        isValidated = _isValidated;
     }
 
     // function withdrawLink() external {} - Implement a withdraw function to avoid locking your LINK in the contract
