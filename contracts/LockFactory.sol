@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MIT
-
 pragma solidity >=0.5.17 <0.9.0;
-pragma experimental ABIEncoderV2;
 
 import "./interfaces/unlock/IPublicLock.sol";
 import "./interfaces/unlock/IUnlock.sol";
@@ -16,6 +14,7 @@ contract LockFactory {
     }
 
     function createNewLock(
+        string memory name,
         uint256 id,
         uint256 duration,
         uint256 price,
@@ -29,7 +28,7 @@ contract LockFactory {
                         address(0),
                         price,
                         numberOfKeys,
-                        "foo",
+                        name,
                         bytes12(keccak256(abi.encodePacked(id)))
                     )
                 )
@@ -38,7 +37,7 @@ contract LockFactory {
         lockToId[id] = lock;
     }
 
-    function getKeyPrice(uint256 id) external view returns (uint256) {
+    function getKeyPrice(uint256 id) public view returns (uint256) {
         return lockToId[id].keyPrice();
     }
 

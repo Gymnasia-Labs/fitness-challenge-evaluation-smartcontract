@@ -5,7 +5,9 @@ pragma experimental ABIEncoderV2;
 import "./Evaluation.sol";
 
 contract MinTimeEvaluation is Evaluation {
-    constructor(address adr) public Evaluation(adr) {}
+    constructor(address adr) public Evaluation(adr) {
+        specificDescriptionPart = "in the shortest amount of time.";
+    }
 
     function evaluate(ChallengeManager.LeaderboardEntry[] memory entry)
         public

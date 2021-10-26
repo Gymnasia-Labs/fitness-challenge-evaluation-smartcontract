@@ -3,9 +3,15 @@ pragma solidity >=0.5.17 <0.9.0;
 
 import "./interfaces/unlock/IPublicLock.sol";
 import "./ChallengeManager.sol";
+import "./APIConsumer.sol";
 
 contract Challenger {
+    bool constant debug = 0; // set 1 to turn off validation
+
     ChallengeManager internal manager;
+    APIConsumer internal api;
+
+    mapping(bytes32 => uint256) public requests; // todo add data and time
 
     constructor(address adr) public {
         manager = ChallengeManager(adr);
@@ -15,16 +21,15 @@ contract Challenger {
 
     function submitData(
         uint256 challengeId,
-        uint32[] calldata condition,
+        uint32[] calldata conditions,
         uint32[] calldata time
     ) external payable returns (bool) {
         IPublicLock lock = manager.getLock(challengeId);
         require(address(lock) != address(0), "THERE_IS_NO_LOCK");
         require(
-            time.length == condition.length,
+            time.length == conditions.length,
             "ARRAY_LENGTHS_IN_SUBMITION_INPUT_NOT_MATCHING"
         );
-
         require(
             manager.getEndOfChallenge(challengeId) > block.timestamp,
             "CHALLENGE_ALREADY_OVER"
@@ -43,27 +48,43 @@ contract Challenger {
                 // || manager.getMaxParticipants(challengeId) == 0
                 "CHALLENGE_FULL"
             );
+            require(
+                msg.value >= manager.getFee(challengeId),
+                "ENTERED_FEE_TOO_LOW"
+            );
             uint256 gymnasiaFee = msg.value - manager.getKeyPrice(challengeId);
 
             lock.purchase.value(manager.getKeyPrice(challengeId))(
+                // lock.purchase.value(msg.value)(
                 lock.keyPrice(),
                 msg.sender,
                 0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B,
                 "0x00"
             );
-            0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B.transfer(gymnasiaFee);
+
+            bool sent = 0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B.send(
+                gymnasiaFee
+            );
+            require(sent, "Failed to send ether");
+
             withUnlock = true;
         } else {
-            0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B.transfer(msg.value);
+            bool sent = 0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B.send(
+                msg.value
+            );
+            require(sent, "Failed to send ether");
         }
 
-        manager.addLeaderboardEntry(
-            challengeId,
-            msg.sender,
-            condition,
-            time,
-            withUnlock
-        );
+        if (!debug)
+            requests[api.requestValidation()] = challengeId; // todo add data and time
+        else
+            manager.addLeaderboardEntry(
+                challengeId,
+                msg.sender,
+                conditions,
+                time,
+                withUnlock
+            );
     }
 
     function receivePrice(uint256 challengeId) external {

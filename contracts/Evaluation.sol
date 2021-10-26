@@ -7,6 +7,7 @@ import "./ChallengeManager.sol";
 contract Evaluation {
     address public manager;
     address public owner;
+    string internal specificDescriptionPart;
 
     mapping(uint256 => uint32[]) public ruleset;
 
@@ -18,6 +19,10 @@ contract Evaluation {
     function setChallengeManager(address adr) external {
         require(msg.sender == owner, "NOT_OWNER");
         manager = adr;
+    }
+
+    function getSpecificDescriptionPart() public view returns (string memory) {
+        return specificDescriptionPart;
     }
 
     function evaluate(ChallengeManager.LeaderboardEntry[] calldata entry)
