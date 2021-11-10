@@ -17,7 +17,7 @@ const HTTP_OPTIONS = {
     'Content-Type': 'application/x-www-form-urlencoded',
     // Authorization: 'Bearer TA3n1vrNjuQJWw0TdCDHnjSmrjIPULhTlejMIWqq',
     // response_type: 'code'
-    responseType: 'json',
+    // responseType: 'json',
     Accept: 'application/vnd.c2logbook.v1+json',
   }),
   // responseType: 'text' as 'json'
