@@ -47,9 +47,9 @@ export class AuthService {
   }
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private tokenService: TokenService,
-    private concept2Service: Concept2Service) {}
+    private concept2Service: Concept2Service) { }
 
   login(code: string): Observable<any> {
     this.tokenService.removeToken();
@@ -71,12 +71,14 @@ export class AuthService {
       )
 
       .pipe(
-        tap((res) => {
+        tap((res: any) => {
+          console.log(JSON.parse(res));
+
           this.tokenService.saveToken(res.access_token);
           this.tokenService.saveRefreshToken(res.refresh_token);
         }),
-        switchMap(() =>this.concept2Service.getUserData('me')),
-        tap((res) => this.tokenService.saveUserId(res.data.username, brands.CONCEPT2) ),
+        switchMap(() => this.concept2Service.getUserData('me')),
+        tap((res) => this.tokenService.saveUserId(res.data.username, brands.CONCEPT2)),
         catchError(AuthService.handleError)
       );
   }
@@ -85,7 +87,7 @@ export class AuthService {
     this.tokenService.removeToken();
     this.tokenService.removeRefreshToken();
     let userid = this.tokenService.getUserId(brands.CONCEPT2);
-    if(!userid) userid = '';
+    if (!userid) userid = '';
     const body = new HttpParams()
       .set('client_id', environment.client_id)
       // .set('user_id', userid)
