@@ -32,6 +32,8 @@ const response_type = 'code';
 })
 export class AuthService {
   private static handleError(error: HttpErrorResponse): any {
+    console.log('ERROR', error);
+
     if (error.error instanceof ErrorEvent) {
       console.error('An error occurred:', error.error.message);
     } else {
