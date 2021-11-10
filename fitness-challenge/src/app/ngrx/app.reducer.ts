@@ -21,6 +21,137 @@ export interface AppState {
 export const initialState: AppState =
 {
   challenges: [
+    {
+      id: 1,
+      title: '2000m rowing challenge',
+      description: 'this is a 200m rowing challenge. The athlete who completes the following workout with the best time will win',
+      image: '',
+      rules: ['300'],
+      creator: '0x42B0a49C356A461F501019914f251D9B3e654a54',
+      creationTime: new Date(),
+      start: new Date('11.09.2021 10:00'),
+      end: new Date('11.09.2021 20:00'),
+      participants: 5,
+      price: '10000000000',
+      leaderBoard: [{
+        challenger: 'me',
+        data: 300,
+        time: 60
+      }],
+      fee: '100000000000000000',
+      currentParticipantsCount: 1,
+      maxParticipantsCount: 5,
+      redeemed: false,
+      ruleset: {
+        condition: [500],
+        types: ['rower']
+      }
+    },
+    {
+      id: 2,
+      title: 'past challenge',
+      description: 'past challenge',
+      image: '',
+      rules: ['300'],
+      creator: '0x42B0a49C356A461F501019914f251D9B3e654a54',
+      creationTime: new Date(),
+      start: new Date('10.09.2021 10:00'),
+      end: new Date('10.09.2021 20:00'),
+      participants: 5,
+      price: '10000000000',
+      leaderBoard: [{
+        challenger: 'me',
+        data: 300,
+        time: 60
+      }],
+      fee: '100000000000000000',
+      currentParticipantsCount: 1,
+      maxParticipantsCount: 5,
+      redeemed: false,
+      ruleset: {
+        condition: [500],
+        types: ['rower']
+      }
+    },
+    {
+      id: 3,
+      title: 'upcomming',
+      description: 'upcomming',
+      image: '',
+      rules: ['300'],
+      creator: '0x42B0a49C356A461F501019914f251D9B3e654a54',
+      creationTime: new Date(),
+      start: new Date('12.09.2021 10:00'),
+      end: new Date('12.09.2021 20:00'),
+      participants: 5,
+      price: '10000000000',
+      leaderBoard: [{
+        challenger: 'me',
+        data: 300,
+        time: 60
+      }],
+      fee: '100000000000000000',
+      currentParticipantsCount: 1,
+      maxParticipantsCount: 5,
+      redeemed: false,
+      ruleset: {
+        condition: [500],
+        types: ['rower']
+      }
+    },
+    {
+      id: 3,
+      title: '2000m rowing challenge',
+      description: 'this is a 200m rowing challenge. The athlete who completes the following workout with the best time will win',
+      image: '',
+      rules: ['300'],
+      creator: '0x42B0a49C356A461F501019914f251D9B3e654a54',
+      creationTime: new Date(),
+      start: new Date('11.09.2021 10:00'),
+      end: new Date('11.09.2021 20:00'),
+      participants: 5,
+      price: '10000000000',
+      leaderBoard: [{
+        challenger: 'me',
+        data: 300,
+        time: 60
+      }],
+      fee: '100000000000000000',
+      currentParticipantsCount: 1,
+      maxParticipantsCount: 5,
+      redeemed: false,
+      ruleset: {
+        condition: [500],
+        types: ['rower']
+      }
+    },
+    {
+      id: 4,
+      title: '2000m rowing challenge',
+      description: 'this is a 200m rowing challenge. The athlete who completes the following workout with the best time will win',
+      image: '',
+      rules: ['300'],
+      creator: '0x42B0a49C356A461F501019914f251D9B3e654a54',
+      creationTime: new Date(),
+      start: new Date('11.09.2021 10:00'),
+      end: new Date('11.09.2021 20:00'),
+      participants: 5,
+      price: '10000000000',
+      leaderBoard: [{
+        challenger: 'me',
+        data: 300,
+        time: 60
+      }],
+      fee: '100000000000000000',
+      currentParticipantsCount: 1,
+      maxParticipantsCount: 5,
+      redeemed: false,
+      ruleset: {
+        condition: [500],
+        types: ['rower']
+      }
+    },
+
   ],
   address: '',
   concept2: {
@@ -74,6 +205,28 @@ export const selectDisplayedChallenge = createSelector<any, any, any>(
 export const selectChallengeById = (id: number) => createSelector<any, any, any>(
   (reducer: any) => reducer.data,
   (state: AppState) => state.challenges.find(challenge => challenge.id === id)
+);
+
+export const selectLiveChallenges = createSelector<any, any, any>(
+  (reducer: any) => reducer.data,
+  (state: AppState) => state.challenges.filter((challenge: Challenge) =>
+    challenge.start.valueOf() <= new Date().valueOf() &&
+    challenge.end.valueOf() >= new Date().valueOf()
+  )
+);
+
+export const selectUpcomingChallenges = createSelector<any, any, any>(
+  (reducer: any) => reducer.data,
+  (state: AppState) => state.challenges.filter((challenge: Challenge) =>
+    challenge.start.valueOf() > new Date().valueOf()
+  )
+);
+
+export const selectEndedChallenges = createSelector<any, any, any>(
+  (reducer: any) => reducer.data,
+  (state: AppState) => state.challenges.filter((challenge: Challenge) =>
+    challenge.end.valueOf() < new Date().valueOf()
+  )
 );
 
 export const selectAddress = createSelector<any, any, any>(

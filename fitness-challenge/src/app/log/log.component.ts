@@ -73,9 +73,19 @@ export class LogComponent implements OnInit {
   }
 
   refresh() {
-      this.store.dispatch(setConcept2DataLoading({isLoading:true}));
-      this.store.dispatch({ type: fetchConcept2Data });
+    this.store.dispatch(setConcept2DataLoading({ isLoading: true }));
+    this.store.dispatch({ type: fetchConcept2Data });
 
+  }
+
+  getFormatedTime(time: number) {
+    let mins = Math.floor(time / 600);
+    let secs = Math.floor((time % 600) / 10);
+    let deciSecs = (time % 6);
+    if (secs < 10)
+      return `${mins}:0${secs}:${deciSecs}`
+    else
+      return `${mins}:${secs}:${deciSecs}`
   }
 
 
