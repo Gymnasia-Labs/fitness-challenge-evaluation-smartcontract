@@ -17,7 +17,7 @@ const HTTP_OPTIONS = {
     'Content-Type': 'application/x-www-form-urlencoded',
     // Authorization: 'Bearer TA3n1vrNjuQJWw0TdCDHnjSmrjIPULhTlejMIWqq',
     // response_type: 'code'
-    // responseType : 'text'
+    responseType: 'json',
     Accept: 'application/vnd.c2logbook.v1+json',
   }),
   // responseType: 'text' as 'json'
@@ -72,6 +72,9 @@ export class AuthService {
 
       .pipe(
         tap((res: any) => {
+          console.log('got a resonse');
+          console.log('res', res);
+
           console.log(JSON.parse(res));
 
           this.tokenService.saveToken(res.access_token);
