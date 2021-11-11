@@ -77,8 +77,6 @@ export class AuthService {
           console.log('got a resonse');
           console.log('res', res);
 
-          console.log(JSON.parse(res));
-
           this.tokenService.saveToken(res.access_token);
           this.tokenService.saveRefreshToken(res.refresh_token);
         }),
