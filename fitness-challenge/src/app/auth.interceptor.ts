@@ -37,9 +37,9 @@ export class AuthInterceptor implements HttpInterceptor {
     //   });
     // }
 
-    request = request.clone({
-      headers: request.headers.set('Accept', 'application/json')
-    });
+    // request = request.clone({
+    //   headers: request.headers.set('Accept', 'application/json')
+    // });
 
     console.log(request);
 
