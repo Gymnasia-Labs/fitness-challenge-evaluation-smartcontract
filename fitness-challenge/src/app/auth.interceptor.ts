@@ -54,15 +54,11 @@ export class AuthInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         console.log(error);
         if (error.status === 401) {
+          this.authService.refreshToken({ refresh_token: refreshToken })
+            .subscribe(() => {
+              location.reload();
+            });
 
-          if (error.error.message === 'Invalid OAuth access token') {
-            this.authService.refreshToken({ refresh_token: refreshToken })
-              .subscribe(() => {
-                location.reload();
-              });
-          } else {
-            this.router.navigate(['settings']).then(_ => console.log('redirect to login'));
-          }
         }
         return throwError(error);
       }));
