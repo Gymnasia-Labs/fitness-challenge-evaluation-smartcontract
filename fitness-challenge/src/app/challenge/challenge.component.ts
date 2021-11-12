@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { AuthService } from '../services/auth.service';
 import { Concept2Service } from '../services/concept2.service';
-import { selectChallengeById, selectConcept2DataLoading, selectDisplayedChallenge, selectTrainingData, selectTrainingsForDisplayedChallenge } from '../ngrx/app.reducer';
+import { selectChallengeById, selectConcept2DataLoading, selectConcept2Name, selectDisplayedChallenge, selectTrainingData, selectTrainingsForDisplayedChallenge } from '../ngrx/app.reducer';
 import { TrainingData } from '../models/training.data';
 import { from, merge, of, Subscription, timer } from 'rxjs';
 import { fetchChallenges, fetchConcept2Data, setConcept2DataLoading, setDisplayedChallenge } from '../ngrx/app.actions';
@@ -270,7 +270,15 @@ export class ChallengeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.checkWinner();
+  }
 
+  concept2Name$ = this.store.pipe(
+    select(selectConcept2Name)
+  );
+
+  getLoginURL(brand: string) {
+    return this.authService.getLoginLink(brand);
   }
 
   async checkWinner() {
@@ -291,12 +299,11 @@ export class ChallengeComponent implements OnInit, OnDestroy {
         // retry(100),
       ).subscribe(
         () => this.dialog.open(WinnerDialogComponent, {
-          width: '30%',
-          height: '30%',
+          width: '80%',
+          height: '35%',
           data: { id: this.id }
         })
       );
-
   }
 
   particlesLoaded(container: Container): void {
