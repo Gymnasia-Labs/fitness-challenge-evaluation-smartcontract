@@ -3,13 +3,10 @@ pragma solidity >=0.5.17 <0.9.0;
 
 import "./interfaces/unlock/IPublicLock.sol";
 import "./ChallengeManager.sol";
-import "./APIConsumer.sol";
 
 contract Challenger {
-    bool constant debug = 0; // set 1 to turn off validation
 
     ChallengeManager internal manager;
-    APIConsumer internal api;
 
     mapping(bytes32 => uint256) public requests; // todo add data and time
 
@@ -75,16 +72,13 @@ contract Challenger {
             require(sent, "Failed to send ether");
         }
 
-        if (!debug)
-            requests[api.requestValidation()] = challengeId; // todo add data and time
-        else
-            manager.addLeaderboardEntry(
-                challengeId,
-                msg.sender,
-                conditions,
-                time,
-                withUnlock
-            );
+        manager.addLeaderboardEntry(
+            challengeId,
+            msg.sender,
+            conditions,
+            time,
+            withUnlock
+        );
     }
 
     function receivePrice(uint256 challengeId) external {
