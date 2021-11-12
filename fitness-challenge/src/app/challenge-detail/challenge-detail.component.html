@@ -19,18 +19,26 @@
         <img src="/assets/rower_concept2.jpg" class="rower">
         <br>
 
-        <div>
+        <!-- <div>
             {{challenge?.description}}
-        </div>
+        </div> -->
 
         <div class="rulesWrapper">
             <div class="title">The Workout:</div>
 
 
-            <div class="rules">
-
+            <div class="">
+                <!-- <br> -->
                 <div *ngFor="let type of challenge?.ruleset?.types; let i = index">
-                    <div>
+                    <!-- <div class="title">{{type}}</div> -->
+
+                    <button mat-stroked-button style="cursor: unset; margin-top: 3pt;" color="primary">
+                        {{type}}
+                        {{
+                        challenge?.ruleset?.condition
+                        }}m
+                    </button>
+                    <!-- <div>
                         <span>°</span> {{type}}
                     </div>
                     <div>
@@ -39,26 +47,34 @@
                         {{
                         challenge?.ruleset?.condition
                         }}
-                        <!-- todo: check for array -->
+                        
                         meters
-                    </div>
+                    </div> -->
                 </div>
-
-                <br>
-                <div>
-                    Entry fee: <button mat-flat-button style="cursor: unset;"
-                        color="primary">{{formatEther(challenge?.fee)}} ETH</button>
-                </div>
-                <br>
-                <div style="font-weight: bold; font-size: medium;">
-                    {{ (challenge?.maxParticipantsCount || 0) - (challenge?.currentParticipantsCount || 0)
-                    }}/{{
-                    (challenge?.maxParticipantsCount || 0)}} tickets remaining </div>
-                <br>
+            </div>
 
 
+            <div class="title">Entry fee:</div>
 
-                <!-- <div class="rulesGrid">
+            <button mat-flat-button style="cursor: unset; margin-top: 3pt;"
+                color="primary">{{formatEther(challenge?.fee)}}
+                ETH</button>
+
+            <div class="title">Prize Pool:</div>
+
+            <button mat-flat-button style="cursor: unset; margin-top: 3pt;"
+                color="primary">{{formatEther(challenge?.price)}}
+                ETH</button>
+            <div class="title">Tickets:</div>
+
+            <button mat-flat-button style="cursor: unset; margin-top: 3pt;" color="primary">{{
+                (challenge?.maxParticipantsCount || 0) - (challenge?.currentParticipantsCount || 0)
+                }}/{{
+                (challenge?.maxParticipantsCount || 0)}}</button>
+
+
+
+            <!-- <div class="rulesGrid">
                     <div>1.</div>
                     <div>use a concept2 pm5 rower</div>
                 </div>
@@ -76,7 +92,6 @@
                 </div> -->
 
 
-            </div>
 
             <!-- <br>
             <div>

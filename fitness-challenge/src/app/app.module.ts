@@ -36,8 +36,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { NgParticlesModule } from "ng-particles";
 import { MatDialogModule } from '@angular/material/dialog';
 import { WinnerDialogComponent } from './winner-dialog/winner-dialog.component';
-
-
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -76,7 +75,8 @@ import { WinnerDialogComponent } from './winner-dialog/winner-dialog.component';
     MatProgressBarModule,
     MatSelectModule,
     NgParticlesModule,
-    MatDialogModule
+    MatDialogModule,
+    MatTooltipModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

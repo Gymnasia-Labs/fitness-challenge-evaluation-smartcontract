@@ -273,9 +273,9 @@ export const selectTrainingsForDisplayedChallenge = createSelector<any, any, any
 
     return state.concept2.data.
       filter(data => {
-        // return new Date(data.date) >= (challenge as Challenge).start
-        //   && new Date(data.date) <= (challenge as Challenge).end
-        return data.type === challenge?.ruleset.types[0]
+        return new Date(data.date) >= (challenge as Challenge).start
+          && new Date(data.date) <= (challenge as Challenge).end
+          && data.type === challenge?.ruleset.types[0]
           && data.distance === challenge.ruleset.condition[0];
         // return true;
       })

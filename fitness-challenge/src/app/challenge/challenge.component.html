@@ -3,13 +3,19 @@
 <div class="content">
 
   <div>
-    <h1 style="text-align: center;">
-      Challenges
-    </h1>
+    <mat-icon routerLink="/challenges">arrow_back_ios</mat-icon>
+    <!-- <h1 style="text-align: center;"> -->
+    <!-- </h1> -->
     <!-- <div class="creationDetails">Created by {{(challenge$|async)?.creator}} </div> -->
     <div class="creationDetails">
-      Challenge #{{id}} (pegged to a unique identifier / NFT)
+      <!-- Challenge #{{id}} (pegged to a unique identifier / NFT) -->
       <!-- {{(challenge$|async)?.creationTime | date: 'short'}} -->
+      <div>Concept2:
+
+        <a *ngIf="!(concept2Name$ | async)" (click)="saveChallengeId()" class="loginbutton"
+          [href]="getLoginURL('concept2')">{{ '{' }}sign in{{ '}' }}</a>
+        <b *ngIf="(concept2Name$ | async)" style="color:green">{{ '{' }}signed in{{ '}' }}</b>
+      </div>
     </div>
     <app-challenge-detail (challengeOver)="checkWinner()" [challenge]="challenge$|async" [joinActive]="false">
     </app-challenge-detail>
