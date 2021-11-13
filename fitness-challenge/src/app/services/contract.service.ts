@@ -81,6 +81,7 @@ export class ContractService {
     const provider = new WalletConnectProvider({
       infuraId: "27e484dcd9e3efcfd25a83a78777cdf1",
     });
+    this.provider = provider;
     provider.on("accountsChanged", (accounts: string[]) => {
       this.userAddress = accounts[0];
       this.store.dispatch(setAddress({ address: accounts[0] }));
