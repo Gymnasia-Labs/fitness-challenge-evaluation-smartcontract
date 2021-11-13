@@ -170,7 +170,7 @@ export const appReducer = createReducer(
   on(setChallenges, (state, { challenges }) => ({ ...state, challenges: challenges.map(toChallenge) })),
   on(setAddress, (state, { address }) => ({ ...state, address: address })),
   on(setConcept2Name, (state, { name }) => ({ ...state, concept2: { ...state.concept2, name: name, } })),
-  on(setConcept2Data, (state, { data }) => ({ ...state, concept2: { ...state.concept2, data: data.map(workout => ({ ...workout, date: workout.date_utc + '.000Z' })), loading: false } })),
+  on(setConcept2Data, (state, { data }) => ({ ...state, concept2: { ...state.concept2, data: data.map(workout => ({ ...workout, date: workout.date_utc })), loading: false } })),
   on(setTrainingData, (state, { data }) => ({ ...state, trainingData: data })),
 
   on(setConcept2DataLoading, (state, { isLoading }) => ({ ...state, concept2: { ...state.concept2, loading: isLoading, } })),
@@ -275,10 +275,10 @@ export const selectTrainingsForDisplayedChallenge = createSelector<any, any, any
     return state.concept2.data.
       filter(data => {
         console.log(new Date(data.date.replace(/-/g, "/")), (challenge as Challenge).start, (challenge as Challenge).end);
-        return new Date(data.date.replace(/-/g, "/")) >= (challenge as Challenge).start
-          && new Date(data.date.replace(/-/g, "/")) <= (challenge as Challenge).end
+        // return new Date(data.date.replace(/-/g, "/")) >= (challenge as Challenge).start
+        //   && new Date(data.date.replace(/-/g, "/")) <= (challenge as Challenge).end
 
-          && data.type === challenge?.ruleset.types[0]
+        return data.type === challenge?.ruleset.types[0]
           && data.distance === challenge.ruleset.condition[0];
       })
       .map(result => (
