@@ -254,7 +254,7 @@ export const selectTrainingData = createSelector<any, any, any>(
   (state: AppState) => state.concept2.data.map(result => (
     {
       id: result.id,
-      date: result.date,
+      date: result.date_utc,
       brand: 'concept2',
       type: result.type,
       distance: result.distance + 'm',
@@ -273,13 +273,12 @@ export const selectTrainingsForDisplayedChallenge = createSelector<any, any, any
 
     return state.concept2.data.
       filter(data => {
-        // return new Date(data.date) >= (challenge as Challenge).start
-        //   && new Date(data.date) <= (challenge as Challenge).end
-        console.log(new Date(data.date), (challenge as Challenge).start, (challenge as Challenge).end);
+        return new Date(data.date) >= (challenge as Challenge).start
+          && new Date(data.date) <= (challenge as Challenge).end
 
-        return data.type === challenge?.ruleset.types[0]
+          && data.type === challenge?.ruleset.types[0]
           && data.distance === challenge.ruleset.condition[0];
-        // return true;
+        // console.log(new Date(data.date), (challenge as Challenge).start, (challenge as Challenge).end);
       })
       .map(result => (
         {

@@ -270,7 +270,6 @@ export class ChallengeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.checkWinner();
   }
 
   concept2Name$ = this.store.pipe(
