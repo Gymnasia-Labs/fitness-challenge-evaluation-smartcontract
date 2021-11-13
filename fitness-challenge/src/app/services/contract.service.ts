@@ -79,7 +79,7 @@ export class ContractService {
   public async connectMetamask() {
 
     const provider = new WalletConnectProvider({
-      infuraId: "27e484dcd9e3efcfd25a83a78777cdf1",
+      infuraId: "341f93e32677417caab076c24bdc90ea",
     });
     this.provider = provider;
     provider.on("accountsChanged", (accounts: string[]) => {
