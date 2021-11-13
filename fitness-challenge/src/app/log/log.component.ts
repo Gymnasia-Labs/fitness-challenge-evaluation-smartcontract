@@ -78,6 +78,10 @@ export class LogComponent implements OnInit {
 
   }
 
+  getDate(date: string) {
+    return new Date(date)
+  }
+
   getFormatedTime(time: number) {
     let mins = Math.floor(time / 600);
     let secs = Math.floor((time % 600) / 10);
