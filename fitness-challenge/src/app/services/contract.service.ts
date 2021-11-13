@@ -1,6 +1,6 @@
 import { Inject, Injectable, InjectionToken } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { ethers, utils } from 'ethers';
+import { ethers, providers, utils } from 'ethers';
 import { fetchChallenges, setAddress, setChallenges } from '../ngrx/app.actions';
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { environment } from 'src/environments/environment';
@@ -87,16 +87,11 @@ export class ContractService {
       this.userAddress = accounts[0];
       this.store.dispatch(setAddress({ address: accounts[0] }));
     });
-    this.provider.enable();
+    await this.provider.enable();
+    const ethersjs = new providers.Web3Provider(provider);
+    this.provider = ethersjs;
 
-    this.web3provider.enable()
-      .then((address: string) => {
-        this.userAddress = address[0];
-        this.store.dispatch(setAddress({ address: address[0] }))
-      }
-      );
-
-    this.connectContract(this.provider);
+    this.connectContract(ethersjs);
   }
 
   private connectContract(provider: any) {
