@@ -219,7 +219,7 @@ export const selectLiveChallenges = createSelector<any, any, any>(
 export const selectUpcomingChallenges = createSelector<any, any, any>(
   (reducer: any) => reducer.data,
   (state: AppState) => state.challenges.filter((challenge: Challenge) =>
-    challenge.start.valueOf() > new Date().valueOf()
+    challenge.end.valueOf() >= new Date().valueOf()
   )
 );
 

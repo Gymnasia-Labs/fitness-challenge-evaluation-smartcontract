@@ -12,8 +12,8 @@ export class ChallengesComponent implements OnInit {
 
   constructor(public store: Store<AppState>) { }
   challenges$ = this.store.pipe(
-    select(selectChallenges)
-    // select(selectEndedChallenges)
+    // select(selectChallenges)
+    select(selectUpcomingChallenges)
 
   );
   ngOnInit(): void {
