@@ -170,7 +170,7 @@ export const appReducer = createReducer(
   on(setChallenges, (state, { challenges }) => ({ ...state, challenges: challenges.map(toChallenge) })),
   on(setAddress, (state, { address }) => ({ ...state, address: address })),
   on(setConcept2Name, (state, { name }) => ({ ...state, concept2: { ...state.concept2, name: name, } })),
-  on(setConcept2Data, (state, { data }) => ({ ...state, concept2: { ...state.concept2, data: data.map(workout => ({ ...workout, date: workout.date_utc })), loading: false } })),
+  on(setConcept2Data, (state, { data }) => ({ ...state, concept2: { ...state.concept2, data: data.map(workout => ({ ...workout, date: workout.date_utc + 'Z' })), loading: false } })),
   on(setTrainingData, (state, { data }) => ({ ...state, trainingData: data })),
 
   on(setConcept2DataLoading, (state, { isLoading }) => ({ ...state, concept2: { ...state.concept2, loading: isLoading, } })),
