@@ -1,5 +1,5 @@
-export interface TrainingData{
-    id:number
+export interface TrainingData {
+    id: number
     date: string,
     brand: string,
     type: string,
@@ -7,5 +7,6 @@ export interface TrainingData{
     time: number,
     timeFormated: string,
     pace: number,
-    hearthRate: number
+    hearthRate: number,
+    date_utc: string
 }
