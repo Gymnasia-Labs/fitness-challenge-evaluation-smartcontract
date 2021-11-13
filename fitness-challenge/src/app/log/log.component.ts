@@ -79,7 +79,8 @@ export class LogComponent implements OnInit {
   }
 
   getDate(date: string) {
-    return new Date(date)
+
+    return new Date(date.replace(/-/g, "/"));
   }
 
   getFormatedTime(time: number) {
