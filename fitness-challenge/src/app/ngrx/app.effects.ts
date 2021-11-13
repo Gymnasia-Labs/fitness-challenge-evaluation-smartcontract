@@ -18,7 +18,7 @@ export class AppEffects {
             this.concept2Service.getResultsData('me')
                 .pipe(
                     tap(console.log),
-                    map((data) => setConcept2Data({ data: data.data.map((workout: any) => ({ ...workout, date: workout.date_utc })) })),
+                    map((data) => setConcept2Data({ data: data.data })),
                     catchError(() =>
                         of(setConcept2DataLoading({ isLoading: false }))
                     )
