@@ -171,7 +171,7 @@ export const appReducer = createReducer(
   on(setAddress, (state, { address }) => ({ ...state, address: address })),
   on(setConcept2Name, (state, { name }) => ({ ...state, concept2: { ...state.concept2, name: name, } })),
   on(setConcept2Data, (state, { data }) => ({ ...state, concept2: { ...state.concept2, data: data, loading: false } })),
-  on(setTrainingData, (state, { data }) => ({ ...state, trainingData: data.map(workout => ({ ...workout, date: workout.date_utc })) })),
+  on(setTrainingData, (state, { data }) => ({ ...state, trainingData: data.map(workout => ({ ...workout, date: workout.date_utc + 'z' })) })),
 
   on(setConcept2DataLoading, (state, { isLoading }) => ({ ...state, concept2: { ...state.concept2, loading: isLoading, } })),
   on(setDisplayedChallenge, (state, { id }) => ({ ...state, displayedChallenge: id })),
@@ -255,7 +255,7 @@ export const selectTrainingData = createSelector<any, any, any>(
   (state: AppState) => state.concept2.data.map(result => (
     {
       id: result.id,
-      date: result.date_utc,
+      date: result.date,
       brand: 'concept2',
       type: result.type,
       distance: result.distance + 'm',
