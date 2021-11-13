@@ -82,13 +82,21 @@ export class ContractService {
       infuraId: "341f93e32677417caab076c24bdc90ea",
     });
     this.provider = provider;
+
     provider.on("accountsChanged", (accounts: string[]) => {
       this.userAddress = accounts[0];
       this.store.dispatch(setAddress({ address: accounts[0] }));
     });
-    provider.enable();
+    this.provider.enable();
 
-    this.connectContract(provider);
+    this.web3provider.enable()
+      .then((address: string) => {
+        this.userAddress = address[0];
+        this.store.dispatch(setAddress({ address: address[0] }))
+      }
+      );
+
+    this.connectContract(this.provider);
   }
 
   private connectContract(provider: any) {
