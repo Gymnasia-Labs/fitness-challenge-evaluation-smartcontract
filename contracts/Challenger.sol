@@ -16,24 +16,26 @@ contract Challenger {
         manager.setChallenger(address(this));
     }
 
+    event PrizeReceived(address winner);
+
     function submitData(
         uint256 challengeId,
         uint32[] calldata conditions,
         uint32[] calldata time
     ) external payable returns (bool) {
         IPublicLock lock = manager.getLock(challengeId);
-        require(address(lock) != address(0), "THERE_IS_NO_LOCK");
+        require(address(lock) != address(0), "Challenger: lock does not exist yet");
         require(
             time.length == conditions.length,
-            "ARRAY_LENGTHS_IN_SUBMITION_INPUT_NOT_MATCHING"
+            "Challenger: argument array lengths not matching"
         );
         require(
             manager.getEndOfChallenge(challengeId) > block.timestamp,
-            "CHALLENGE_ALREADY_OVER"
+            "Challenger: challenge allready over"
         );
         require(
             manager.getStartOfChallenge(challengeId) < block.timestamp,
-            "CHALLENGE_NOT_STARTED_YET"
+            "Challenger: challenge not started yet"
         );
 
         bool withUnlock = false;
@@ -43,11 +45,11 @@ contract Challenger {
                 manager.getCurrentParticipants(challengeId) <
                     manager.getMaxParticipants(challengeId),
                 // || manager.getMaxParticipants(challengeId) == 0
-                "CHALLENGE_FULL"
+                "Challenger: challenge is already full"
             );
             require(
                 msg.value >= manager.getFee(challengeId),
-                "ENTERED_FEE_TOO_LOW"
+                "Challenger: entered fee too low"
             );
             uint256 gymnasiaFee = msg.value - manager.getKeyPrice(challengeId);
 
@@ -62,14 +64,14 @@ contract Challenger {
             bool sent = 0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B.send(
                 gymnasiaFee
             );
-            require(sent, "Failed to send ether");
+            require(sent, "Challenger: Failed to send ether");
 
             withUnlock = true;
         } else {
             bool sent = 0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B.send(
                 msg.value
             );
-            require(sent, "Failed to send ether");
+            require(sent, "Challenger: Failed to send ether");
         }
 
         manager.addLeaderboardEntry(
@@ -82,14 +84,16 @@ contract Challenger {
     }
 
     function receivePrice(uint256 challengeId) external {
-        require(isWinner(challengeId), "Not the winner");
+        require(isWinner(challengeId), "Challanger: Sorry you are not the winner");
 
         IPublicLock lock = manager.getLock(challengeId);
         lock.updateBeneficiary(msg.sender);
-        lock.withdraw(address(0), 0);
+        lock.withdraw(address(0), 0);   //address(0) => caller is target, 0 => all in the lock
 
         manager.setRedeemed(challengeId);
         // lock.updateBeneficiary(address(this));
+
+        emit PrizeReceived(msg.sender);
     }
 
     function isWinner(uint256 challengeId) public view returns (bool) {
