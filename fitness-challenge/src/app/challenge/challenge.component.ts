@@ -261,8 +261,6 @@ export class ChallengeComponent implements OnInit, OnDestroy {
     this.logData$ = this.store.pipe(
       select(selectTrainingsForDisplayedChallenge)
     );
-    // this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl('https://youtu.be/dQw4w9WgXcQ');
-    // this.checkWinner();
     this.getLeaderboard();
   }
   ngOnDestroy(): void {

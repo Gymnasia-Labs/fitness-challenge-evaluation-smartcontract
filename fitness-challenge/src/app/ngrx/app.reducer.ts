@@ -7,7 +7,7 @@ import { TrainingData } from "../models/training.data";
 import { trainingTypes } from "../services/contract.service";
 import {
   fetchConcept2Data,
-  setAddress, setChallenges, setConcept2Data, setConcept2DataLoading, setConcept2Name, setDisplayedChallenge, setTrainingData
+  setAddress, setChallenges, setConcept2Data, setConcept2DataLoading, setConcept2Name, setDisplayedChallenge, setTrainingData, setTransactionError, setTransactionHash, setTransactionLoading
 } from "./app.actions";
 
 export interface AppState {
@@ -15,7 +15,12 @@ export interface AppState {
   address: string,
   concept2: Concept2,
   trainingData: TrainingData[], // the commulated training data of all brands
-  displayedChallenge: number
+  displayedChallenge: number,
+  transaction: {
+    loading: boolean,
+    error: string,
+    hash: string
+  }
 };
 
 export const initialState: AppState =
@@ -160,7 +165,12 @@ export const initialState: AppState =
     loading: false
   },
   trainingData: [],
-  displayedChallenge: -1
+  displayedChallenge: -1,
+  transaction: {
+    loading: false,
+    error: '',
+    hash: ''
+  }
 }
   ;
 
@@ -170,11 +180,13 @@ export const appReducer = createReducer(
   on(setChallenges, (state, { challenges }) => ({ ...state, challenges: challenges.map(toChallenge) })),
   on(setAddress, (state, { address }) => ({ ...state, address: address })),
   on(setConcept2Name, (state, { name }) => ({ ...state, concept2: { ...state.concept2, name: name, } })),
-  on(setConcept2Data, (state, { data }) => ({ ...state, concept2: { ...state.concept2, data: data.map(workout => ({ ...workout, date: workout.date_utc })), loading: false } })),
+  on(setConcept2Data, (state, { data }) => ({ ...state, concept2: { ...state.concept2, data: data.map(workout => ({ ...workout, date: workout.date_utc ? workout.date_utc : workout.date })), loading: false } })),
   on(setTrainingData, (state, { data }) => ({ ...state, trainingData: data })),
-
   on(setConcept2DataLoading, (state, { isLoading }) => ({ ...state, concept2: { ...state.concept2, loading: isLoading, } })),
   on(setDisplayedChallenge, (state, { id }) => ({ ...state, displayedChallenge: id })),
+  on(setTransactionLoading, (state, { isLoading }) => ({ ...state, transaction: { loading: isLoading, hash: '', error: '' } })),
+  on(setTransactionError, (state, { error, hash }) => ({ ...state, transaction: { loading: false, error: error, hash: hash } })),
+  on(setTransactionHash, (state, { hash }) => ({ ...state, transaction: { loading: false, error: '', hash: hash } })),
 
 );
 
@@ -196,6 +208,21 @@ const toChallenge = (challenge: Challenge) => {
 export const selectChallenges = createSelector<any, any, any>(
   (reducer: any) => reducer.data,
   (state: AppState) => state.challenges
+);
+
+export const selectTransactionLoading = createSelector<any, any, any>(
+  (reducer: any) => reducer.data,
+  (state: AppState) => state.transaction.loading
+);
+
+export const selectTransactionError = createSelector<any, any, any>(
+  (reducer: any) => reducer.data,
+  (state: AppState) => state.transaction.error
+);
+
+export const selectTransactionHash = createSelector<any, any, any>(
+  (reducer: any) => reducer.data,
+  (state: AppState) => state.transaction.hash
 );
 
 export const selectDisplayedChallenge = createSelector<any, any, any>(
@@ -279,7 +306,7 @@ export const selectTrainingsForDisplayedChallenge = createSelector<any, any, any
         //   && new Date(data.date.replace(/-/g, "/")) <= (challenge as Challenge).end
 
         return data.type === challenge?.ruleset.types[0]
-          && data.distance === challenge.ruleset.condition[0];
+          && data.distance === challenge.ruleset.conditions[0];
       })
       .map(result => (
         {

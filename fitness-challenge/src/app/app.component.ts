@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { switchMap, tap } from 'rxjs/operators';
+import { filter, switchMap, tap } from 'rxjs/operators';
 import { CHALLENGE_ID } from './challenge/challenge.component';
 import { fetchChallenges, fetchConcept2Data, fetchConcept2User, setConcept2DataLoading, setConcept2Name } from './ngrx/app.actions';
-import { selectAddress } from './ngrx/app.reducer';
+import { selectAddress, selectTransactionLoading } from './ngrx/app.reducer';
 import { AuthService } from './services/auth.service';
 import { Concept2Service } from './services/concept2.service';
 import { ContractService } from './services/contract.service';
 import { TokenService } from './services/token.service';
+import { TransactionLoadingDialogComponent } from './transaction-loading-dialog/transaction-loading-dialog.component';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +19,7 @@ import { TokenService } from './services/token.service';
 })
 export class AppComponent implements OnInit {
   myAddress$ = this.store.pipe(select(selectAddress));
+  transactionLoading$ = this.store.pipe(select(selectTransactionLoading));
   sideNavOpened = true;
 
   constructor(private readonly route: ActivatedRoute,
@@ -25,7 +28,8 @@ export class AppComponent implements OnInit {
     public contractService: ContractService,
     private store: Store,
     private concept2Service: Concept2Service,
-    private tokenService: TokenService) {
+    private tokenService: TokenService,
+    public dialog: MatDialog) {
     route.queryParams.subscribe((params) => {
       console.log('params: ', params);
       if (params.code)
@@ -39,12 +43,15 @@ export class AppComponent implements OnInit {
       this.store.dispatch(setConcept2DataLoading({ isLoading: true }))
       this.store.dispatch({ type: fetchConcept2Data });
       this.store.dispatch({ type: fetchConcept2User });
-      // this.concept2Service
-      //         .getUserData('me')
-      //         .subscribe(
-      //           data =>  this.store.dispatch(setConcept2Name({name: data.data.username})))
     }
+    this.transactionLoading$.pipe(filter(Boolean)).subscribe(() => {
 
+      this.dialog.open(TransactionLoadingDialogComponent, {
+        // width: '350px',
+        // height: '340px',
+        data: {}
+      })
+    })
   }
 
   login(code: string) {

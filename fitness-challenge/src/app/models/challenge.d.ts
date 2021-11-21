@@ -25,6 +25,6 @@ export interface LeaderBoard {
 }
 
 export interface Ruleset {
-    condition: number[],
+    conditions: number[],
     types: string[]
 }

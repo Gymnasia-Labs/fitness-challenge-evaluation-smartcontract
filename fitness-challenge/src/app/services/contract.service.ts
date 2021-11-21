@@ -1,10 +1,9 @@
 import { Inject, Injectable, InjectionToken } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { ethers, providers, utils } from 'ethers';
-import { fetchChallenges, setAddress, setChallenges } from '../ngrx/app.actions';
+import { ethers, providers, Transaction, utils } from 'ethers';
+import { fetchChallenges, setAddress, setChallenges, setTransactionError, setTransactionHash, setTransactionLoading } from '../ngrx/app.actions';
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { environment } from 'src/environments/environment';
-import { Observable, of } from 'rxjs';
 import { Challenge, LeaderBoard } from '../models/challenge';
 
 declare const window: any;
@@ -26,7 +25,7 @@ export const trainingTypes = new Map([
   ["dynamic", 8],
 ]);
 
-const evaluation = '0x615588c053Be083FBaB67e37Aade7B3D90ce40a6';
+const evaluation = environment.minTimeEvaluation;
 
 @Injectable({
   providedIn: 'root'
@@ -107,7 +106,7 @@ export class ContractService {
     return contract.interface.functions[functionName].encode(args);
   };
 
-  public createChallenge(
+  public async createChallenge(
     title: string,
     description: string,
     start: number,
@@ -116,9 +115,10 @@ export class ContractService {
     price: string,
     meters: number,
     traningtype: string
-  ): Observable<boolean> {
-    return of(
-      this.challengeManager.createChallenge(
+  ) {
+    let tx;
+    try {
+      tx = await this.challengeManager.createChallenge(
         title,
         [trainingTypes.get(traningtype)],
         [meters],
@@ -127,25 +127,38 @@ export class ContractService {
         participantsCount,
         ethers.utils.parseEther('' + price),
         evaluation,
-        {
-          gasLimit: 5000000
+      );
+      this.store.dispatch(setTransactionLoading({ isLoading: true }));
+
+    } catch (error: any) {
+      console.log(error);
+      console.log(Object.getOwnPropertyNames(error));
+      console.log(error.message);
+      console.log(error.reason);
+
+
+
+      if (error.code !== 4001) { //Metamask rejection
+        this.store.dispatch(setTransactionLoading({ isLoading: true }));
+        if (error.error) {
+          this.store.dispatch(setTransactionError({ error: `transaction failed: ${error.error.message}`, hash: '' }));
+        } else {
+          this.store.dispatch(setTransactionError({ error: `transaction failed: ${error.reason}`, hash: '' }));
         }
-      ),
+      }
+      return;
+    }
 
-    );
+    try {
+      const receipt = await tx.wait();
+      this.store.dispatch(setTransactionHash({ hash: receipt.transactionHash }));
+    }
+    catch (error: any) {
+      this.store.dispatch(setTransactionError({ error: `${error.reason}: ${error.code}`, hash: error.transactionHash }));
+    }
+
   }
 
-  public getChallenges(): Promise<any[]> {
-    return this.challengeManager.getAllChallenges();
-  }
-
-  public getLeaderBoard(id: number): Promise<LeaderBoard[]> {
-    return this.challengeManager.getLeaderboard(id);
-  }
-
-  public isWinner(id: number): Promise<boolean> {
-    return this.challenger.isWinner(id);
-  }
 
   public async submitChallenge(id: number, data: string, time: number, fee: number) {
     data = data.substring(0, data.length - 1);
@@ -164,9 +177,43 @@ export class ContractService {
       };
     }
 
-    this.challenger.submitData(id, [+data], [time], args)
+    let tx;
+    try {
+      tx = await this.challenger.submitData(id, [+data], [time], args)
+      this.store.dispatch(setTransactionLoading({ isLoading: true }));
+
+    } catch (error: any) {
+      if (error.code !== 4001) {
+        this.store.dispatch(setTransactionLoading({ isLoading: true }));
+        this.store.dispatch(setTransactionError({ error: `transaction failed: ${error.error.message}`, hash: '' }));
+      }
+      return;
+    }
+
+    try {
+      const receipt = await tx.wait();
+      this.store.dispatch(setTransactionHash({ hash: receipt.transactionHash }));
+    }
+    catch (error: any) {
+      this.store.dispatch(setTransactionError({ error: `${error.reason}: ${error.code}`, hash: error.transactionHash }));
+    }
 
   }
+
+
+  public getChallenges(): Promise<any[]> {
+    return this.challengeManager.getAllChallenges();
+  }
+
+  public getLeaderBoard(id: number): Promise<LeaderBoard[]> {
+    return this.challengeManager.getLeaderboard(id);
+  }
+
+  public isWinner(id: number): Promise<boolean> {
+    return this.challenger.isWinner(id);
+  }
+
+
 
   redeemPrice(id: number) {
     return this.challenger.receivePrice(id);
