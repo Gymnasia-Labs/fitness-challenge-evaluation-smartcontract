@@ -296,8 +296,8 @@ export class ChallengeComponent implements OnInit, OnDestroy {
         // retry(100),
       ).subscribe(
         () => this.dialog.open(WinnerDialogComponent, {
-          width: '80%',
-          height: '35%',
+          // width: '80%',
+          // height: '35%',
           data: { id: this.id }
         })
       );

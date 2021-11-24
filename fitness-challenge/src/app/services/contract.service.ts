@@ -215,8 +215,29 @@ export class ContractService {
 
 
 
-  redeemPrice(id: number) {
-    return this.challenger.receivePrice(id);
+  public async redeemPrice(id: number) {
+
+    let tx;
+    try {
+      tx = await this.challenger.receivePrice(id);
+      this.store.dispatch(setTransactionLoading({ isLoading: true }));
+
+    } catch (error: any) {
+      if (error.code !== 4001) {
+        this.store.dispatch(setTransactionLoading({ isLoading: true }));
+        this.store.dispatch(setTransactionError({ error: `transaction failed: ${error.error.message}`, hash: '' }));
+      }
+      return;
+    }
+
+    try {
+      const receipt = await tx.wait();
+      this.store.dispatch(setTransactionHash({ hash: receipt.transactionHash }));
+    }
+    catch (error: any) {
+      this.store.dispatch(setTransactionError({ error: `${error.reason}: ${error.code}`, hash: error.transactionHash }));
+    }
+
   }
 
   getChallengeRuleset(id: number) {
