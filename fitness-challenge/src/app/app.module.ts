@@ -38,6 +38,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { WinnerDialogComponent } from './winner-dialog/winner-dialog.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TransactionLoadingDialogComponent } from './transaction-loading-dialog/transaction-loading-dialog.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 
 @NgModule({
@@ -78,7 +79,8 @@ import { TransactionLoadingDialogComponent } from './transaction-loading-dialog/
     MatSelectModule,
     NgParticlesModule,
     MatDialogModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatTabsModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },
