@@ -2,27 +2,30 @@ import { Component, OnInit } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { select, Store } from '@ngrx/store';
 import { fetchChallenges } from '../ngrx/app.actions';
-import { AppState, selectChallenges, selectEndedChallenges, selectLiveChallenges, selectUpcomingChallenges } from '../ngrx/app.reducer';
+import {
+  AppState,
+  selectChallenges,
+  selectEndedChallenges,
+  selectLiveChallenges,
+  selectUpcomingChallenges,
+} from '../ngrx/app.reducer';
 
 @Component({
   selector: 'app-challenges',
   templateUrl: './challenges.component.html',
-  styleUrls: ['./challenges.component.scss']
+  styleUrls: ['./challenges.component.scss'],
 })
 export class ChallengesComponent implements OnInit {
-
-  constructor(public store: Store<AppState>) { }
+  constructor(public store: Store<AppState>) {}
   challenges$ = this.store.pipe(
     // select(selectChallenges)
     select(selectUpcomingChallenges)
-
   );
   ngOnInit(): void {
-    this.store.dispatch({ type: fetchChallenges })
+    this.store.dispatch({ type: fetchChallenges });
   }
 
   changeChallenges(type: MatTabChangeEvent) {
-    console.log(type);
     let challengeSelect;
     switch (type.index) {
       case 0:
@@ -39,9 +42,6 @@ export class ChallengesComponent implements OnInit {
         challengeSelect = selectUpcomingChallenges;
         break;
     }
-    this.challenges$ = this.store.pipe(
-      select(challengeSelect)
-    )
+    this.challenges$ = this.store.pipe(select(challengeSelect));
   }
-
 }
