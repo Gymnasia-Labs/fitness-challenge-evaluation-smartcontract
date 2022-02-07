@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.5.17 <0.9.0;
-pragma experimental ABIEncoderV2;
 
 import "./Evaluation.sol";
 import "./LockFactory.sol";
@@ -265,6 +264,7 @@ contract ChallengeManager is LockFactory, Ownable {
             return "dynamic";
         } else {
             require(false, "ChallengeManager: challenge type not specified");
+            return "no_type";
         }
     }
 }

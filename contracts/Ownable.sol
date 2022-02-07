@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.5.17 <0.9.0;
 
-contract Ownable {  //todo add abstract after compiler upgrade
+abstract contract Ownable {  //todo add abstract after compiler upgrade
     address private _owner;
     bool private isFirstCall = true;
 
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
-    constructor() public {
+    constructor() {
         _transferOwnership(msg.sender);
     }
 

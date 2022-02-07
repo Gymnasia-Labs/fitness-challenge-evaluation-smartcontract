@@ -10,7 +10,7 @@ contract Challenger {
 
     mapping(bytes32 => uint256) public requests; // todo add data and time
 
-    constructor(address adr) public {
+    constructor(address adr) {
         manager = ChallengeManager(adr);
 
         manager.setChallenger(address(this));
@@ -22,7 +22,7 @@ contract Challenger {
         uint256 challengeId,
         uint32[] calldata conditions,
         uint32[] calldata time
-    ) external payable returns (bool) {
+    ) external payable {
         IPublicLock lock = manager.getLock(challengeId);
         require(address(lock) != address(0), "Challenger: lock does not exist yet");
         require(
@@ -53,22 +53,23 @@ contract Challenger {
             );
             uint256 gymnasiaFee = msg.value - manager.getKeyPrice(challengeId);
 
-            lock.purchase.value(manager.getKeyPrice(challengeId))(
+            lock.purchase{ value: (manager.getKeyPrice(challengeId))}(
                 // lock.purchase.value(msg.value)(
                 lock.keyPrice(),
                 msg.sender,
                 0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B,
+                address(this),
                 "0x00"
             );
 
-            bool sent = 0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B.send(
+            bool sent = payable(0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B).send(
                 gymnasiaFee
             );
             require(sent, "Challenger: Failed to send ether");
 
             withUnlock = true;
         } else {
-            bool sent = 0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B.send(
+            bool sent = payable(0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B).send(
                 msg.value
             );
             require(sent, "Challenger: Failed to send ether");

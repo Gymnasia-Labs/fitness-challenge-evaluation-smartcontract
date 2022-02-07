@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.5.17 <0.9.0;
-pragma experimental ABIEncoderV2;
 
 import "./Evaluation.sol";
 
 contract MinTimeEvaluation is Evaluation {
-    constructor(address adr) public Evaluation(adr) {
+    constructor(address adr) Evaluation(adr) {
         specificDescriptionPart = "in the shortest amount of time.";
     }
 
     function evaluate(ChallengeManager.LeaderboardEntry[] memory entry)
         public
-        view
+        override
+        pure
         returns (address)
     {
         require(entry.length > 0, "MinTimeEvaluation: empty leaderboard");
