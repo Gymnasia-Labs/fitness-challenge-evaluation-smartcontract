@@ -4,7 +4,7 @@ pragma solidity >=0.5.17 <0.9.0;
 import "./ChallengeManager.sol";
 import "./Ownable.sol";
 
-abstract contract Evaluation is Ownable{
+contract Evaluation is Ownable{
     address public manager;
     string internal specificDescriptionPart;
 
@@ -26,7 +26,11 @@ abstract contract Evaluation is Ownable{
         external
         virtual
         view
-        returns (address);
+        returns (address) {
+            require(false, "Evaluation: don't run this method, class is abstract (pseudo abstract because of polymorphie purpose)");
+            if (entry.length == 0) return address(0); //just to remove warning
+            else return address(0);
+        }
 
     function setRules(uint256 challengeId, uint32[] memory rules) public {
         require(msg.sender == manager, "Evaluation: caller is not challenge manager");
