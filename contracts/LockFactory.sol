@@ -4,13 +4,13 @@ pragma solidity >=0.5.17 <0.9.0;
 import "./interfaces/unlock/IPublicLock.sol";
 import "./interfaces/unlock/IUnlock.sol";
 
-contract LockFactory {
+abstract contract LockFactory {
     IUnlock internal unlock;
 
     mapping(uint256 => IPublicLock) lockToId;
 
-    constructor() public {
-        unlock = IUnlock(0xD8C88BE5e8EB88E38E6ff5cE186d764676012B0b);
+    constructor() {
+        unlock = IUnlock(0x1dA6c13515362B42ACb1Ad24a713f74f925F3AEB);
     }
 
     function createNewLock(

@@ -1,17 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.5.17 <0.9.0;
-pragma experimental ABIEncoderV2;
 
 import "./ChallengeManager.sol";
 import "./Ownable.sol";
 
-contract Evaluation is Ownable{
+abstract contract Evaluation is Ownable{
     address public manager;
     string internal specificDescriptionPart;
 
     mapping(uint256 => uint32[]) public ruleset;
 
-    constructor(address adr) public {
+    constructor(address adr) {
         manager = adr;
     }
 
@@ -25,6 +24,7 @@ contract Evaluation is Ownable{
 
     function evaluate(ChallengeManager.LeaderboardEntry[] calldata entry)
         external
+        virtual
         view
         returns (address);
 
