@@ -10,7 +10,7 @@ abstract contract LockFactory {
     mapping(uint256 => IPublicLock) lockToId;
 
     constructor() {
-        unlock = IUnlock(0x1dA6c13515362B42ACb1Ad24a713f74f925F3AEB);
+        unlock = IUnlock(0xD8C88BE5e8EB88E38E6ff5cE186d764676012B0b); //proxy contract
     }
 
     function createNewLock(
@@ -22,18 +22,13 @@ abstract contract LockFactory {
     ) internal {
 
         IPublicLock lock = IPublicLock(
-            address(
-                uint160(
-                    unlock.createLock(
-                        duration,
-                        address(0), //todo check if right
-                        price,
-                        numberOfKeys,
-                        name,
-                        bytes12(keccak256(abi.encodePacked(id)))
-                    )
-                )
-            )
+            unlock.createLock(
+                duration,
+                address(0), //todo check if right
+                price,
+                numberOfKeys,
+                name,
+                bytes12(keccak256(abi.encodePacked(id))))
         );
         lockToId[id] = lock;
     }
