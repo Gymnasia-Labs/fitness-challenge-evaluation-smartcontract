@@ -17,8 +17,6 @@ contract ChallengeManager is LockFactory, Ownable {
     struct Challenge {
         uint256 id; //todo remove if not needed in frontend
         address creator;
-        string title;
-        string description;
         uint256 start;
         uint256 end;
         uint256 currentParticipantsCount;
@@ -75,7 +73,6 @@ contract ChallengeManager is LockFactory, Ownable {
     }
 
     function createChallenge(
-        string calldata title,
         uint32[] calldata types,
         uint32[] calldata conditions,
         uint256 start,
@@ -92,11 +89,11 @@ contract ChallengeManager is LockFactory, Ownable {
             types.length == conditions.length,
             "ChallengeManager: the condition count and challenge types count needs to be the same"
         );
-        require(conditions.length > 0, "EMPTY_INPUT");
+        require(conditions.length > 0, "ChallengeManager: conditions are not allowed to be empty");
 
         uint256 lockFeeInPercentage = fee - (fee / 100) * gymnasiaFee;
         createNewLock(
-            title,
+            StringUtils.append("challenge", StringUtils.uintToString(counter)),
             counter,
             end - start,
             lockFeeInPercentage,
@@ -107,7 +104,6 @@ contract ChallengeManager is LockFactory, Ownable {
 
         challenges[counter].id = counter;
         challenges[counter].creator = msg.sender;
-        challenges[counter].title = title;
         challenges[counter].start = start;
         challenges[counter].end = end;
         challenges[counter].maxParticipantsCount = maxParticipantsCount;
@@ -115,24 +111,6 @@ contract ChallengeManager is LockFactory, Ownable {
         evaluations[counter] = Evaluation(evaluationAdr);
 
         evaluations[counter].setRules(counter, conditions);
-
-        string memory descriptionOfChallenge = "In this challenge you need to ";
-
-        for (uint256 i = 0; i < conditions.length; i++) {
-            descriptionOfChallenge = descriptionOfChallenge.append(
-                typeToString(types[i]),
-                " ",
-                StringUtils.uintToString(conditions[i]),
-                "m"
-            );
-
-            if (conditions.length > 1 && i != conditions.length - 1)
-                descriptionOfChallenge = descriptionOfChallenge.append(" and ");
-        }
-
-        challenges[counter].description = descriptionOfChallenge.append(
-            evaluations[counter].getSpecificDescriptionPart()
-        );
 
         lockToId[counter].addLockManager(challenger.getAddress());
         lockToId[counter].updateRefundPenalty(0, 10000);
@@ -180,8 +158,6 @@ contract ChallengeManager is LockFactory, Ownable {
         for (uint256 i = 0; i < array.length; i++) {
             array[i].id = challenges[i].id;
             array[i].creator = challenges[i].creator;
-            array[i].title = challenges[i].title;
-            array[i].description = challenges[i].description;
             array[i].start = challenges[i].start;
             array[i].end = challenges[i].end;
             array[i].currentParticipantsCount = challenges[i]
