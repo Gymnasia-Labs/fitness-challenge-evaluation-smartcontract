@@ -6,7 +6,6 @@ import "./Ownable.sol";
 
 contract Evaluation is Ownable{
     address public manager;
-    string internal specificDescriptionPart;
 
     mapping(uint256 => uint32[]) public ruleset;
 
@@ -16,10 +15,6 @@ contract Evaluation is Ownable{
 
     function setChallengeManager(address adr) external onlyOwner {
         manager = adr;
-    }
-
-    function getSpecificDescriptionPart() public view returns (string memory) {
-        return specificDescriptionPart;
     }
 
     function evaluate(ChallengeManager.LeaderboardEntry[] calldata entry)

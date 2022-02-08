@@ -4,9 +4,7 @@ pragma solidity >=0.5.17 <0.9.0;
 import "./Evaluation.sol";
 
 contract MinTimeEvaluation is Evaluation {
-    constructor(address adr) Evaluation(adr) {
-        specificDescriptionPart = "in the shortest amount of time.";
-    }
+    constructor(address adr) Evaluation(adr) {}
 
     function evaluate(ChallengeManager.LeaderboardEntry[] memory entry)
         public
