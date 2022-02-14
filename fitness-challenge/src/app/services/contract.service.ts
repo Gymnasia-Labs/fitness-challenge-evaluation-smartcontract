@@ -32,7 +32,7 @@ export const trainingTypes = new Map([
   ['dynamic', 8],
 ]);
 
-const evaluation = environment.minTimeEvaluation;
+const evaluation = '0xed9c2A0520D0768223130Ada9Ead95DDc66bb489';
 
 @Injectable({
   providedIn: 'root',
@@ -129,7 +129,6 @@ export class ContractService {
     try {
       this.store.dispatch(setTransactionLoading({ isLoading: true }));
       tx = await this.challengeManager.createChallenge(
-        title,
         [trainingTypes.get(traningtype)],
         [meters],
         start,
