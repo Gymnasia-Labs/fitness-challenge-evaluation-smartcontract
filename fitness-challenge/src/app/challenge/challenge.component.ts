@@ -261,8 +261,6 @@ export class ChallengeComponent implements OnInit, OnDestroy {
     this.logData$ = this.store.pipe(
       select(selectTrainingsForDisplayedChallenge)
     );
-    // this.safeURL = this._sanitizer.bypassSecurityTrustResourceUrl('https://youtu.be/dQw4w9WgXcQ');
-    // this.checkWinner();
     this.getLeaderboard();
   }
   ngOnDestroy(): void {
@@ -298,8 +296,8 @@ export class ChallengeComponent implements OnInit, OnDestroy {
         // retry(100),
       ).subscribe(
         () => this.dialog.open(WinnerDialogComponent, {
-          width: '80%',
-          height: '35%',
+          // width: '80%',
+          // height: '35%',
           data: { id: this.id }
         })
       );

@@ -35,7 +35,7 @@
                     <button mat-stroked-button style="cursor: unset; margin-top: 3pt;" color="primary">
                         {{type}}
                         {{
-                        challenge?.ruleset?.condition
+                        challenge?.ruleset!.conditions[i]
                         }}m
                     </button>
                     <!-- <div>

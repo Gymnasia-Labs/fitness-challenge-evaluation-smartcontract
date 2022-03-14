@@ -46,6 +46,21 @@ export const setDisplayedChallenge = createAction(
     props<{ id: number }>()
 );
 
+export const setTransactionLoading = createAction(
+    '[Transaction] set Loading',
+    props<{ isLoading: boolean }>()
+);
+
+export const setTransactionError = createAction(
+    '[Transaction] set Error',
+    props<{ error: string, hash: string }>()
+);
+
+export const setTransactionHash = createAction(
+    '[Transaction] set Hash',
+    props<{ hash: string }>()
+);
+
 //fetchActions that trigger effects
 
 export const fetchConcept2Data = '[Concept2] fetch data';

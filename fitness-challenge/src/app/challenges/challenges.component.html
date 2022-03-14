@@ -1,4 +1,9 @@
 <h1 style="text-align: center;font-size: xx-large;">Challenges</h1>
+<mat-tab-group (selectedTabChange)="changeChallenges($event)">
+  <mat-tab label="Upcoming"></mat-tab>
+  <mat-tab label="Live"></mat-tab>
+  <mat-tab label="Ended"></mat-tab>
+</mat-tab-group>
 <div class="wrapper">
   <div *ngFor="let challenge of challenges$ | async">
     <!-- <div class="creationDetails">Created by {{challenge.creator}} </div> -->

@@ -15,11 +15,11 @@ export class AdminComponent implements OnInit {
   start: number = 0;
   end: number = 0;
   count: number = 2;
-  price: string = '';
+  price: string = '0.1';
   meters: number = 1000;
   startTime: string = '';
   endTime: string = '';
-  type = '';
+  type = 'rower';
 
   types: string[] = [];
 
@@ -45,10 +45,14 @@ export class AdminComponent implements OnInit {
 
     console.log(this.type);
 
+    try {
+      this.contractService
+        .createChallenge(this.title, this.desc, unixStart, unixEnd, this.count, this.price, this.meters, this.type)
+        .then(() => this.store.dispatch({ type: fetchChallenges }));
+    } catch (error: any) {
+      console.log('error: ', error);
 
-    this.contractService
-      .createChallenge(this.title, this.desc, unixStart, unixEnd, this.count, this.price, this.meters, this.type)
-      .subscribe(() => this.store.dispatch({ type: fetchChallenges }));
+    }
 
   }
 

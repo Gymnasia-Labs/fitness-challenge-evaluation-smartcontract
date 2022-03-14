@@ -11,7 +11,7 @@ export const environment = {
   // challengeManagerAbi: contracts.challengeManagerAbi,
   // challengerAddress: contracts.challengerAddress,
   // challengerAbi: contracts.challengerAbi,
-  challengeManagerAddress: '0xc8f1Ef5A04477fd9629c92290c6178B4842645a7',
+  challengeManagerAddress: '0xc929e1dE79ae0a5dDCf867e50dc4A8Ae87CE1B51',
   challengeManagerAbi: [
     {
       "constant": true,
@@ -43,11 +43,6 @@ export const environment = {
           "internalType": "string",
           "name": "description",
           "type": "string"
-        },
-        {
-          "internalType": "bool",
-          "name": "redeemed",
-          "type": "bool"
         },
         {
           "internalType": "uint256",
@@ -83,6 +78,11 @@ export const environment = {
           "internalType": "address",
           "name": "first",
           "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "redeemed",
+          "type": "bool"
         }
       ],
       "payable": false,
@@ -239,6 +239,27 @@ export const environment = {
       "type": "function"
     },
     {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "challengeId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getFee",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "constant": false,
       "inputs": [
         {
@@ -253,7 +274,7 @@ export const environment = {
         },
         {
           "internalType": "uint32[]",
-          "name": "condition",
+          "name": "conditions",
           "type": "uint32[]"
         },
         {
@@ -307,11 +328,6 @@ export const environment = {
               "type": "string"
             },
             {
-              "internalType": "bool",
-              "name": "redeemed",
-              "type": "bool"
-            },
-            {
               "internalType": "uint256",
               "name": "start",
               "type": "uint256"
@@ -345,6 +361,11 @@ export const environment = {
               "internalType": "address",
               "name": "first",
               "type": "address"
+            },
+            {
+              "internalType": "bool",
+              "name": "redeemed",
+              "type": "bool"
             }
           ],
           "internalType": "struct ChallengeManager.Challenge",
@@ -414,27 +435,6 @@ export const environment = {
     },
     {
       "constant": true,
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "challengeId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getRedeemed",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
       "inputs": [],
       "name": "getAllChallenges",
       "outputs": [
@@ -459,11 +459,6 @@ export const environment = {
               "internalType": "string",
               "name": "description",
               "type": "string"
-            },
-            {
-              "internalType": "bool",
-              "name": "redeemed",
-              "type": "bool"
             },
             {
               "internalType": "uint256",
@@ -499,6 +494,11 @@ export const environment = {
               "internalType": "address",
               "name": "first",
               "type": "address"
+            },
+            {
+              "internalType": "bool",
+              "name": "redeemed",
+              "type": "bool"
             }
           ],
           "internalType": "struct ChallengeManager.Challenge[]",
@@ -530,7 +530,7 @@ export const environment = {
             },
             {
               "internalType": "uint32[]",
-              "name": "condition",
+              "name": "conditions",
               "type": "uint32[]"
             }
           ],
@@ -666,7 +666,7 @@ export const environment = {
       "type": "function"
     }
   ],
-  challengerAddress: '0xd5d1927890E282cfbA6142057ab3eD2f3FE2896f',
+  challengerAddress: '0xb1840360Bb3235Daa173b52903E4C9C65361D64a',
   challengerAbi: [
     {
       "inputs": [
@@ -681,6 +681,27 @@ export const environment = {
       "type": "constructor"
     },
     {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "name": "requests",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "constant": false,
       "inputs": [
         {
@@ -690,7 +711,7 @@ export const environment = {
         },
         {
           "internalType": "uint32[]",
-          "name": "condition",
+          "name": "conditions",
           "type": "uint32[]"
         },
         {
@@ -789,4 +810,5 @@ export const environment = {
       "type": "function"
     }
   ],
+  minTimeEvaluation: '0x3989c1d7ff8A74b926593E56435A0E4c4Fe38415'
 };

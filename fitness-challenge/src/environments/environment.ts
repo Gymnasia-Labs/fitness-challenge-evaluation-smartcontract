@@ -16,7 +16,8 @@ export const environment = {
   challengeManagerAddress: contracts.challengeManagerAddress,
   challengeManagerAbi: contracts.challengeManagerAbi,
   challengerAddress: contracts.challengerAddress,
-  challengerAbi: contracts.challengerAbi
+  challengerAbi: contracts.challengerAbi,
+  minTimeEvaluation: contracts.minTimeEvaluation
 };
 
 /*
