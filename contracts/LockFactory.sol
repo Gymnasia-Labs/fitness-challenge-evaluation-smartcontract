@@ -20,12 +20,13 @@ contract LockFactory {
         uint256 price,
         uint256 numberOfKeys
     ) internal {
+
         IPublicLock lock = IPublicLock(
             address(
                 uint160(
                     unlock.createLock(
                         duration,
-                        address(0),
+                        address(0), //todo check if right
                         price,
                         numberOfKeys,
                         name,

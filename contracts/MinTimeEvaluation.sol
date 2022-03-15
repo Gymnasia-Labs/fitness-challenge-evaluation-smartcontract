@@ -11,9 +11,10 @@ contract MinTimeEvaluation is Evaluation {
 
     function evaluate(ChallengeManager.LeaderboardEntry[] memory entry)
         public
+        view
         returns (address)
     {
-        require(entry.length > 0, "EMPTY_ARRAY");
+        require(entry.length > 0, "MinTimeEvaluation: empty leaderboard");
         address challenger = entry[0].challenger;
         if (entry.length == 1) return challenger;
 

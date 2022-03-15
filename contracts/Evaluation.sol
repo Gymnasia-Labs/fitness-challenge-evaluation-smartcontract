@@ -3,21 +3,19 @@ pragma solidity >=0.5.17 <0.9.0;
 pragma experimental ABIEncoderV2;
 
 import "./ChallengeManager.sol";
+import "./Ownable.sol";
 
-contract Evaluation {
+contract Evaluation is Ownable{
     address public manager;
-    address public owner;
     string internal specificDescriptionPart;
 
     mapping(uint256 => uint32[]) public ruleset;
 
     constructor(address adr) public {
         manager = adr;
-        owner = msg.sender;
     }
 
-    function setChallengeManager(address adr) external {
-        require(msg.sender == owner, "NOT_OWNER");
+    function setChallengeManager(address adr) external onlyOwner {
         manager = adr;
     }
 
@@ -27,10 +25,11 @@ contract Evaluation {
 
     function evaluate(ChallengeManager.LeaderboardEntry[] calldata entry)
         external
+        view
         returns (address);
 
     function setRules(uint256 challengeId, uint32[] memory rules) public {
-        require(msg.sender == manager, "NOT_CHALLENGE_MANAGER");
+        require(msg.sender == manager, "Evaluation: caller is not challenge manager");
         ruleset[challengeId] = rules;
     }
 
@@ -41,7 +40,7 @@ contract Evaluation {
     {
         require(
             ruleset[challengeId].length == rules.length,
-            "RULES_LENGTH_DOES_NOT_MATCH"
+            "Evaluation: rules lengths does not match"
         );
 
         for (uint256 i = 0; i < rules.length; i++)

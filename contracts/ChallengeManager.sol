@@ -6,8 +6,9 @@ import "./Evaluation.sol";
 import "./LockFactory.sol";
 import "./Challenger.sol";
 import "./StringUtils.sol";
+import "./Ownable.sol";
 
-contract ChallengeManager is LockFactory {
+contract ChallengeManager is LockFactory, Ownable {
     using StringUtils for string;
 
     uint256 counter = 0;
@@ -45,19 +46,27 @@ contract ChallengeManager is LockFactory {
     mapping(uint256 => Rules) internal rules;
     mapping(uint256 => Evaluation) public evaluations;
 
-    function setChallenger(address adr) public {
+    event ChallengeCreated(Challenge challenge);
+    event LeaderboardEntryAdded(LeaderboardEntry leaderboardEntry);
+
+    modifier onlyChallenger() {
+        require(msg.sender == challenger.getAddress(), "ChallengeManager: caller is not challenger");
+        _;
+    }
+
+    function setChallenger(address adr) public onlyOwnerOrFirst {
         challenger = Challenger(adr);
     }
 
-    function setRedeemed(uint256 challengeId) public {
-        require(msg.sender == challenger.getAddress(), "NOT_CHALLENGER");
+    function setRedeemed(uint256 challengeId) public onlyChallenger {
+
         challenges[challengeId].redeemed = true;
     }
 
-    function setGymnasiaFee(uint256 percentage) external {
+    function setGymnasiaFee(uint256 percentage) external onlyOwner {
         require(
             percentage >= 0 && percentage <= 100,
-            "INPUT_HAS_TO_BE_BETWEEN_100_AND_0"
+            "ChallengeManager: argument out of range -> not between 0 and 100"
         );
         gymnasiaFee = percentage;
     }
@@ -77,11 +86,12 @@ contract ChallengeManager is LockFactory {
         address evaluationAdr
     ) external returns (Challenge memory) {
         //todo keys could be bought before start time through unlock contract
-        require(start > block.timestamp, "START_TIME_IN_THE_PAST"); //start
-        require(end > start, "END_TIME_BEFORE_START_TIME");
+
+        require(start > block.timestamp, "ChallangeManager: start in the past"); //start
+        require(end > start, "ChallengeManager: end time before start time");
         require(
             types.length == conditions.length,
-            "RULE_LENGTHS_IN_CREATION_INPUT_NOT_MATCHING"
+            "ChallengeManager: the condition count and challenge types count needs to be the same"
         );
         require(conditions.length > 0, "EMPTY_INPUT");
 
@@ -128,6 +138,8 @@ contract ChallengeManager is LockFactory {
         lockToId[counter].addLockManager(challenger.getAddress());
         lockToId[counter].updateRefundPenalty(0, 10000);
 
+        emit ChallengeCreated(challenges[counter]);
+
         return challenges[counter++];
     }
 
@@ -137,11 +149,10 @@ contract ChallengeManager is LockFactory {
         uint32[] memory data,
         uint32[] memory time,
         bool withUnlock
-    ) public {
-        require(msg.sender == challenger.getAddress(), "NOT_CHALLENGER");
+    ) public onlyChallenger {
         require(
             evaluations[challengeId].checkRules(challengeId, data),
-            "WRONG DATA FOR THIS RULESET"
+            "ChallengeManager: data does not match ruleset"
         );
         leaderboards[challengeId].push(LeaderboardEntry(sender, data, time));
 
@@ -153,12 +164,14 @@ contract ChallengeManager is LockFactory {
         challenges[challengeId].first = evaluations[challengeId].evaluate(
             leaderboards[challengeId]
         );
+
+        emit LeaderboardEntryAdded(leaderboards[challengeId][leaderboards[challengeId].length-1]);
     }
 
     function getWinner(uint256 challengeId) public view returns (address) {
         require(
             block.timestamp >= challenges[challengeId].end,
-            "CHALLENGE_NOT_ENDED_YET"
+            "ChallengeManager: challenge did not end yet"
         );
         return challenges[challengeId].first;
     }
@@ -251,7 +264,7 @@ contract ChallengeManager is LockFactory {
         } else if (t == 8) {
             return "dynamic";
         } else {
-            require(false, "TYPE_NOT_SPECIFIED");
+            require(false, "ChallengeManager: challenge type not specified");
         }
     }
 }
