@@ -14,6 +14,7 @@ test/
 .infura
 .secret
 .etherscan
+.auroratest
 
 /node_modules
 /.vscode

@@ -5,7 +5,6 @@ import "./interfaces/unlock/IPublicLock.sol";
 import "./ChallengeManager.sol";
 
 contract Challenger {
-
     ChallengeManager internal manager;
 
     mapping(bytes32 => uint256) public requests; // todo add data and time
@@ -23,8 +22,8 @@ contract Challenger {
         uint32[] calldata conditions,
         uint32[] calldata time
     ) external payable {
-        IPublicLock lock = manager.getLock(challengeId);
-        require(address(lock) != address(0), "Challenger: lock does not exist yet");
+        // IPublicLock lock = manager.getLock(challengeId);
+        // require(address(lock) != address(0), "Challenger: lock does not exist yet");
         require(
             time.length == conditions.length,
             "Challenger: argument array lengths not matching"
@@ -39,8 +38,8 @@ contract Challenger {
         );
 
         bool withUnlock = false;
-
-        if (!lock.getHasValidKey(msg.sender)) {
+        uint256 keyPrice = 0;
+        if (manager.hasUnlockedChallenge(challengeId, msg.sender) == false) {
             require(
                 manager.getCurrentParticipants(challengeId) <
                     manager.getMaxParticipants(challengeId),
@@ -51,31 +50,22 @@ contract Challenger {
                 msg.value >= manager.getFee(challengeId),
                 "Challenger: entered fee too low"
             );
-            uint256 gymnasiaFee = msg.value - manager.getKeyPrice(challengeId);
+            keyPrice = manager.getKeyPrice(challengeId);
+            uint256 gymnasiaFee = msg.value - keyPrice;
 
-            lock.purchase{ value: (manager.getKeyPrice(challengeId))}(
-                // lock.purchase.value(msg.value)(
-                lock.keyPrice(),
-                msg.sender,
-                0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B,
-                address(this),
-                "0x00"
-            );
 
-            bool sent = payable(0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B).send(
-                gymnasiaFee
-            );
+            bool sent = payable(0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B)
+                .send(gymnasiaFee);
             require(sent, "Challenger: Failed to send ether");
 
             withUnlock = true;
         } else {
-            bool sent = payable(0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B).send(
-                msg.value
-            );
+            bool sent = payable(0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B)
+                .send(msg.value);
             require(sent, "Challenger: Failed to send ether");
         }
 
-        manager.addLeaderboardEntry(
+        manager.addLeaderboardEntry{value: keyPrice}(
             challengeId,
             msg.sender,
             conditions,
@@ -85,13 +75,18 @@ contract Challenger {
     }
 
     function receivePrice(uint256 challengeId) external {
-        require(isWinner(challengeId), "Challanger: Sorry you are not the winner");
+        require(
+            isWinner(challengeId),
+            "Challanger: Sorry you are not the winner"
+        );
 
-        IPublicLock lock = manager.getLock(challengeId);
-        lock.updateBeneficiary(msg.sender);
-        lock.withdraw(address(0), 0);   //address(0) => caller is target, 0 => all in the lock
+        manager.withdraw(challengeId, msg.sender);
 
-        manager.setRedeemed(challengeId);
+        // IPublicLock lock = manager.getLock(challengeId);
+        // lock.updateBeneficiary(msg.sender);
+        // lock.withdraw(address(0), 0); //address(0) => caller is target, 0 => all in the lock
+
+        // manager.setRedeemed(challengeId);
         // lock.updateBeneficiary(address(this));
 
         emit PrizeReceived(msg.sender);
@@ -110,6 +105,6 @@ contract Challenger {
         view
         returns (bool)
     {
-        return manager.getLock(challengeId).getHasValidKey(challenger);
+        return manager.hasUnlockedChallenge(challengeId, challenger);
     }
 }

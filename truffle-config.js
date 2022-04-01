@@ -24,6 +24,8 @@ const fs = require("fs");
 const mnemonic = fs.readFileSync(".secret").toString().trim();
 const infuraKey = fs.readFileSync(".infura").toString().trim();
 const etherscan = fs.readFileSync(".etherscan").toString().trim();
+const auroratest = fs.readFileSync(".auroratest").toString().trim();
+
 
 module.exports = {
   /**
@@ -52,7 +54,7 @@ module.exports = {
 
       // provider: () => new HDWalletProvider(mnemonic, `https://rinkeby.infura.io/v3/${infuraKey}`),
       gas: 5000000,
-      gasPrice: 2000000000,
+      gasPrice: 4000000000,
       network_id: 4,
       skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
     },
@@ -69,6 +71,12 @@ module.exports = {
       gasPrice: 2000000000,
       network_id: 42,
       skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
+    },
+    auroraTestnet: {
+      provider: () => new HDWalletProvider(mnemonic, 'https://testnet.aurora.dev'),
+      network_id: 0x4e454153,
+      gas: 10000000,
+      from: '0xEF571ac215b9eC5Ef22a12954fF0d87d90e1F10B' // CHANGE THIS ADDRESS
     },
     xDai: {
       provider: () =>
@@ -100,6 +108,7 @@ module.exports = {
   plugins: ["truffle-plugin-verify"],
   api_keys: {
     etherscan: etherscan,
+    aurorascan: auroratest
   },
 
   // Set default mocha options here, use special reporters etc.

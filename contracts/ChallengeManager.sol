@@ -7,7 +7,7 @@ import "./Challenger.sol";
 import "./StringUtils.sol";
 import "./Ownable.sol";
 
-contract ChallengeManager is LockFactory, Ownable {
+contract ChallengeManager is Ownable {
     using StringUtils for string;
 
     uint256 counter = 0;
@@ -43,11 +43,16 @@ contract ChallengeManager is LockFactory, Ownable {
     mapping(uint256 => Rules) internal rules;
     mapping(uint256 => Evaluation) public evaluations;
 
+    mapping(uint256 => mapping(address => bool)) public challengeKeys;
+
     event ChallengeCreated(Challenge challenge);
     event LeaderboardEntryAdded(LeaderboardEntry leaderboardEntry);
 
     modifier onlyChallenger() {
-        require(msg.sender == challenger.getAddress(), "ChallengeManager: caller is not challenger");
+        require(
+            msg.sender == challenger.getAddress(),
+            "ChallengeManager: caller is not challenger"
+        );
         _;
     }
 
@@ -56,7 +61,6 @@ contract ChallengeManager is LockFactory, Ownable {
     }
 
     function setRedeemed(uint256 challengeId) public onlyChallenger {
-
         challenges[challengeId].redeemed = true;
     }
 
@@ -89,15 +93,9 @@ contract ChallengeManager is LockFactory, Ownable {
             types.length == conditions.length,
             "ChallengeManager: the condition count and challenge types count needs to be the same"
         );
-        require(conditions.length > 0, "ChallengeManager: conditions are not allowed to be empty");
-
-        uint256 lockFeeInPercentage = fee - (fee / 100) * gymnasiaFee;
-        createNewLock(
-            StringUtils.append("challenge", StringUtils.uintToString(counter)),
-            counter,
-            end - start,
-            lockFeeInPercentage,
-            maxParticipantsCount
+        require(
+            conditions.length > 0,
+            "ChallengeManager: conditions are not allowed to be empty"
         );
 
         rules[counter] = Rules(types, conditions);
@@ -112,9 +110,6 @@ contract ChallengeManager is LockFactory, Ownable {
 
         evaluations[counter].setRules(counter, conditions);
 
-        lockToId[counter].addLockManager(challenger.getAddress());
-        lockToId[counter].updateRefundPenalty(0, 10000);
-
         emit ChallengeCreated(challenges[counter]);
 
         return challenges[counter++];
@@ -126,23 +121,54 @@ contract ChallengeManager is LockFactory, Ownable {
         uint32[] memory data,
         uint32[] memory time,
         bool withUnlock
-    ) public onlyChallenger {
+    ) public payable onlyChallenger {
         require(
             evaluations[challengeId].checkRules(challengeId, data),
             "ChallengeManager: data does not match ruleset"
         );
-        leaderboards[challengeId].push(LeaderboardEntry(sender, data, time));
-
         if (withUnlock) {
+            require(
+                msg.value >= getKeyPrice(challengeId),
+                "ChallengeManager: entered Challengefee too low"
+            );
             challenges[challengeId].price += getKeyPrice(challengeId);
             challenges[challengeId].currentParticipantsCount++;
+            challengeKeys[challengeId][sender] = true;
         }
+
+        leaderboards[challengeId].push(LeaderboardEntry(sender, data, time));
 
         challenges[challengeId].first = evaluations[challengeId].evaluate(
             leaderboards[challengeId]
         );
 
-        emit LeaderboardEntryAdded(leaderboards[challengeId][leaderboards[challengeId].length-1]);
+        emit LeaderboardEntryAdded(
+            leaderboards[challengeId][leaderboards[challengeId].length - 1]
+        );
+    }
+
+    function getKeyPrice(uint256 id) public view returns (uint256) {
+        uint256 fee = getFee(id);
+        fee = fee - (fee / 100) * gymnasiaFee;
+        return fee;
+    }
+
+    function hasUnlockedChallenge(uint256 id, address adr)
+        public
+        view
+        returns (bool)
+    {
+        return challengeKeys[id][adr];
+    }
+
+    function withdraw(uint256 id, address winner) public onlyChallenger {
+        require(
+            challenges[id].redeemed == false,
+            "Challengemanager: Challenge already redeemed"
+        );
+        bool sent = payable(winner).send(challenges[id].price);
+        require(sent, "Challengemanager: Failed to send ether");
+        setRedeemed(id);
     }
 
     function getWinner(uint256 challengeId) public view returns (address) {
