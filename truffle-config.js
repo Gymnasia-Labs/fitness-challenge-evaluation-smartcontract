@@ -26,7 +26,6 @@ const infuraKey = fs.readFileSync(".infura").toString().trim();
 const etherscan = fs.readFileSync(".etherscan").toString().trim();
 const auroratest = fs.readFileSync(".auroratest").toString().trim();
 
-
 module.exports = {
   /**
    * Networks define how you connect to your ethereum client and let you set the
@@ -73,10 +72,22 @@ module.exports = {
       skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
     },
     auroraTestnet: {
-      provider: () => new HDWalletProvider(mnemonic, 'https://testnet.aurora.dev'),
+      provider: () =>
+        // new HDWalletProvider(mnemonic, "https://testnet.aurora.dev"),
+        new HDWalletProvider(mnemonic, "wss://testnet.aurora.dev"),
+      // gasPrice: 4000000000,
       network_id: 0x4e454153,
       gas: 10000000,
-      from: '0xEF571ac215b9eC5Ef22a12954fF0d87d90e1F10B' // CHANGE THIS ADDRESS
+      from: "0xEF571ac215b9eC5Ef22a12954fF0d87d90e1F10B", // CHANGE THIS ADDRESS
+    },
+    aurora: {
+      provider: () =>
+        // new HDWalletProvider(mnemonic, "https://testnet.aurora.dev"),
+        new HDWalletProvider(mnemonic, "wss://mainnet.aurora.dev"),
+      // gasPrice: 4000000000,
+      network_id: 0x4e454152,
+      gas: 10000000,
+      from: "0xEF571ac215b9eC5Ef22a12954fF0d87d90e1F10B", // CHANGE THIS ADDRESS
     },
     xDai: {
       provider: () =>
@@ -108,7 +119,7 @@ module.exports = {
   plugins: ["truffle-plugin-verify"],
   api_keys: {
     etherscan: etherscan,
-    aurorascan: auroratest
+    aurorascan: auroratest,
   },
 
   // Set default mocha options here, use special reporters etc.
@@ -122,10 +133,10 @@ module.exports = {
       version: "^0.8.0", // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       // settings: {          // See the solidity docs for advice about optimization and evmVersion
-      //  optimizer: {
-      //    enabled: false,
-      //    runs: 200
-      //  },
+      // optimizer: {
+      //   enabled: true,
+      //   runs: 1,
+      // },
       //  evmVersion: "byzantium"
       // }
     },

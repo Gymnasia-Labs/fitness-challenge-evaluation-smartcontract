@@ -2,16 +2,18 @@
 pragma solidity >=0.5.17 <0.9.0;
 
 import "./Evaluation.sol";
-import "./LockFactory.sol";
+// import "./LockFactory.sol";
 import "./Challenger.sol";
 import "./StringUtils.sol";
 import "./Ownable.sol";
+import "./GymToken.sol";
 
 contract ChallengeManager is Ownable {
     using StringUtils for string;
 
     uint256 counter = 0;
     Challenger challenger;
+    GymToken gymToken;
     uint256 public gymnasiaFee = 10; //percentage so always divide by 100 before
 
     struct Challenge {
@@ -25,6 +27,7 @@ contract ChallengeManager is Ownable {
         uint256 price;
         address first;
         bool redeemed;
+        uint256 NFTid;
     }
 
     struct Rules {
@@ -60,6 +63,14 @@ contract ChallengeManager is Ownable {
         challenger = Challenger(adr);
     }
 
+    function setGymToken(address adr) public onlyOwnerOrFirstToken {
+        gymToken = GymToken(adr);
+    }
+
+    function getAddress() public view returns (address) {
+        return address(this);
+    }
+
     function setRedeemed(uint256 challengeId) public onlyChallenger {
         challenges[challengeId].redeemed = true;
     }
@@ -76,7 +87,7 @@ contract ChallengeManager is Ownable {
         return challenges[challengeId].fee;
     }
 
-    function createChallenge(
+    function createChallengeInt(
         uint32[] calldata types,
         uint32[] calldata conditions,
         uint256 start,
@@ -84,7 +95,7 @@ contract ChallengeManager is Ownable {
         uint256 maxParticipantsCount,
         uint256 fee,
         address evaluationAdr
-    ) external returns (Challenge memory) {
+    ) internal returns (Challenge memory) {
         //todo keys could be bought before start time through unlock contract
 
         require(start > block.timestamp, "ChallangeManager: start in the past"); //start
@@ -113,6 +124,50 @@ contract ChallengeManager is Ownable {
         emit ChallengeCreated(challenges[counter]);
 
         return challenges[counter++];
+    }
+
+    function createChallenge(
+        uint32[] calldata types,
+        uint32[] calldata conditions,
+        uint256 start,
+        uint256 end,
+        uint256 maxParticipantsCount,
+        uint256 fee,
+        address evaluationAdr
+    ) external returns (Challenge memory) {
+        return
+            createChallengeInt(
+                types,
+                conditions,
+                start,
+                end,
+                maxParticipantsCount,
+                fee,
+                evaluationAdr
+            );
+    }
+
+    function createChallenge(
+        uint32[] calldata types,
+        uint32[] calldata conditions,
+        uint256 start,
+        uint256 end,
+        uint256 maxParticipantsCount,
+        uint256 fee,
+        address evaluationAdr,
+        uint256 NFTid
+    ) external returns (Challenge memory) {
+        createChallengeInt(
+            types,
+            conditions,
+            start,
+            end,
+            maxParticipantsCount,
+            fee,
+            evaluationAdr
+        );
+        challenges[counter - 1].NFTid = NFTid;
+        return challenges[counter - 1];
     }
 
     function addLeaderboardEntry(
@@ -168,6 +223,9 @@ contract ChallengeManager is Ownable {
         );
         bool sent = payable(winner).send(challenges[id].price);
         require(sent, "Challengemanager: Failed to send ether");
+        if (challenges[id].NFTid != 0) {
+            gymToken.mint(winner, challenges[id].NFTid, 1, "");
+        }
         setRedeemed(id);
     }
 

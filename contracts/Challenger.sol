@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.5.17 <0.9.0;
 
-import "./interfaces/unlock/IPublicLock.sol";
+// import "./interfaces/unlock/IPublicLock.sol";
 import "./ChallengeManager.sol";
 
 contract Challenger {
@@ -52,7 +52,6 @@ contract Challenger {
             );
             keyPrice = manager.getKeyPrice(challengeId);
             uint256 gymnasiaFee = msg.value - keyPrice;
-
 
             bool sent = payable(0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B)
                 .send(gymnasiaFee);
