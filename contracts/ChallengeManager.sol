@@ -27,7 +27,7 @@ contract ChallengeManager is Ownable {
         uint256 price;
         address first;
         bool redeemed;
-        uint256 NFTid;
+        string tokenURI;
     }
 
     struct Rules {
@@ -147,7 +147,7 @@ contract ChallengeManager is Ownable {
             );
     }
 
-    function createChallenge(
+    function createChallengeWithNFT(
         uint32[] calldata types,
         uint32[] calldata conditions,
         uint256 start,
@@ -155,7 +155,7 @@ contract ChallengeManager is Ownable {
         uint256 maxParticipantsCount,
         uint256 fee,
         address evaluationAdr,
-        uint256 NFTid
+        string memory tokenURI
     ) external returns (Challenge memory) {
         createChallengeInt(
             types,
@@ -166,7 +166,7 @@ contract ChallengeManager is Ownable {
             fee,
             evaluationAdr
         );
-        challenges[counter - 1].NFTid = NFTid;
+        challenges[counter - 1].tokenURI = tokenURI;
         return challenges[counter - 1];
     }
 
@@ -223,8 +223,8 @@ contract ChallengeManager is Ownable {
         );
         bool sent = payable(winner).send(challenges[id].price);
         require(sent, "Challengemanager: Failed to send ether");
-        if (challenges[id].NFTid != 0) {
-            gymToken.mint(winner, challenges[id].NFTid, 1, "");
+        if (bytes(challenges[id].tokenURI).length > 0) {
+            gymToken.mint(winner, challenges[id].tokenURI);
         }
         setRedeemed(id);
     }
