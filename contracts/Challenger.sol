@@ -39,29 +39,25 @@ contract Challenger {
 
         bool withUnlock = false;
         uint256 keyPrice = 0;
-        if (manager.hasUnlockedChallenge(challengeId, msg.sender) == false) {
+        if (!manager.hasUnlockedChallenge(challengeId, msg.sender)) {
             require(
                 manager.getCurrentParticipants(challengeId) <
                     manager.getMaxParticipants(challengeId),
                 // || manager.getMaxParticipants(challengeId) == 0
                 "Challenger: challenge is already full"
             );
+
             require(
-                msg.value >= manager.getFee(challengeId),
+                msg.value >= manager.getSubmissionFee(challengeId),
                 "Challenger: entered fee too low"
             );
-            keyPrice = manager.getKeyPrice(challengeId);
-            uint256 gymnasiaFee = msg.value - keyPrice;
 
-            bool sent = payable(0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B)
-                .send(gymnasiaFee);
-            require(sent, "Challenger: Failed to send ether");
+            keyPrice = manager.getKeyPrice(challengeId);
+            manager.sendGymnasiaFee{value: msg.value - keyPrice}();
 
             withUnlock = true;
         } else {
-            bool sent = payable(0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B)
-                .send(msg.value);
-            require(sent, "Challenger: Failed to send ether");
+            manager.sendGymnasiaFee{value: msg.value}();
         }
 
         manager.addLeaderboardEntry{value: keyPrice}(
@@ -73,7 +69,7 @@ contract Challenger {
         );
     }
 
-    function receivePrice(uint256 challengeId) external {
+    function receivePrize(uint256 challengeId) external {
         require(
             isWinner(challengeId),
             "Challanger: Sorry you are not the winner"

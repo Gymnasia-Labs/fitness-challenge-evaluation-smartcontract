@@ -15,6 +15,7 @@ contract ChallengeManager is Ownable {
     Challenger challenger;
     GymToken gymToken;
     uint256 public gymnasiaFee = 10; //percentage so always divide by 100 before
+    address payable gymnasiaAddress = payable(0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B);
 
     struct Challenge {
         uint256 id; //todo remove if not needed in frontend
@@ -23,8 +24,8 @@ contract ChallengeManager is Ownable {
         uint256 end;
         uint256 currentParticipantsCount;
         uint256 maxParticipantsCount;
-        uint256 fee;
-        uint256 price;
+        uint256 submissionFee;
+        uint256 prizePool;
         address first;
         bool redeemed;
         string tokenURI;
@@ -37,7 +38,7 @@ contract ChallengeManager is Ownable {
 
     struct LeaderboardEntry {
         address challenger;
-        uint32[] data; //todo change data to array if multiple challenges in one needed
+        uint32[] data;
         uint32[] time;
     }
 
@@ -83,17 +84,29 @@ contract ChallengeManager is Ownable {
         gymnasiaFee = percentage;
     }
 
-    function getFee(uint256 challengeId) public view returns (uint256) {
-        return challenges[challengeId].fee;
+    function sendGymnasiaFee() public payable {
+        bool sent = gymnasiaAddress.send(msg.value);
+        require(sent, "Challenger: Failed to send ether");
     }
 
-    function createChallengeInt(
+    function getKeyPrice(uint256 id) public view returns (uint256) {
+        uint256 submissionFee = getSubmissionFee(id);
+        submissionFee = submissionFee - (submissionFee / 100) * gymnasiaFee;
+        return submissionFee;
+    }
+
+    function getSubmissionFee(uint256 challengeId) public view returns (uint256) {
+        return challenges[challengeId].submissionFee;
+    }
+
+    //just for reuse purpose
+    function _createChallenge(
         uint32[] calldata types,
         uint32[] calldata conditions,
         uint256 start,
         uint256 end,
         uint256 maxParticipantsCount,
-        uint256 fee,
+        uint256 submissionFee,
         address evaluationAdr
     ) internal returns (Challenge memory) {
         //todo keys could be bought before start time through unlock contract
@@ -116,7 +129,7 @@ contract ChallengeManager is Ownable {
         challenges[counter].start = start;
         challenges[counter].end = end;
         challenges[counter].maxParticipantsCount = maxParticipantsCount;
-        challenges[counter].fee = fee;
+        challenges[counter].submissionFee = submissionFee;
         evaluations[counter] = Evaluation(evaluationAdr);
 
         evaluations[counter].setRules(counter, conditions);
@@ -132,17 +145,17 @@ contract ChallengeManager is Ownable {
         uint256 start,
         uint256 end,
         uint256 maxParticipantsCount,
-        uint256 fee,
+        uint256 submissionFee,
         address evaluationAdr
     ) external returns (Challenge memory) {
         return
-            createChallengeInt(
+            _createChallenge(
                 types,
                 conditions,
                 start,
                 end,
                 maxParticipantsCount,
-                fee,
+                submissionFee,
                 evaluationAdr
             );
     }
@@ -153,21 +166,30 @@ contract ChallengeManager is Ownable {
         uint256 start,
         uint256 end,
         uint256 maxParticipantsCount,
-        uint256 fee,
+        uint256 submissionFee,
         address evaluationAdr,
         string memory tokenURI
     ) external returns (Challenge memory) {
-        createChallengeInt(
+        _createChallenge(
             types,
             conditions,
             start,
             end,
             maxParticipantsCount,
-            fee,
+            submissionFee,
             evaluationAdr
         );
         challenges[counter - 1].tokenURI = tokenURI;
         return challenges[counter - 1];
+    }
+
+    //todo add prefunded by ... to get who prefunded the challenge
+    function prefundChallenge(
+        uint256 challengeId
+    ) public payable {
+        require(challenges[challengeId].end > block.timestamp, "ChallangeManager: challenge already ended");
+        require(challenges[challengeId].start > block.timestamp, "ChallangeManager: challenge already started");
+        challenges[challengeId].prizePool += msg.value;
     }
 
     function addLeaderboardEntry(
@@ -182,11 +204,7 @@ contract ChallengeManager is Ownable {
             "ChallengeManager: data does not match ruleset"
         );
         if (withUnlock) {
-            require(
-                msg.value >= getKeyPrice(challengeId),
-                "ChallengeManager: entered Challengefee too low"
-            );
-            challenges[challengeId].price += getKeyPrice(challengeId);
+            challenges[challengeId].prizePool += msg.value;
             challenges[challengeId].currentParticipantsCount++;
             challengeKeys[challengeId][sender] = true;
         }
@@ -202,11 +220,6 @@ contract ChallengeManager is Ownable {
         );
     }
 
-    function getKeyPrice(uint256 id) public view returns (uint256) {
-        uint256 fee = getFee(id);
-        fee = fee - (fee / 100) * gymnasiaFee;
-        return fee;
-    }
 
     function hasUnlockedChallenge(uint256 id, address adr)
         public
@@ -221,7 +234,7 @@ contract ChallengeManager is Ownable {
             challenges[id].redeemed == false,
             "Challengemanager: Challenge already redeemed"
         );
-        bool sent = payable(winner).send(challenges[id].price);
+        bool sent = payable(winner).send(challenges[id].prizePool);
         require(sent, "Challengemanager: Failed to send ether");
         if (bytes(challenges[id].tokenURI).length > 0) {
             gymToken.mint(winner, challenges[id].tokenURI);
@@ -247,8 +260,8 @@ contract ChallengeManager is Ownable {
             array[i].currentParticipantsCount = challenges[i]
                 .currentParticipantsCount;
             array[i].maxParticipantsCount = challenges[i].maxParticipantsCount;
-            array[i].fee = challenges[i].fee;
-            array[i].price = challenges[i].price;
+            array[i].submissionFee = challenges[i].submissionFee;
+            array[i].prizePool = challenges[i].prizePool;
             array[i].first = challenges[i].first;
             array[i].redeemed = challenges[i].redeemed;
         }
@@ -301,30 +314,5 @@ contract ChallengeManager is Ownable {
         returns (LeaderboardEntry[] memory)
     {
         return leaderboards[challengeId];
-    }
-
-    function typeToString(uint32 t) internal pure returns (string memory) {
-        if (t == 0) {
-            return "row";
-        } else if (t == 1) {
-            return "ski";
-        } else if (t == 2) {
-            return "bike";
-        } else if (t == 3) {
-            return "paddle";
-        } else if (t == 4) {
-            return "water";
-        } else if (t == 5) {
-            return "snow";
-        } else if (t == 6) {
-            return "waterski";
-        } else if (t == 7) {
-            return "slides";
-        } else if (t == 8) {
-            return "dynamic";
-        } else {
-            require(false, "ChallengeManager: challenge type not specified");
-            return "no_type";
-        }
     }
 }
