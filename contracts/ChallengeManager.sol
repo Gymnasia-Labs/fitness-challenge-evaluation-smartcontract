@@ -46,6 +46,7 @@ contract ChallengeManager is Ownable {
     mapping(uint256 => Challenge) public challenges;
     mapping(uint256 => Rules) internal rules;
     mapping(uint256 => Evaluation) public evaluations;
+    mapping(uint256 => address[]) public whiteLists;
 
     mapping(uint256 => mapping(address => bool)) public challengeKeys;
 
@@ -107,7 +108,8 @@ contract ChallengeManager is Ownable {
         uint256 end,
         uint256 maxParticipantsCount,
         uint256 submissionFee,
-        address evaluationAdr
+        address evaluationAdr,
+        address[] memory whiteList
     ) internal returns (Challenge memory) {
         //todo keys could be bought before start time through unlock contract
 
@@ -133,10 +135,11 @@ contract ChallengeManager is Ownable {
         evaluations[counter] = Evaluation(evaluationAdr);
 
         evaluations[counter].setRules(counter, conditions);
+        whiteLists[counter] = whiteList;
 
         emit ChallengeCreated(challenges[counter]);
 
-        return challenges[counter++];
+        return challenges[counter];
     }
 
     function createChallenge(
@@ -146,18 +149,21 @@ contract ChallengeManager is Ownable {
         uint256 end,
         uint256 maxParticipantsCount,
         uint256 submissionFee,
-        address evaluationAdr
-    ) external returns (Challenge memory) {
-        return
-            _createChallenge(
+        address evaluationAdr,
+        address[] memory whiteList
+    ) external payable returns (Challenge memory) {
+        _createChallenge(
                 types,
                 conditions,
                 start,
                 end,
                 maxParticipantsCount,
                 submissionFee,
-                evaluationAdr
-            );
+                evaluationAdr,
+                whiteList
+        );
+        challenges[counter].prizePool += msg.value;
+        return challenges[counter++];
     }
 
     function createChallengeWithNFT(
@@ -168,8 +174,9 @@ contract ChallengeManager is Ownable {
         uint256 maxParticipantsCount,
         uint256 submissionFee,
         address evaluationAdr,
-        string memory tokenURI
-    ) external returns (Challenge memory) {
+        string memory tokenURI,
+        address[] memory whiteList
+    ) external payable returns (Challenge memory) {
         _createChallenge(
             types,
             conditions,
@@ -177,16 +184,18 @@ contract ChallengeManager is Ownable {
             end,
             maxParticipantsCount,
             submissionFee,
-            evaluationAdr
+            evaluationAdr,
+            whiteList
         );
-        challenges[counter - 1].tokenURI = tokenURI;
-        return challenges[counter - 1];
+        challenges[counter].tokenURI = tokenURI;
+        challenges[counter].prizePool += msg.value;
+        return challenges[counter++];
     }
 
     //todo add prefunded by ... to get who prefunded the challenge
     function prefundChallenge(
         uint256 challengeId
-    ) public payable {
+    ) external payable {
         require(challenges[challengeId].end > block.timestamp, "ChallangeManager: challenge already ended");
         require(challenges[challengeId].start > block.timestamp, "ChallangeManager: challenge already started");
         challenges[challengeId].prizePool += msg.value;
@@ -203,6 +212,18 @@ contract ChallengeManager is Ownable {
             evaluations[challengeId].checkRules(challengeId, data),
             "ChallengeManager: data does not match ruleset"
         );
+
+        if (whiteLists[challengeId].length != 0){
+            bool addressFound = false;
+            for (uint256 i = 0; i < whiteLists[challengeId].length; i++) {
+                if (whiteLists[challengeId][i] == sender){
+                    addressFound = true;
+                    break;
+                }
+            }
+            require(addressFound, 'ChallengeManager: Not in whitelist');
+        }
+
         if (withUnlock) {
             challenges[challengeId].prizePool += msg.value;
             challenges[challengeId].currentParticipantsCount++;
@@ -264,6 +285,7 @@ contract ChallengeManager is Ownable {
             array[i].prizePool = challenges[i].prizePool;
             array[i].first = challenges[i].first;
             array[i].redeemed = challenges[i].redeemed;
+            array[i].tokenURI = challenges[i].tokenURI;
         }
         return array;
     }

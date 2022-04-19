@@ -30,7 +30,7 @@ contract Challenger {
         );
         require(
             manager.getEndOfChallenge(challengeId) > block.timestamp,
-            "Challenger: challenge allready over"
+            "Challenger: challenge already over"
         );
         require(
             manager.getStartOfChallenge(challengeId) < block.timestamp,
