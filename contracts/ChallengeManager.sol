@@ -286,7 +286,7 @@ contract ChallengeManager is Ownable {
             challenges[id].redeemed == false,
             "Challengemanager: Challenge already redeemed"
         );
-        setRedeemed(id);
+        setRedeemed(id); //it is important that the set Redeemed command is before the sent operation
         bool sent = payable(winner).send(challenges[id].prizePool);
         require(sent, "Challengemanager: Failed to send ether");
         if (bytes(challenges[id].tokenURI).length > 0) {
