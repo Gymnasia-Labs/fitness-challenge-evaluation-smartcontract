@@ -66,6 +66,14 @@ contract ChallengeManager is Ownable {
         _;
     }
 
+    modifier onlyChallengerOrSelf() {
+        require(
+            msg.sender == challenger.getAddress() || msg.sender == address(this),
+            "ChallengeManager: caller is not challenger or manager"
+        );
+        _;
+    }
+
     function setChallenger(address adr) public onlyOwnerOrFirst {
         challenger = Challenger(adr);
     }
@@ -253,6 +261,12 @@ contract ChallengeManager is Ownable {
             leaderboards[challengeId]
         );
 
+        if (whiteLists[challengeId].length != 0 &&
+            challenges[challengeId].currentParticipantsCount == challenges[challengeId].maxParticipantsCount){
+                challenges[challengeId].end = block.timestamp;
+                withdraw(challengeId, challenges[challengeId].first);
+        }
+
         emit LeaderboardEntryAdded(
             leaderboards[challengeId][leaderboards[challengeId].length - 1]
         );
@@ -267,17 +281,17 @@ contract ChallengeManager is Ownable {
         return challengeKeys[id][adr];
     }
 
-    function withdraw(uint256 id, address winner) public onlyChallenger {
+    function withdraw(uint256 id, address winner) public onlyChallengerOrSelf {
         require(
             challenges[id].redeemed == false,
             "Challengemanager: Challenge already redeemed"
         );
+        setRedeemed(id);
         bool sent = payable(winner).send(challenges[id].prizePool);
         require(sent, "Challengemanager: Failed to send ether");
         if (bytes(challenges[id].tokenURI).length > 0) {
             gymToken.mint(winner, challenges[id].tokenURI);
         }
-        setRedeemed(id);
     }
 
     function getWinner(uint256 challengeId) public view returns (address) {
