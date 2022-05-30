@@ -6,7 +6,7 @@ import "./ChallengeManager.sol";
 
 contract Challenger {
     ChallengeManager internal manager;
-    address public apiAddress;
+    address internal apiAddress;
 
     mapping(bytes32 => uint256) public requests; // todo add data and time
 
@@ -25,6 +25,10 @@ contract Challenger {
 
     function setApiAddress(address adr) public{
         apiAddress = adr;
+    }
+
+    function getApiAddress() external view returns(address){
+        return apiAddress;
     }
 
     function submitData(

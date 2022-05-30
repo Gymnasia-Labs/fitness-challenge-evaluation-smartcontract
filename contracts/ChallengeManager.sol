@@ -14,8 +14,8 @@ contract ChallengeManager is Ownable {
     uint256 counter = 0;
     Challenger challenger;
     GymToken gymToken;
-    uint256 public gymnasiaFee = 10; //percentage so always divide by 100 before
-    address payable public gymnasiaAddress;
+    uint8 internal gymnasiaFee = 10; //percentage so always divide by 100 before
+    address payable internal gymnasiaAddress;
 
     struct Challenge {
         uint256 id; //todo remove if not needed in frontend
@@ -74,6 +74,10 @@ contract ChallengeManager is Ownable {
         gymToken = GymToken(adr);
     }
 
+    function getGymnasiaAddress() external view onlyOwner returns (address) {
+        return gymnasiaAddress;
+    }
+
     function setGymnasiaAddress(address adr) public onlyOwner {
         gymnasiaAddress = payable(adr);
     }
@@ -86,7 +90,7 @@ contract ChallengeManager is Ownable {
         challenges[challengeId].redeemed = true;
     }
 
-    function setGymnasiaFee(uint256 percentage) external onlyOwner {
+    function setGymnasiaFee(uint8 percentage) external onlyOwner {
         require(
             percentage >= 0 && percentage <= 100,
             "ChallengeManager: argument out of range -> not between 0 and 100"
@@ -94,13 +98,17 @@ contract ChallengeManager is Ownable {
         gymnasiaFee = percentage;
     }
 
+    function getGymnasiaFee() public view returns(uint8) {
+        return gymnasiaFee;
+    }
+
     function sendGymnasiaFee() public payable {
         bool sent = gymnasiaAddress.send(msg.value);
         require(sent, "Challenger: Failed to send ether");
     }
 
-    function getKeyPrice(uint256 id) public view returns (uint256) {
-        uint256 submissionFee = getSubmissionFee(id);
+    function getKeyPrice(uint256 challengeId) public view returns (uint256) {
+        uint256 submissionFee = getSubmissionFee(challengeId);
         submissionFee = submissionFee - (submissionFee / 100) * gymnasiaFee;
         return submissionFee;
     }
