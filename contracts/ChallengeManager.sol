@@ -15,7 +15,7 @@ contract ChallengeManager is Ownable {
     Challenger challenger;
     GymToken gymToken;
     uint256 public gymnasiaFee = 10; //percentage so always divide by 100 before
-    address payable gymnasiaAddress = payable(0x0d5900731140977cd80b7Bd2DCE9cEc93F8a176B);
+    address payable public gymnasiaAddress;
 
     struct Challenge {
         uint256 id; //todo remove if not needed in frontend
@@ -53,6 +53,11 @@ contract ChallengeManager is Ownable {
     event ChallengeCreated(Challenge challenge);
     event LeaderboardEntryAdded(LeaderboardEntry leaderboardEntry);
 
+
+    constructor(address adr) {
+        gymnasiaAddress = payable(adr);
+    }
+
     modifier onlyChallenger() {
         require(
             msg.sender == challenger.getAddress(),
@@ -67,6 +72,10 @@ contract ChallengeManager is Ownable {
 
     function setGymToken(address adr) public onlyOwnerOrFirstToken {
         gymToken = GymToken(adr);
+    }
+
+    function setGymnasiaAddress(address adr) public onlyOwner {
+        gymnasiaAddress = payable(adr);
     }
 
     function getAddress() public view returns (address) {

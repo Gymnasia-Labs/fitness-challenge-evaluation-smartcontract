@@ -6,24 +6,36 @@ import "./ChallengeManager.sol";
 
 contract Challenger {
     ChallengeManager internal manager;
+    address public apiAddress;
 
     mapping(bytes32 => uint256) public requests; // todo add data and time
 
-    constructor(address adr) {
-        manager = ChallengeManager(adr);
-
+    constructor(address challengManagerAdr, address apiAdr) {
+        manager = ChallengeManager(challengManagerAdr);
         manager.setChallenger(address(this));
+        setApiAddress(apiAdr);
+    }
+
+    modifier onlyApi() {
+        require(msg.sender == apiAddress, "Challenger: you are not allowed to submit");
+        _;
     }
 
     event PrizeReceived(address winner);
 
+    function setApiAddress(address adr) public{
+        apiAddress = adr;
+    }
+
     function submitData(
         uint256 challengeId,
         uint32[] calldata conditions,
-        uint32[] calldata time
-    ) external payable {
+        uint32[] calldata time,
+        address atheletAddress
+    ) external payable onlyApi {
         // IPublicLock lock = manager.getLock(challengeId);
         // require(address(lock) != address(0), "Challenger: lock does not exist yet");
+
         require(
             time.length == conditions.length,
             "Challenger: argument array lengths not matching"
@@ -39,7 +51,7 @@ contract Challenger {
 
         bool withUnlock = false;
         uint256 keyPrice = 0;
-        if (!manager.hasUnlockedChallenge(challengeId, msg.sender)) {
+        if (!manager.hasUnlockedChallenge(challengeId, atheletAddress)) {
             require(
                 manager.getCurrentParticipants(challengeId) <
                     manager.getMaxParticipants(challengeId),
@@ -62,7 +74,7 @@ contract Challenger {
 
         manager.addLeaderboardEntry{value: keyPrice}(
             challengeId,
-            msg.sender,
+            atheletAddress,
             conditions,
             time,
             withUnlock
