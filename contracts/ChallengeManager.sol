@@ -101,6 +101,10 @@ contract ChallengeManager is Ownable {
         challenges[challengeId].redeemed = true;
     }
 
+    function setGender(uint256 challengeId, Gender gender) public onlyOwner {
+        challenges[challengeId].gender = gender;
+    }
+
     function setGymnasiaFee(uint8 percentage) external onlyOwner {
         require(
             percentage >= 0 && percentage <= 100,
@@ -137,11 +141,10 @@ contract ChallengeManager is Ownable {
         uint256 maxParticipantsCount,
         uint256 submissionFee,
         address evaluationAdr,
-        address[] memory whiteList,
-        uint8 genderType
+        address[] memory whiteList
     ) internal returns (Challenge memory) {
         //todo keys could be bought before start time through unlock contract
-        require(genderType >= 0 && genderType <= uint(Gender.MALE), "ChallengeManager: Gender not available");
+        // require(genderType >= 0 && genderType <= uint(Gender.MALE), "ChallengeManager: Gender not available");
         require(start > block.timestamp, "ChallangeManager: start in the past"); //start
         require(end > start, "ChallengeManager: end time before start time");
         require(
@@ -161,7 +164,7 @@ contract ChallengeManager is Ownable {
         challenges[counter].end = end;
         challenges[counter].maxParticipantsCount = maxParticipantsCount;
         challenges[counter].submissionFee = submissionFee;
-        challenges[counter].gender = Gender(genderType);
+        challenges[counter].gender = Gender.UNISEX;
         evaluations[counter] = Evaluation(evaluationAdr);
 
         evaluations[counter].setRules(counter, conditions);
@@ -180,8 +183,7 @@ contract ChallengeManager is Ownable {
         uint256 maxParticipantsCount,
         uint256 submissionFee,
         address evaluationAdr,
-        address[] memory whiteList,
-        uint8 genderType
+        address[] memory whiteList
     ) external payable returns (Challenge memory) {
         _createChallenge(
                 types,
@@ -191,8 +193,7 @@ contract ChallengeManager is Ownable {
                 maxParticipantsCount,
                 submissionFee,
                 evaluationAdr,
-                whiteList,
-                genderType
+                whiteList
         );
         challenges[counter].prizePool += msg.value;
         return challenges[counter++];
@@ -207,8 +208,7 @@ contract ChallengeManager is Ownable {
         uint256 submissionFee,
         address evaluationAdr,
         string memory tokenURI,
-        address[] memory whiteList,
-        uint8 genderType
+        address[] memory whiteList
     ) external payable returns (Challenge memory) {
         _createChallenge(
             types,
@@ -218,8 +218,7 @@ contract ChallengeManager is Ownable {
             maxParticipantsCount,
             submissionFee,
             evaluationAdr,
-            whiteList,
-            genderType
+            whiteList
         );
         challenges[counter].tokenURI = tokenURI;
         challenges[counter].prizePool += msg.value;
