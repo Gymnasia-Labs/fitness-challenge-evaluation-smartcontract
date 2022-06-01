@@ -17,6 +17,8 @@ contract ChallengeManager is Ownable {
     uint8 internal gymnasiaFee = 10; //percentage so always divide by 100 before
     address payable internal gymnasiaAddress;
 
+    enum Gender{ UNISEX, FEMALE, MALE }
+
     struct Challenge {
         uint256 id; //todo remove if not needed in frontend
         address creator;
@@ -29,6 +31,7 @@ contract ChallengeManager is Ownable {
         address first;
         bool redeemed;
         string tokenURI;
+        Gender gender;
     }
 
     struct Rules {
@@ -127,17 +130,18 @@ contract ChallengeManager is Ownable {
 
     //just for reuse purpose
     function _createChallenge(
-        uint32[] calldata types,
-        uint32[] calldata conditions,
+        uint32[] memory types,
+        uint32[] memory conditions,
         uint256 start,
         uint256 end,
         uint256 maxParticipantsCount,
         uint256 submissionFee,
         address evaluationAdr,
-        address[] memory whiteList
+        address[] memory whiteList,
+        uint8 genderType
     ) internal returns (Challenge memory) {
         //todo keys could be bought before start time through unlock contract
-
+        require(genderType >= 0 && genderType <= uint(Gender.MALE), "ChallengeManager: Gender not available");
         require(start > block.timestamp, "ChallangeManager: start in the past"); //start
         require(end > start, "ChallengeManager: end time before start time");
         require(
@@ -157,6 +161,7 @@ contract ChallengeManager is Ownable {
         challenges[counter].end = end;
         challenges[counter].maxParticipantsCount = maxParticipantsCount;
         challenges[counter].submissionFee = submissionFee;
+        challenges[counter].gender = Gender(genderType);
         evaluations[counter] = Evaluation(evaluationAdr);
 
         evaluations[counter].setRules(counter, conditions);
@@ -175,7 +180,8 @@ contract ChallengeManager is Ownable {
         uint256 maxParticipantsCount,
         uint256 submissionFee,
         address evaluationAdr,
-        address[] memory whiteList
+        address[] memory whiteList,
+        uint8 genderType
     ) external payable returns (Challenge memory) {
         _createChallenge(
                 types,
@@ -185,7 +191,8 @@ contract ChallengeManager is Ownable {
                 maxParticipantsCount,
                 submissionFee,
                 evaluationAdr,
-                whiteList
+                whiteList,
+                genderType
         );
         challenges[counter].prizePool += msg.value;
         return challenges[counter++];
@@ -200,7 +207,8 @@ contract ChallengeManager is Ownable {
         uint256 submissionFee,
         address evaluationAdr,
         string memory tokenURI,
-        address[] memory whiteList
+        address[] memory whiteList,
+        uint8 genderType
     ) external payable returns (Challenge memory) {
         _createChallenge(
             types,
@@ -210,7 +218,8 @@ contract ChallengeManager is Ownable {
             maxParticipantsCount,
             submissionFee,
             evaluationAdr,
-            whiteList
+            whiteList,
+            genderType
         );
         challenges[counter].tokenURI = tokenURI;
         challenges[counter].prizePool += msg.value;
@@ -317,6 +326,7 @@ contract ChallengeManager is Ownable {
             array[i].first = challenges[i].first;
             array[i].redeemed = challenges[i].redeemed;
             array[i].tokenURI = challenges[i].tokenURI;
+            array[i].gender = challenges[i].gender;
         }
         return array;
     }
