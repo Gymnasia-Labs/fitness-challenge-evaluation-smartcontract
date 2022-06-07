@@ -53,6 +53,7 @@ contract Challenger {
             "Challenger: challenge not started yet"
         );
 
+
         bool withUnlock = false;
         uint256 keyPrice = 0;
         if (!manager.hasUnlockedChallenge(challengeId, atheletAddress)) {
@@ -73,6 +74,7 @@ contract Challenger {
 
             withUnlock = true;
         } else {
+            require(manager.multiSubmitAllowed(challengeId), "Challenger: you are only allowed to submit once");
             manager.sendGymnasiaFee{value: msg.value}();
         }
 

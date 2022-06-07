@@ -32,6 +32,7 @@ contract ChallengeManager is Ownable {
         bool redeemed;
         string tokenURI;
         Gender gender;
+        bool multiSubmitAllowed;
     }
 
     struct Rules {
@@ -169,6 +170,7 @@ contract ChallengeManager is Ownable {
 
         evaluations[counter].setRules(counter, conditions);
         whiteLists[counter] = whiteList;
+        challenges[counter].multiSubmitAllowed = whiteList.length == 0 ? true : false;
 
         emit ChallengeCreated(challenges[counter]);
 
@@ -289,6 +291,10 @@ contract ChallengeManager is Ownable {
         return challengeKeys[id][adr];
     }
 
+    function multiSubmitAllowed(uint256 id) public view returns(bool){
+        return challenges[id].multiSubmitAllowed;
+    }
+
     function withdraw(uint256 id, address winner) public onlyChallengerOrSelf {
         require(
             challenges[id].redeemed == false,
@@ -326,6 +332,7 @@ contract ChallengeManager is Ownable {
             array[i].redeemed = challenges[i].redeemed;
             array[i].tokenURI = challenges[i].tokenURI;
             array[i].gender = challenges[i].gender;
+            array[i].multiSubmitAllowed = challenges[i].multiSubmitAllowed;
         }
         return array;
     }
