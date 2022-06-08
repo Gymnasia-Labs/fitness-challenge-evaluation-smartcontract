@@ -157,6 +157,13 @@ contract ChallengeManager is Ownable {
             "ChallengeManager: conditions are not allowed to be empty"
         );
 
+        require(
+            maxParticipantsCount == whiteList.length,
+            "ChallengeManager: maxParticipantsCount not equal to whitelist numbers"
+        );
+
+        //todo check uniqueness of addresses contained in whitelist
+
         rules[counter] = Rules(types, conditions);
 
         challenges[counter].id = counter;
@@ -297,7 +304,7 @@ contract ChallengeManager is Ownable {
 
     function withdraw(uint256 id, address winner) public onlyChallengerOrSelf {
         require(
-            challenges[id].redeemed == false,
+            !challenges[id].redeemed,
             "Challengemanager: Challenge already redeemed"
         );
         setRedeemed(id); //it is important that the set Redeemed command is before the sent operation

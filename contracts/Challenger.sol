@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.5.17 <0.9.0;
 
-// import "./interfaces/unlock/IPublicLock.sol";
 import "./ChallengeManager.sol";
 
 contract Challenger {
@@ -37,9 +36,6 @@ contract Challenger {
         uint32[] calldata time,
         address atheletAddress
     ) external payable onlyApi {
-        // IPublicLock lock = manager.getLock(challengeId);
-        // require(address(lock) != address(0), "Challenger: lock does not exist yet");
-
         require(
             time.length == conditions.length,
             "Challenger: argument array lengths not matching"
@@ -60,7 +56,6 @@ contract Challenger {
             require(
                 manager.getCurrentParticipants(challengeId) <
                     manager.getMaxParticipants(challengeId),
-                // || manager.getMaxParticipants(challengeId) == 0
                 "Challenger: challenge is already full"
             );
 
@@ -88,19 +83,13 @@ contract Challenger {
     }
 
     function receivePrize(uint256 challengeId) external {
+        address winner = manager.getWinner(challengeId);
         require(
-            isWinner(challengeId),
-            "Challanger: Sorry you are not the winner"
+            msg.sender == winner || msg.sender == apiAddress,
+            "Challenger: Sorry you are not the winner"
         );
 
-        manager.withdraw(challengeId, msg.sender);
-
-        // IPublicLock lock = manager.getLock(challengeId);
-        // lock.updateBeneficiary(msg.sender);
-        // lock.withdraw(address(0), 0); //address(0) => caller is target, 0 => all in the lock
-
-        // manager.setRedeemed(challengeId);
-        // lock.updateBeneficiary(address(this));
+        manager.withdraw(challengeId, winner);
 
         emit PrizeReceived(msg.sender);
     }
