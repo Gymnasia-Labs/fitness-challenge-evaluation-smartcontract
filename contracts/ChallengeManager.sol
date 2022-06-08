@@ -158,8 +158,8 @@ contract ChallengeManager is Ownable {
         );
 
         require(
-            maxParticipantsCount == whiteList.length,
-            "ChallengeManager: maxParticipantsCount not equal to whitelist numbers"
+            maxParticipantsCount == whiteList.length || whiteList.length == 0,
+            "ChallengeManager: whitelist not correct"
         );
 
         //todo check uniqueness of addresses contained in whitelist
