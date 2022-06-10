@@ -2,6 +2,8 @@ const Challenger = artifacts.require("Challenger");
 const ChallengeManager = artifacts.require("ChallengeManager");
 const MinTimeEvaluation = artifacts.require("MinTimeEvaluation");
 const GymToken = artifacts.require("GymToken");
+const ERC20Tester = artifacts.require("ERC20Tester");
+
 // const APIConsumer = artifacts.require("APIConsumer");
 
 module.exports = function (deployer) {
@@ -23,4 +25,5 @@ module.exports = function (deployer) {
   // .then(function () {
   //   return deployer.deploy(APIConsumer);
   // });
+  // deployer.deploy(ERC20Tester, "ERC20Tester", "ERC");
 };

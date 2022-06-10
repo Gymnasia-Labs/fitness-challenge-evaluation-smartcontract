@@ -7,6 +7,7 @@ import "./Challenger.sol";
 import "./StringUtils.sol";
 import "./Ownable.sol";
 import "./GymToken.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract ChallengeManager is Ownable {
     using StringUtils for string;
@@ -17,7 +18,11 @@ contract ChallengeManager is Ownable {
     uint8 internal gymnasiaFee = 10; //percentage so always divide by 100 before
     address payable internal gymnasiaAddress;
 
-    enum Gender{ UNISEX, FEMALE, MALE }
+    enum Gender {
+        UNISEX,
+        FEMALE,
+        MALE
+    }
 
     struct Challenge {
         uint256 id; //todo remove if not needed in frontend
@@ -30,9 +35,10 @@ contract ChallengeManager is Ownable {
         uint256 prizePool;
         address first;
         bool redeemed;
-        string tokenURI;
+        string tokenURI; //uri for ERC721 NFT
         Gender gender;
         bool multiSubmitAllowed;
+        address token; //ERC20 Token Address
     }
 
     struct Rules {
@@ -57,7 +63,6 @@ contract ChallengeManager is Ownable {
     event ChallengeCreated(Challenge challenge);
     event LeaderboardEntryAdded(LeaderboardEntry leaderboardEntry);
 
-
     constructor(address adr) {
         gymnasiaAddress = payable(adr);
     }
@@ -72,7 +77,8 @@ contract ChallengeManager is Ownable {
 
     modifier onlyChallengerOrSelf() {
         require(
-            msg.sender == challenger.getAddress() || msg.sender == address(this),
+            msg.sender == challenger.getAddress() ||
+                msg.sender == address(this),
             "ChallengeManager: caller is not challenger or manager"
         );
         _;
@@ -114,7 +120,7 @@ contract ChallengeManager is Ownable {
         gymnasiaFee = percentage;
     }
 
-    function getGymnasiaFee() public view returns(uint8) {
+    function getGymnasiaFee() public view returns (uint8) {
         return gymnasiaFee;
     }
 
@@ -129,25 +135,38 @@ contract ChallengeManager is Ownable {
         return submissionFee;
     }
 
-    function getSubmissionFee(uint256 challengeId) public view returns (uint256) {
+    function getSubmissionFee(uint256 challengeId)
+        public
+        view
+        returns (uint256)
+    {
         return challenges[challengeId].submissionFee;
     }
 
     //just for reuse purpose
     function _createChallenge(
+        Challenge memory challenge,
         uint32[] memory types,
         uint32[] memory conditions,
-        uint256 start,
-        uint256 end,
-        uint256 maxParticipantsCount,
-        uint256 submissionFee,
         address evaluationAdr,
         address[] memory whiteList
-    ) internal returns (Challenge memory) {
+    )
+        internal
+        returns (
+            // address token
+            Challenge memory
+        )
+    {
         //todo keys could be bought before start time through unlock contract
         // require(genderType >= 0 && genderType <= uint(Gender.MALE), "ChallengeManager: Gender not available");
-        require(start > block.timestamp, "ChallangeManager: start in the past"); //start
-        require(end > start, "ChallengeManager: end time before start time");
+        require(
+            challenge.start > block.timestamp,
+            "ChallangeManager: start in the past"
+        ); //start
+        require(
+            challenge.end > challenge.start,
+            "ChallengeManager: end time before start time"
+        );
         require(
             types.length == conditions.length,
             "ChallengeManager: the condition count and challenge types count needs to be the same"
@@ -158,7 +177,8 @@ contract ChallengeManager is Ownable {
         );
 
         require(
-            maxParticipantsCount == whiteList.length || whiteList.length == 0,
+            challenge.maxParticipantsCount == whiteList.length ||
+                whiteList.length == 0,
             "ChallengeManager: whitelist not correct"
         );
 
@@ -166,18 +186,30 @@ contract ChallengeManager is Ownable {
 
         rules[counter] = Rules(types, conditions);
 
+        // challenges[counter] = challenge;
         challenges[counter].id = counter;
         challenges[counter].creator = msg.sender;
-        challenges[counter].start = start;
-        challenges[counter].end = end;
-        challenges[counter].maxParticipantsCount = maxParticipantsCount;
-        challenges[counter].submissionFee = submissionFee;
-        challenges[counter].gender = Gender.UNISEX;
+        challenges[counter].start = challenge.start;
+        challenges[counter].end = challenge.end;
+        challenges[counter].maxParticipantsCount = challenge
+            .maxParticipantsCount;
+        challenges[counter].submissionFee = challenge.submissionFee;
+        challenges[counter].gender = challenge.gender;
+        challenges[counter].tokenURI = challenge.tokenURI;
+        challenges[counter].token = challenge.token;
+
+        if (
+            challenges[counter].gender != Gender.FEMALE &&
+            challenges[counter].gender != Gender.MALE
+        ) challenges[counter].gender = Gender.UNISEX;
+
         evaluations[counter] = Evaluation(evaluationAdr);
 
         evaluations[counter].setRules(counter, conditions);
         whiteLists[counter] = whiteList;
-        challenges[counter].multiSubmitAllowed = whiteList.length == 0 ? true : false;
+        challenges[counter].multiSubmitAllowed = whiteList.length == 0
+            ? true
+            : false;
 
         emit ChallengeCreated(challenges[counter]);
 
@@ -185,62 +217,48 @@ contract ChallengeManager is Ownable {
     }
 
     function createChallenge(
+        Challenge memory challenge,
         uint32[] calldata types,
         uint32[] calldata conditions,
-        uint256 start,
-        uint256 end,
-        uint256 maxParticipantsCount,
-        uint256 submissionFee,
         address evaluationAdr,
-        address[] memory whiteList
+        address[] memory whiteList,
+        uint256 prefundAmount
     ) external payable returns (Challenge memory) {
         _createChallenge(
-                types,
-                conditions,
-                start,
-                end,
-                maxParticipantsCount,
-                submissionFee,
-                evaluationAdr,
-                whiteList
-        );
-        challenges[counter].prizePool += msg.value;
-        return challenges[counter++];
-    }
-
-    function createChallengeWithNFT(
-        uint32[] calldata types,
-        uint32[] calldata conditions,
-        uint256 start,
-        uint256 end,
-        uint256 maxParticipantsCount,
-        uint256 submissionFee,
-        address evaluationAdr,
-        string memory tokenURI,
-        address[] memory whiteList
-    ) external payable returns (Challenge memory) {
-        _createChallenge(
+            challenge,
             types,
             conditions,
-            start,
-            end,
-            maxParticipantsCount,
-            submissionFee,
             evaluationAdr,
             whiteList
         );
-        challenges[counter].tokenURI = tokenURI;
-        challenges[counter].prizePool += msg.value;
+        prefundChallenge(counter, prefundAmount);
         return challenges[counter++];
     }
 
     //todo add prefunded by ... to get who prefunded the challenge
-    function prefundChallenge(
-        uint256 challengeId
-    ) external payable {
-        require(challenges[challengeId].end > block.timestamp, "ChallangeManager: challenge already ended");
-        require(challenges[challengeId].start > block.timestamp, "ChallangeManager: challenge already started");
-        challenges[challengeId].prizePool += msg.value;
+    function prefundChallenge(uint256 challengeId, uint256 amount)
+        public
+        payable
+    {
+        require(
+            challenges[challengeId].end > block.timestamp,
+            "ChallangeManager: challenge already ended"
+        );
+        require(
+            challenges[challengeId].start > block.timestamp,
+            "ChallangeManager: challenge already started"
+        );
+        if (challenges[challengeId].token == address(0)) {
+            challenges[challengeId].prizePool += msg.value;
+        } else {
+            saveERC20(challengeId, amount);
+        }
+    }
+
+    function saveERC20(uint256 challengeId, uint256 amount) private {
+        IERC20 token = IERC20(challenges[challengeId].token);
+        token.transferFrom(msg.sender, address(this), amount);
+        challenges[challengeId].prizePool += amount;
     }
 
     function addLeaderboardEntry(
@@ -255,15 +273,15 @@ contract ChallengeManager is Ownable {
             "ChallengeManager: data does not match ruleset"
         );
 
-        if (whiteLists[challengeId].length != 0){
+        if (whiteLists[challengeId].length != 0) {
             bool addressFound = false;
             for (uint256 i = 0; i < whiteLists[challengeId].length; i++) {
-                if (whiteLists[challengeId][i] == sender){
+                if (whiteLists[challengeId][i] == sender) {
                     addressFound = true;
                     break;
                 }
             }
-            require(addressFound, 'ChallengeManager: Not in whitelist');
+            require(addressFound, "ChallengeManager: Not in whitelist");
         }
 
         if (withUnlock) {
@@ -278,17 +296,19 @@ contract ChallengeManager is Ownable {
             leaderboards[challengeId]
         );
 
-        if (whiteLists[challengeId].length != 0 &&
-            challenges[challengeId].currentParticipantsCount == challenges[challengeId].maxParticipantsCount){
-                challenges[challengeId].end = block.timestamp;
-                withdraw(challengeId, challenges[challengeId].first);
+        if (
+            whiteLists[challengeId].length != 0 &&
+            challenges[challengeId].currentParticipantsCount ==
+            challenges[challengeId].maxParticipantsCount
+        ) {
+            challenges[challengeId].end = block.timestamp;
+            withdraw(challengeId, challenges[challengeId].first);
         }
 
         emit LeaderboardEntryAdded(
             leaderboards[challengeId][leaderboards[challengeId].length - 1]
         );
     }
-
 
     function hasUnlockedChallenge(uint256 id, address adr)
         public
@@ -298,7 +318,7 @@ contract ChallengeManager is Ownable {
         return challengeKeys[id][adr];
     }
 
-    function multiSubmitAllowed(uint256 id) public view returns(bool){
+    function multiSubmitAllowed(uint256 id) public view returns (bool) {
         return challenges[id].multiSubmitAllowed;
     }
 
@@ -308,8 +328,13 @@ contract ChallengeManager is Ownable {
             "Challengemanager: Challenge already redeemed"
         );
         setRedeemed(id); //it is important that the set Redeemed command is before the sent operation
-        bool sent = payable(winner).send(challenges[id].prizePool);
-        require(sent, "Challengemanager: Failed to send ether");
+        if (challenges[id].token == address(0)) {
+            bool sent = payable(winner).send(challenges[id].prizePool);
+            require(sent, "Challengemanager: Failed to send ether");
+        } else {
+            IERC20 token = IERC20(challenges[id].token);
+            token.transfer(winner, challenges[id].prizePool);
+        }
         if (bytes(challenges[id].tokenURI).length > 0) {
             gymToken.mint(winner, challenges[id].tokenURI);
         }
@@ -340,6 +365,7 @@ contract ChallengeManager is Ownable {
             array[i].tokenURI = challenges[i].tokenURI;
             array[i].gender = challenges[i].gender;
             array[i].multiSubmitAllowed = challenges[i].multiSubmitAllowed;
+            array[i].token = challenges[i].token;
         }
         return array;
     }
@@ -350,6 +376,10 @@ contract ChallengeManager is Ownable {
         returns (Rules memory)
     {
         return rules[challengeId];
+    }
+
+    function getChallengeAmount() external view returns (uint256) {
+        return counter;
     }
 
     function getMaxParticipants(uint256 challengeId)

@@ -2,8 +2,9 @@
 pragma solidity >=0.5.17 <0.9.0;
 
 import "./ChallengeManager.sol";
+import "./Ownable.sol";
 
-contract Challenger {
+contract Challenger is Ownable {
     ChallengeManager internal manager;
     address internal apiAddress;
 
@@ -16,17 +17,20 @@ contract Challenger {
     }
 
     modifier onlyApi() {
-        require(msg.sender == apiAddress, "Challenger: you are not allowed to submit");
+        require(
+            msg.sender == apiAddress || msg.sender == owner(),
+            "Challenger: you are not allowed to submit"
+        );
         _;
     }
 
     event PrizeReceived(address winner);
 
-    function setApiAddress(address adr) public{
+    function setApiAddress(address adr) public {
         apiAddress = adr;
     }
 
-    function getApiAddress() external view returns(address){
+    function getApiAddress() external view returns (address) {
         return apiAddress;
     }
 
