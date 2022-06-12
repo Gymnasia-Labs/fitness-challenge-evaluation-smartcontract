@@ -73,8 +73,8 @@ module.exports = {
     },
     auroraTestnet: {
       provider: () =>
-        // new HDWalletProvider(mnemonic, "https://testnet.aurora.dev"),
-        new HDWalletProvider(mnemonic, "wss://testnet.aurora.dev"),
+        new HDWalletProvider(mnemonic, "https://testnet.aurora.dev"),
+      // new HDWalletProvider(mnemonic, "wss://testnet.aurora.dev"),
       // gasPrice: 4000000000,
       network_id: 0x4e454153,
       gas: 10000000,
@@ -136,7 +136,7 @@ module.exports = {
         // See the solidity docs for advice about optimization and evmVersion
         optimizer: {
           enabled: true,
-          runs: 1,
+          runs: 100,
         },
         evmVersion: "byzantium",
       },
