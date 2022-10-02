@@ -1,10 +1,10 @@
 const Challenger = artifacts.require("Challenger");
 const ChallengeManager = artifacts.require("ChallengeManager");
 const MinTimeEvaluation = artifacts.require("MinTimeEvaluation");
+const MaxDistanceEvaluation = artifacts.require("MaxDistanceEvaluation");
 const GymToken = artifacts.require("GymToken");
+const Verifier = artifacts.require("Verifier");
 const ERC20Tester = artifacts.require("ERC20Tester");
-
-// const APIConsumer = artifacts.require("APIConsumer");
 
 module.exports = function (deployer) {
   deployer
@@ -20,10 +20,11 @@ module.exports = function (deployer) {
       return deployer.deploy(MinTimeEvaluation, ChallengeManager.address);
     })
     .then(function () {
+      return deployer.deploy(MaxDistanceEvaluation, ChallengeManager.address);
+    })
+    .then(function () {
       return deployer.deploy(GymToken, ChallengeManager.address);
     });
-  // .then(function () {
-  //   return deployer.deploy(APIConsumer);
-  // });
+  deployer.deploy(Verifier);
   // deployer.deploy(ERC20Tester, "ERC20Tester", "ERC");
 };

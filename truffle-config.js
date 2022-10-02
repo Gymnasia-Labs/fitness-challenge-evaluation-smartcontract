@@ -57,19 +57,17 @@ module.exports = {
       network_id: 4,
       skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
     },
-    kovan: {
+    goerli: {
       // provider: () => new HDWalletProvider( mnemonic, `wss://rinkeby.infura.io/ws/v3/${infuraKey}`),
       provider: () =>
         new HDWalletProvider(
           mnemonic,
-          `wss://kovan.infura.io/ws/v3/${infuraKey}`
+          `wss://goerli.infura.io/ws/v3/${infuraKey}`
         ),
 
-      // provider: () => new HDWalletProvider(mnemonic, `https://rinkeby.infura.io/v3/${infuraKey}`),
-      gas: 30000000,
-      gasPrice: 4000000000,
-      network_id: 42,
-      skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
+      network_id: "5",
+      gas: 4465030,
+      gasPrice: 10000000000,
     },
     auroraTestnet: {
       provider: () =>
@@ -109,12 +107,6 @@ module.exports = {
       // gasPrice: 10000000000,
       // timeoutBlocks: 5000
     },
-    // Useful for private networks
-    // private: {
-    // provider: () => new HDWalletProvider(mnemonic, `https://network.io`),
-    // network_id: 2111,   // This network is yours, in the cloud.
-    // production: true    // Treats this network as if it was a public net. (default: false)
-    // }
   },
   plugins: ["truffle-plugin-verify"],
   api_keys: {

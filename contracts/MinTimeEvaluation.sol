@@ -4,7 +4,10 @@ pragma solidity >=0.5.17 <0.9.0;
 import "./Evaluation.sol";
 
 contract MinTimeEvaluation is Evaluation {
-    constructor(address adr) Evaluation(adr) {}
+
+    constructor(address adr) Evaluation(adr) {
+        multiSubmitAllowed = false;
+    }
 
     function evaluate(ChallengeManager.LeaderboardEntry[] memory entry)
         public
@@ -21,13 +24,13 @@ contract MinTimeEvaluation is Evaluation {
         uint256 sum = 0;
         uint256 min = 0;
 
-        for (i = 0; i < entry[0].time.length; i++) {
-            min += entry[0].time[i];
+        for (i = 0; i < entry[0].values.length; i++) {
+            min += entry[0].values[i];
         }
 
         for (i = 1; i < entry.length; i++) {
-            for (j = 0; j < entry[i].time.length; j++) {
-                sum += entry[i].time[j];
+            for (j = 0; j < entry[i].values.length; j++) {
+                sum += entry[i].values[j];
             }
             if (sum < min) {
                 min = sum;

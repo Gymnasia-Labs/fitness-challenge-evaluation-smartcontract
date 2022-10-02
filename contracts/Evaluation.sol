@@ -6,6 +6,7 @@ import "./Ownable.sol";
 
 contract Evaluation is Ownable{
     address public manager;
+    bool public multiSubmitAllowed = false;
 
     mapping(uint256 => uint32[]) public ruleset;
 
@@ -34,6 +35,7 @@ contract Evaluation is Ownable{
 
     function checkRules(uint256 challengeId, uint32[] memory rules)
         public
+        virtual
         view
         returns (bool)
     {

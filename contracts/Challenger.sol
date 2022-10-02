@@ -8,7 +8,12 @@ contract Challenger is Ownable {
     ChallengeManager internal manager;
     address internal apiAddress;
 
-    mapping(bytes32 => uint256) public requests; // todo add data and time
+    struct ChallengeData {
+        uint256 challengeId;
+        uint32[] conditions;
+        uint32[] values;
+        address athleteAddress;
+    }
 
     constructor(address challengManagerAdr, address apiAdr) {
         manager = ChallengeManager(challengManagerAdr);
@@ -35,55 +40,125 @@ contract Challenger is Ownable {
     }
 
     function submitData(
-        uint256 challengeId,
-        uint32[] calldata conditions,
-        uint32[] calldata time,
-        address atheletAddress
+        ChallengeData memory challengeData
     ) external payable onlyApi {
         require(
-            time.length == conditions.length,
+            challengeData.values.length == challengeData.conditions.length,
             "Challenger: argument array lengths not matching"
         );
         require(
-            manager.getEndOfChallenge(challengeId) > block.timestamp,
+            manager.getEndOfChallenge(challengeData.challengeId) > block.timestamp,
             "Challenger: challenge already over"
         );
         require(
-            manager.getStartOfChallenge(challengeId) < block.timestamp,
+            manager.getStartOfChallenge(challengeData.challengeId) < block.timestamp,
             "Challenger: challenge not started yet"
         );
 
 
         bool withUnlock = false;
         uint256 keyPrice = 0;
-        if (!manager.hasUnlockedChallenge(challengeId, atheletAddress)) {
+        if (!manager.hasUnlockedChallenge(challengeData.challengeId, challengeData.athleteAddress)) {
             require(
-                manager.getCurrentParticipants(challengeId) <
-                    manager.getMaxParticipants(challengeId),
+                manager.getCurrentParticipants(challengeData.challengeId) <
+                    manager.getMaxParticipants(challengeData.challengeId),
                 "Challenger: challenge is already full"
             );
 
             require(
-                msg.value >= manager.getSubmissionFee(challengeId),
+                msg.value >= manager.getSubmissionFee(challengeData.challengeId),
                 "Challenger: entered fee too low"
             );
 
-            keyPrice = manager.getKeyPrice(challengeId);
+            keyPrice = manager.getKeyPrice(challengeData.challengeId);
             manager.sendGymnasiaFee{value: msg.value - keyPrice}();
 
             withUnlock = true;
         } else {
-            require(manager.multiSubmitAllowed(challengeId), "Challenger: you are only allowed to submit once");
+            require(manager.multiSubmitAllowed(challengeData.challengeId), "Challenger: you are only allowed to submit once");
             manager.sendGymnasiaFee{value: msg.value}();
         }
 
         manager.addLeaderboardEntry{value: keyPrice}(
-            challengeId,
-            atheletAddress,
-            conditions,
-            time,
+            challengeData.challengeId,
+            challengeData.athleteAddress,
+            challengeData.conditions,
+            challengeData.values,
             withUnlock
         );
+    }
+
+    function submitDataMulti(
+        ChallengeData[] memory challengeData
+    ) external payable onlyApi {
+        bool withUnlock = false;
+        uint256 keyPrice = 0;
+        uint256 totalPrice = 0;
+
+        // check if msg.value is enough to pay all possible submits
+        for (uint256 i = 0; i < challengeData.length; i++) {
+            if (!manager.hasUnlockedChallenge(challengeData[i].challengeId, challengeData[i].athleteAddress)) {
+                totalPrice += manager.getSubmissionFee(challengeData[i].challengeId);
+            }
+        }
+
+        require(msg.value >= totalPrice, "Challenger: msg.value is to low");
+
+        totalPrice = 0;
+
+        for (uint256 i = 0; i < challengeData.length; i++) {
+            require(challengeData[i].athleteAddress != address(0),
+                "Challenger: 0 address");
+
+            require(
+                challengeData[i].values.length == challengeData[i].conditions.length,
+                "Challenger: argument array lengths not matching"
+            );
+            require(
+                manager.getEndOfChallenge(challengeData[i].challengeId) > block.timestamp,
+                "Challenger: challenge already over"
+            );
+            require(
+                manager.getStartOfChallenge(challengeData[i].challengeId) < block.timestamp,
+                "Challenger: challenge not started yet"
+            );
+
+            withUnlock = false;
+            keyPrice = 0;
+
+            if (!manager.hasUnlockedChallenge(challengeData[i].challengeId, challengeData[i].athleteAddress)) {
+                if(
+                    manager.getCurrentParticipants(challengeData[i].challengeId) >= manager.getMaxParticipants(challengeData[i].challengeId) ||
+                    msg.value < manager.getSubmissionFee(challengeData[i].challengeId)
+                ) continue;
+
+                require(
+                    manager.getCurrentParticipants(challengeData[i].challengeId) <
+                        manager.getMaxParticipants(challengeData[i].challengeId),
+                    "Challenger: challenge is already full"
+                );
+
+                require(
+                    msg.value >= manager.getSubmissionFee(challengeData[i].challengeId),
+                    "Challenger: entered fee too low"
+                );
+
+                keyPrice = manager.getKeyPrice(challengeData[i].challengeId);
+                totalPrice += keyPrice;
+                withUnlock = true;
+            } else {
+                require(manager.multiSubmitAllowed(challengeData[i].challengeId), "Challenger: you are only allowed to submit once");
+            }
+
+            manager.addLeaderboardEntry{value: keyPrice}(
+                challengeData[i].challengeId,
+                challengeData[i].athleteAddress,
+                challengeData[i].conditions,
+                challengeData[i].values,
+                withUnlock
+            );
+        }
+        manager.sendGymnasiaFee{value: msg.value - totalPrice}();
     }
 
     function receivePrize(uint256 challengeId) external {

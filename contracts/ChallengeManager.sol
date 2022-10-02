@@ -48,8 +48,8 @@ contract ChallengeManager is Ownable {
 
     struct LeaderboardEntry {
         address challenger;
-        uint32[] data;
-        uint32[] time;
+        uint32[] conditions;
+        uint32[] values;
     }
 
     mapping(uint256 => LeaderboardEntry[]) public leaderboards;
@@ -207,9 +207,7 @@ contract ChallengeManager is Ownable {
 
         evaluations[counter].setRules(counter, conditions);
         whiteLists[counter] = whiteList;
-        challenges[counter].multiSubmitAllowed = whiteList.length == 0
-            ? true
-            : false;
+        challenges[counter].multiSubmitAllowed = evaluations[counter].multiSubmitAllowed();
 
         emit ChallengeCreated(challenges[counter]);
 
@@ -264,13 +262,13 @@ contract ChallengeManager is Ownable {
     function addLeaderboardEntry(
         uint256 challengeId,
         address sender,
-        uint32[] memory data,
-        uint32[] memory time,
+        uint32[] memory conditions,
+        uint32[] memory values,
         bool withUnlock
     ) public payable onlyChallenger {
         require(
-            evaluations[challengeId].checkRules(challengeId, data),
-            "ChallengeManager: data does not match ruleset"
+            evaluations[challengeId].checkRules(challengeId, conditions),
+            "ChallengeManager: condition does not match ruleset"
         );
 
         if (whiteLists[challengeId].length != 0) {
@@ -290,7 +288,7 @@ contract ChallengeManager is Ownable {
             challengeKeys[challengeId][sender] = true;
         }
 
-        leaderboards[challengeId].push(LeaderboardEntry(sender, data, time));
+        leaderboards[challengeId].push(LeaderboardEntry(sender, conditions, values));
 
         challenges[challengeId].first = evaluations[challengeId].evaluate(
             leaderboards[challengeId]
