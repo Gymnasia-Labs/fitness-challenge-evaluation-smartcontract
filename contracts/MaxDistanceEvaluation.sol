@@ -9,48 +9,60 @@ contract MaxDistanceEvaluation is Evaluation {
         multiSubmitAllowed = true;
     }
 
-    function evaluate(ChallengeManager.LeaderboardEntry[] memory entry)
+    function evaluate(ChallengeManager.LeaderboardEntry[] memory entrys)
         public
         override
         pure
         returns (address)
     {
-        require(entry.length > 0, "MaxDistanceEvaluation: empty leaderboard");
+        require(entrys.length > 0, "MaxDistanceEvaluation: empty leaderboard");
         address challenger;
 
-        challenger = entry[0].challenger;
-        if (entry.length == 1) return challenger;
+        challenger = entrys[0].challenger;
+        if (entrys.length == 1) return challenger;
 
-        bool isAlreadyInArray = false;
-        address[] memory challengers = new address[](entry.length);
-        uint32[] memory distances = new uint32[](entry.length);
+        // bool isAlreadyInArray = false;
+        // address[] memory challengers = new address[](entry.length);
 
 
-        for (uint256 i = 0; i < entry.length; i++) {
-            for (uint256 j = 0; j < i; j++) {
-                if(entry[i].challenger == challengers[j]){
-                    isAlreadyInArray = true;
-                }
+        // for (uint256 i = 0; i < entry.length; i++) {
+        //     for (uint256 j = 0; j < i; j++) {
+        //         if(entry[i].challenger == challengers[j]){
+        //             isAlreadyInArray = true;
+        //         }
+        //     }
+        //     if (!isAlreadyInArray)
+        //         challengers[i] = entry[i].challenger;
+        // }
+
+        // for (uint256 i = 0; i < challengers.length; i++) {
+        //     for (uint256 j = 0; j < entry.length; j++) {
+        //         if(entry[j].challenger == challengers[i]){
+        //             distances[i] += entry[j].values[0];
+        //         }
+        //     }
+        // }
+
+        // for (uint256 i = 0; i < distances.length; i++) {
+        //     if(max<distances[i]){
+        //         max = distances[i];
+        //         challenger = challengers[i];
+        //     }
+        // }
+        uint32[] memory distances = new uint32[](entrys.length);
+        uint32 counter = 0;
+        uint32 max = 0;
+
+        for (uint32 i = 1; i < entrys.length; i++) {
+            if(entrys[i-1].challenger == entrys[i].challenger){
+                distances[counter] += entrys[i-1].values[0] + entrys[i].values[0];
+            }else{
+                ++counter;
             }
-            if (!isAlreadyInArray)
-                challengers[i] = entry[i].challenger;
-        }
 
-        for (uint256 i = 0; i < challengers.length; i++) {
-            for (uint256 j = 0; j < entry.length; j++) {
-                if(entry[j].challenger == challengers[i]){
-                    distances[i] += entry[j].values[0];
-                }
-            }
-        }
-
-        uint256 max = distances[0];
-
-
-        for (uint256 i = 0; i < distances.length; i++) {
-            if(max<distances[i]){
-                max = distances[i];
-                challenger = challengers[i];
+            if(max < distances[counter]){
+                max = distances[counter];
+                challenger = entrys[i].challenger;
             }
         }
 

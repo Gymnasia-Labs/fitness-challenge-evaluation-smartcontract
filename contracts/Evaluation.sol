@@ -18,13 +18,13 @@ contract Evaluation is Ownable{
         manager = adr;
     }
 
-    function evaluate(ChallengeManager.LeaderboardEntry[] calldata entry)
+    function evaluate(ChallengeManager.LeaderboardEntry[] calldata entrys)
         external
         virtual
         view
         returns (address) {
             require(false, "Evaluation: don't run this method, class is abstract (pseudo abstract because of polymorphie purpose)");
-            if (entry.length == 0) return address(0); //just to remove warning
+            if (entrys.length == 0) return address(0); //just to remove warning
             else return address(0);
         }
 

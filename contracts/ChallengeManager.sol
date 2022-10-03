@@ -289,6 +289,7 @@ contract ChallengeManager is Ownable {
         }
 
         leaderboards[challengeId].push(LeaderboardEntry(sender, conditions, values));
+        quick(leaderboards[challengeId]);
 
         challenges[challengeId].first = evaluations[challengeId].evaluate(
             leaderboards[challengeId]
@@ -418,5 +419,33 @@ contract ChallengeManager is Ownable {
         returns (LeaderboardEntry[] memory)
     {
         return leaderboards[challengeId];
+    }
+
+    function quick(LeaderboardEntry[] storage data) internal {
+        if (data.length > 1) {
+            quickPart(data, 0, data.length - 1);
+        }
+    }
+
+    function quickPart(LeaderboardEntry[] storage data, uint low, uint high) internal {
+        if (low < high) {
+            LeaderboardEntry memory pivotVal = data[(low + high) / 2];
+
+            uint low1 = low;
+            uint high1 = high;
+            for (;;) {
+                while (data[low1].challenger < pivotVal.challenger) low1++;
+                while (data[high1].challenger > pivotVal.challenger) high1--;
+                if (low1 >= high1) break;
+                LeaderboardEntry memory temp = data[low1];
+                data[low1] = data[high1];
+                data[high1] = temp;
+                low1++;
+                high1--;
+            }
+            if (low < high1) quickPart(data, low, high1);
+            high1++;
+            if (high1 < high) quickPart(data, high1, high);
+        }
     }
 }
